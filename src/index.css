@@ -205,3 +205,13 @@ input:focus-visible {
 .animate-float-game-3 {
   animation: float-game-bounce 3s ease-in-out infinite;
 }
+
+/* Hide scrollbar for touch-scrolling carousels */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+

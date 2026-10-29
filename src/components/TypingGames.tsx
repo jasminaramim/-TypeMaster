@@ -883,10 +883,10 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Header Framed Closely by Floating Gaming Icons */}
-      <div className="relative mx-auto w-full max-w-3xl px-4">
-        {/* Left Floating Gaming Icons (Tightly hugging the title text) */}
+      <div className="relative mx-auto w-full max-w-3xl px-2 sm:px-4">
+        {/* Left Floating Gaming Icons (Tightly hugging the title text on md+ screens) */}
         <div
           className="pointer-events-none absolute -left-6 sm:-left-12 lg:-left-16 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-2.5 select-none"
           aria-hidden="true"
@@ -909,7 +909,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           </div>
         </div>
 
-        {/* Right Floating Gaming Icons (Tightly hugging the title text) */}
+        {/* Right Floating Gaming Icons (Tightly hugging the title text on md+ screens) */}
         <div
           className="pointer-events-none absolute -right-6 sm:-right-12 lg:-right-16 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-2.5 select-none"
           aria-hidden="true"
@@ -923,7 +923,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             <Bomb className="h-5 w-5 text-rose-400" />
           </div>
           {/* Zap */}
-          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-500/40 bg-[#102219]/80 backdrop-blur-sm shadow-[0_0_18px_rgba(16,185,129,0.25)] animate-float-game-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-500/40 bg-[#102219]/80 backdrop-blur-sm shadow-[0_0_18px_rgba(160,85,247,0.25)] animate-float-game-3">
             <Zap className="h-5 w-5 text-emerald-400" />
           </div>
           {/* Keycap D */}
@@ -934,21 +934,21 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
 
         {/* Header Text */}
         <section className="text-center">
-          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#d7ff64]/30 bg-[#d7ff64]/10 px-4 py-1.5 text-xs font-bold tracking-wide text-[#d7ff64]">
+          <div className="mb-2.5 inline-flex items-center gap-2 rounded-full border border-[#d7ff64]/30 bg-[#d7ff64]/10 px-3.5 py-1 text-xs font-bold tracking-wide text-[#d7ff64]">
             <Gamepad2 className="h-3.5 w-3.5" />
             <span>ARCADE GAME ZONE</span>
           </div>
-          <h2 className="text-3xl font-black text-white sm:text-5xl">
+          <h2 className="text-2xl font-black text-white sm:text-4xl md:text-5xl">
             Level Up Your <span className="text-[#d7ff64]">Speed & Reflexes</span>
           </h2>
-          <p className="mx-auto mt-3 max-w-2xl text-sm text-[#a4a69d] sm:text-base">
+          <p className="mx-auto mt-2 sm:mt-3 max-w-2xl text-xs sm:text-base text-[#a4a69d]">
             Interactive games designed to make typing practice thrilling, competitive, and deeply rewarding.
           </p>
         </section>
       </div>
 
-      {/* Game Selector Arcade Menu */}
-      <div className="flex flex-wrap items-center justify-center gap-2">
+      {/* Game Selector Arcade Menu - Swipeable on mobile, centered wrap on tablet/desktop */}
+      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 pt-1 px-1 scrollbar-none sm:flex-wrap sm:justify-center">
         {[
           { id: 'nitro' as ActiveGame, label: '🏎️ Nitro Racer', badge: 'Popular' },
           { id: 'zombie' as ActiveGame, label: '🧟 Zombie Rush', badge: 'Survival' },
@@ -963,7 +963,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           <button
             key={game.id}
             onClick={() => setSelectedGame(game.id)}
-            className={`flex items-center gap-2 rounded-2xl px-4 py-2.5 text-xs font-bold transition sm:text-sm ${
+            className={`flex flex-shrink-0 items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs font-bold transition whitespace-nowrap active:scale-95 sm:text-sm ${
               selectedGame === game.id
                 ? 'bg-[#d7ff64] text-[#111310] shadow-[0_0_20px_rgba(215,255,100,0.35)]'
                 : 'border border-white/10 bg-[#161814] text-gray-300 hover:border-white/20 hover:text-white'
@@ -971,7 +971,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           >
             <span>{game.label}</span>
             <span
-              className={`rounded-full px-2 py-0.5 text-[10px] ${
+              className={`rounded-full px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] ${
                 selectedGame === game.id
                   ? 'bg-[#111310] text-[#d7ff64]'
                   : 'bg-white/10 text-gray-400'
@@ -987,24 +987,24 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       {/* GAME 1: NITRO RACER                                       */}
       {/* ========================================================= */}
       {selectedGame === 'nitro' && (
-        <div className="rounded-3xl border border-white/10 bg-[#161814] p-6 shadow-2xl sm:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#d7ff64]/10 text-2xl">
+        <div className="rounded-2xl sm:rounded-3xl border border-white/10 bg-[#161814] p-3.5 sm:p-6 md:p-8 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3 sm:pb-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl bg-[#d7ff64]/10 text-xl sm:text-2xl shrink-0">
                 🏎️
               </span>
               <div>
-                <h3 className="text-xl font-black text-white">Nitro Typer Grand Prix</h3>
-                <p className="text-xs text-gray-400">Type words to inject Nitro boost and cross the finish line 1st!</p>
+                <h3 className="text-base sm:text-xl font-black text-white">Nitro Typer Grand Prix</h3>
+                <p className="text-[11px] sm:text-xs text-gray-400">Type words to inject Nitro boost and cross the finish line 1st!</p>
               </div>
             </div>
 
             {racerStarted && (
-              <div className="flex items-center gap-4 text-xs font-bold">
-                <span className="rounded-xl bg-[#111310] px-3.5 py-1.5 text-gray-300">
+              <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 text-xs font-bold w-full sm:w-auto">
+                <span className="rounded-xl bg-[#111310] px-3 py-1.5 text-gray-300">
                   ⏱️ Time: {raceElapsedSec}s
                 </span>
-                <span className="rounded-xl bg-[#111310] px-3.5 py-1.5 text-[#d7ff64]">
+                <span className="rounded-xl bg-[#111310] px-3 py-1.5 text-[#d7ff64]">
                   🏁 Progress: {playerDistance}%
                 </span>
               </div>
@@ -1012,69 +1012,69 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           </div>
 
           {/* Racetrack Visual Box */}
-          <div className="relative my-6 space-y-4 rounded-2xl border border-white/5 bg-[#111310] p-5 select-none overflow-hidden">
+          <div className="relative my-4 sm:my-6 space-y-3 sm:space-y-4 rounded-xl sm:rounded-2xl border border-white/5 bg-[#111310] p-3 sm:p-5 select-none overflow-hidden">
             {/* Lane 1: Player (Lime Racer) */}
             <div>
-              <div className="flex items-center justify-between text-[11px] font-bold text-gray-400 mb-1">
+              <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-bold text-gray-400 mb-1">
                 <span className="text-[#d7ff64] flex items-center gap-1">
                   <Flame className="h-3 w-3" /> YOU (Lime Formula 1)
                 </span>
                 <span>{playerDistance}%</span>
               </div>
-              <div className="relative h-10 w-full rounded-xl bg-[#181a15] border border-white/5 flex items-center px-2">
+              <div className="relative h-9 sm:h-10 w-full rounded-xl bg-[#181a15] border border-white/5 flex items-center px-2">
                 <div
-                  style={{ left: `calc(${playerDistance}% * 0.88)` }}
-                  className="absolute flex items-center gap-1.5 transition-all duration-200"
+                  style={{ left: `calc(${playerDistance}% * 0.85)` }}
+                  className="absolute flex items-center gap-1 sm:gap-1.5 transition-all duration-200"
                 >
-                  <span className="text-2xl filter drop-shadow-[0_0_8px_#d7ff64]">🏎️</span>
+                  <span className="text-xl sm:text-2xl filter drop-shadow-[0_0_8px_#d7ff64]">🏎️</span>
                   {playerDistance > 0 && <span className="text-xs text-amber-400 animate-pulse">🔥</span>}
                 </div>
                 {/* Finish flag */}
-                <div className="absolute right-2 text-xl">🏁</div>
+                <div className="absolute right-2 text-lg sm:text-xl">🏁</div>
               </div>
             </div>
 
             {/* Lane 2: AI Racer 1 (Red Turbo) */}
             <div>
-              <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 mb-1">
+              <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-bold text-gray-500 mb-1">
                 <span>Cyber Red (AI)</span>
                 <span>{Math.round(ai1Distance)}%</span>
               </div>
               <div className="relative h-8 w-full rounded-xl bg-[#151713] border border-white/5 flex items-center px-2">
                 <div
-                  style={{ left: `calc(${ai1Distance}% * 0.88)` }}
+                  style={{ left: `calc(${ai1Distance}% * 0.85)` }}
                   className="absolute flex items-center gap-1 transition-all duration-200"
                 >
-                  <span className="text-xl">🚗</span>
+                  <span className="text-lg sm:text-xl">🚗</span>
                 </div>
-                <div className="absolute right-2 text-base opacity-40">🏁</div>
+                <div className="absolute right-2 text-sm sm:text-base opacity-40">🏁</div>
               </div>
             </div>
 
             {/* Lane 3: AI Racer 2 (Blue Comet) */}
             <div>
-              <div className="flex items-center justify-between text-[11px] font-bold text-gray-500 mb-1">
+              <div className="flex items-center justify-between text-[10px] sm:text-[11px] font-bold text-gray-500 mb-1">
                 <span>Speed Comet (AI)</span>
                 <span>{Math.round(ai2Distance)}%</span>
               </div>
               <div className="relative h-8 w-full rounded-xl bg-[#151713] border border-white/5 flex items-center px-2">
                 <div
-                  style={{ left: `calc(${ai2Distance}% * 0.88)` }}
+                  style={{ left: `calc(${ai2Distance}% * 0.85)` }}
                   className="absolute flex items-center gap-1 transition-all duration-200"
                 >
-                  <span className="text-xl">🚙</span>
+                  <span className="text-lg sm:text-xl">🚙</span>
                 </div>
-                <div className="absolute right-2 text-base opacity-40">🏁</div>
+                <div className="absolute right-2 text-sm sm:text-base opacity-40">🏁</div>
               </div>
             </div>
           </div>
 
           {/* Interactive Controller */}
           {!racerStarted && !racerFinished && (
-            <div className="text-center py-4">
+            <div className="text-center py-3 sm:py-4">
               <button
                 onClick={startNitroRacer}
-                className="flex items-center gap-2 mx-auto rounded-2xl bg-[#d7ff64] px-8 py-3 text-sm font-black text-[#111310] shadow-[0_0_20px_rgba(215,255,100,0.3)] transition hover:bg-[#e6ff8f] active:scale-95"
+                className="flex items-center gap-2 mx-auto rounded-xl sm:rounded-2xl bg-[#d7ff64] px-6 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-black text-[#111310] shadow-[0_0_20px_rgba(215,255,100,0.3)] transition hover:bg-[#e6ff8f] active:scale-95"
               >
                 <Play className="h-4 w-4 fill-current" />
                 <span>Start Race Championship</span>
@@ -1083,12 +1083,12 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           )}
 
           {racerStarted && !racerFinished && (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="text-center">
-                <span className="text-xs uppercase tracking-widest text-gray-400 font-bold">
+                <span className="text-[10px] sm:text-xs uppercase tracking-widest text-gray-400 font-bold">
                   Target Nitro Word ({racerWordIndex + 1}/{racerTargetWords.length})
                 </span>
-                <p className="mt-1 font-mono text-3xl font-black text-[#d7ff64] sm:text-4xl">
+                <p className="mt-1 font-mono text-2xl sm:text-4xl font-black text-[#d7ff64]">
                   {racerTargetWords[racerWordIndex]}
                 </p>
               </div>
@@ -1100,7 +1100,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                   value={racerInput}
                   onChange={handleRacerInput}
                   placeholder="Type word to fire nitro..."
-                  className="w-full rounded-2xl border border-white/10 bg-[#111310] p-4 text-center font-mono text-lg text-white outline-none focus:border-[#d7ff64] focus:ring-1 focus:ring-[#d7ff64]"
+                  className="w-full rounded-xl sm:rounded-2xl border border-white/10 bg-[#111310] p-3 sm:p-4 text-center font-mono text-base sm:text-lg text-white outline-none focus:border-[#d7ff64] focus:ring-1 focus:ring-[#d7ff64]"
                   autoComplete="off"
                   spellCheck={false}
                 />
@@ -1109,19 +1109,19 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           )}
 
           {racerFinished && (
-            <div className="text-center py-6 animate-in zoom-in-95">
-              <Trophy className="mx-auto h-12 w-12 text-[#d7ff64] animate-bounce" />
-              <h4 className="mt-2 text-2xl font-black text-white">
+            <div className="text-center py-5 sm:py-6 animate-in zoom-in-95">
+              <Trophy className="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-[#d7ff64] animate-bounce" />
+              <h4 className="mt-2 text-xl sm:text-2xl font-black text-white">
                 {playerDistance >= 100 && playerDistance >= ai1Distance
                   ? '🏆 1st Place Champion!'
                   : '🏁 Race Finished!'}
               </h4>
-              <p className="mt-1 text-sm text-gray-400">
+              <p className="mt-1 text-xs sm:text-sm text-gray-400">
                 Completed 12 Nitro words in {raceElapsedSec} seconds!
               </p>
               <button
                 onClick={startNitroRacer}
-                className="mt-5 flex items-center gap-2 mx-auto rounded-xl bg-[#d7ff64] px-6 py-2.5 text-xs font-bold text-[#111310]"
+                className="mt-4 sm:mt-5 flex items-center gap-2 mx-auto rounded-xl bg-[#d7ff64] px-5 sm:px-6 py-2.5 text-xs font-bold text-[#111310]"
               >
                 <RotateCcw className="h-4 w-4" />
                 <span>Race Again</span>
@@ -1132,10 +1132,10 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* ========================================================= */}
-      {/* GAME: ZOMBIE RUSH (Survival Barricade Defense)             */}
+      {/* GAME 2: ZOMBIE RUSH (Survival Barricade Defense)           */}
       {/* ========================================================= */}
       {selectedGame === 'zombie' && (
-        <div className="rounded-3xl border border-red-500/20 bg-gradient-to-b from-[#181214] to-[#121411] p-6 shadow-2xl sm:p-8 relative overflow-hidden">
+        <div className="rounded-2xl sm:rounded-3xl border border-red-500/20 bg-gradient-to-b from-[#181214] to-[#121411] p-3.5 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
           {/* Blood & Biohazard Neon Glow background */}
           <div
             className="pointer-events-none absolute -top-20 right-0 h-72 w-72 rounded-full opacity-20 blur-[100px]"
@@ -1143,28 +1143,28 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           />
 
           {/* Top Bar: Title & Stats */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-500/10 text-2xl border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.25)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3 sm:pb-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl bg-red-500/10 text-xl sm:text-2xl border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.25)] shrink-0">
                 🧟
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-black text-white">Zombie Rush: Survival Defense</h3>
-                  <span className="rounded-full bg-red-500/20 border border-red-500/40 px-2 py-0.5 text-[10px] font-bold text-red-400 uppercase tracking-wider">
+                  <h3 className="text-base sm:text-xl font-black text-white">Zombie Rush: Survival</h3>
+                  <span className="rounded-full bg-red-500/20 border border-red-500/40 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-red-400 uppercase tracking-wider">
                     Wave {zombieWave}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400">Type words floating above invading undead to fire shotgun blasts!</p>
+                <p className="text-[11px] sm:text-xs text-gray-400">Type floating words to fire shotgun blasts!</p>
               </div>
             </div>
 
             {zombieStarted && !zombieGameOver && (
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400">Barricade Armor</span>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <div className="w-28 sm:w-36 h-2.5 rounded-full bg-black/50 border border-white/10 overflow-hidden">
+              <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
+                <div className="text-left sm:text-right">
+                  <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-gray-400">Barricade Armor</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5">
+                    <div className="w-20 sm:w-36 h-2 sm:h-2.5 rounded-full bg-black/50 border border-white/10 overflow-hidden">
                       <div
                         className={`h-full transition-all duration-300 ${
                           barricadeHp > 50 ? 'bg-[#d7ff64]' : barricadeHp > 25 ? 'bg-amber-400' : 'bg-red-500 animate-pulse'
@@ -1172,26 +1172,26 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                         style={{ width: `${barricadeHp}%` }}
                       />
                     </div>
-                    <span className="font-mono text-xs font-black text-white">{barricadeHp}%</span>
+                    <span className="font-mono text-[11px] sm:text-xs font-black text-white">{barricadeHp}%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 bg-black/40 px-3.5 py-1.5 rounded-2xl border border-white/10">
+                <div className="flex items-center gap-2 sm:gap-3 bg-black/40 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border border-white/10">
                   <div className="text-center">
-                    <span className="text-[9px] text-gray-400 block uppercase">Kills</span>
-                    <span className="font-mono text-sm font-black text-red-400">{zombieKills} 💀</span>
+                    <span className="text-[8px] sm:text-[9px] text-gray-400 block uppercase">Kills</span>
+                    <span className="font-mono text-xs sm:text-sm font-black text-red-400">{zombieKills} 💀</span>
                   </div>
-                  <div className="h-6 w-px bg-white/10" />
+                  <div className="h-5 sm:h-6 w-px bg-white/10" />
                   <div className="text-center">
-                    <span className="text-[9px] text-gray-400 block uppercase">Score</span>
-                    <span className="font-mono text-sm font-black text-[#d7ff64]">{zombieScore}</span>
+                    <span className="text-[8px] sm:text-[9px] text-gray-400 block uppercase">Score</span>
+                    <span className="font-mono text-xs sm:text-sm font-black text-[#d7ff64]">{zombieScore}</span>
                   </div>
                   {zombieCombo > 1 && (
                     <>
-                      <div className="h-6 w-px bg-white/10" />
+                      <div className="h-5 sm:h-6 w-px bg-white/10" />
                       <div className="text-center animate-bounce">
-                        <span className="text-[9px] text-amber-400 block uppercase">Combo</span>
-                        <span className="font-mono text-xs font-black text-amber-300">{zombieCombo}x 🔥</span>
+                        <span className="text-[8px] sm:text-[9px] text-amber-400 block uppercase">Combo</span>
+                        <span className="font-mono text-[10px] sm:text-xs font-black text-amber-300">{zombieCombo}x 🔥</span>
                       </div>
                     </>
                   )}
@@ -1201,7 +1201,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           </div>
 
           {/* Battlefield Area */}
-          <div className="relative mt-5 h-72 sm:h-80 w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0e100c] shadow-inner flex flex-col justify-between p-4">
+          <div className="relative mt-4 sm:mt-5 h-64 sm:h-80 w-full overflow-hidden rounded-xl sm:rounded-2xl border border-white/10 bg-[#0e100c] shadow-inner flex flex-col justify-between p-3 sm:p-4">
             {/* Toxic Fog Grid */}
             <div
               className="absolute inset-0 opacity-15 pointer-events-none"
@@ -1212,25 +1212,25 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             />
 
             {/* Left Defense Barricade Wall */}
-            <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-20 border-r-2 border-red-500/40 bg-gradient-to-r from-black/80 to-red-950/20 z-10 flex flex-col items-center justify-around py-4">
-              <span className="text-xs font-black tracking-widest text-red-400/80 [writing-mode:vertical-lr] rotate-180 uppercase">
+            <div className="absolute left-0 top-0 bottom-0 w-10 sm:w-16 border-r-2 border-red-500/40 bg-gradient-to-r from-black/80 to-red-950/20 z-10 flex flex-col items-center justify-around py-3 sm:py-4">
+              <span className="text-[9px] sm:text-xs font-black tracking-widest text-red-400/80 [writing-mode:vertical-lr] rotate-180 uppercase">
                 🛡️ BARRICADE
               </span>
-              <div className="h-10 w-2.5 rounded-full bg-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
-              <div className="text-xl">🚪</div>
+              <div className="h-8 sm:h-10 w-2 sm:w-2.5 rounded-full bg-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+              <div className="text-base sm:text-xl">🚪</div>
             </div>
 
             {/* Danger Zone Marker */}
-            <div className="absolute right-0 top-2 px-3 py-1 bg-red-950/40 border border-red-500/20 rounded-lg text-[10px] text-red-300 font-mono flex items-center gap-1.5 z-10">
-              <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />
-              OUTBREAK ZONE • WAVE {zombieWave}
+            <div className="absolute right-0 top-2 px-2.5 py-1 bg-red-950/40 border border-red-500/20 rounded-lg text-[9px] sm:text-[10px] text-red-300 font-mono flex items-center gap-1.5 z-10">
+              <span className="h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full bg-red-500 animate-ping" />
+              <span className="hidden xs:inline">OUTBREAK ZONE • </span>WAVE {zombieWave}
             </div>
 
             {/* Wave Notice Banner */}
             {zombieWaveBanner && (
               <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-none animate-in zoom-in-95">
-                <div className="rounded-2xl border-2 border-red-500 bg-red-950/95 px-6 py-3 text-center shadow-[0_0_35px_rgba(239,68,68,0.7)]">
-                  <span className="font-mono text-base sm:text-lg font-black text-white tracking-widest uppercase">
+                <div className="rounded-xl sm:rounded-2xl border-2 border-red-500 bg-red-950/95 px-4 sm:px-6 py-2.5 sm:py-3 text-center shadow-[0_0_35px_rgba(239,68,68,0.7)]">
+                  <span className="font-mono text-xs sm:text-lg font-black text-white tracking-widest uppercase">
                     {zombieWaveBanner}
                   </span>
                 </div>
@@ -1240,7 +1240,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             {/* Shotgun Flash Effect */}
             {lastShotEffect && (
               <div
-                className="absolute top-1/2 -translate-y-1/2 z-20 pointer-events-none animate-in fade-in zoom-in duration-150 flex items-center gap-2 bg-red-600/90 text-white font-black px-4 py-2 rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.8)] border border-yellow-300"
+                className="absolute top-1/2 -translate-y-1/2 z-20 pointer-events-none animate-in fade-in zoom-in duration-150 flex items-center gap-1.5 sm:gap-2 bg-red-600/90 text-white font-black px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-xl sm:rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.8)] border border-yellow-300 text-xs sm:text-base"
                 style={{ right: `${lastShotEffect.x}%` }}
               >
                 <span>💥 HEADSHOT!</span>
@@ -1249,7 +1249,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             )}
 
             {/* Active Zombies on the Battlefield */}
-            <div className="relative h-full w-full pl-16 sm:pl-20">
+            <div className="relative h-full w-full pl-10 sm:pl-16">
               {zombies.map((z) => {
                 const isTarget = zombieInput.length > 0 && z.word.toLowerCase().startsWith(zombieInput.trim().toLowerCase());
                 return (
@@ -1257,12 +1257,12 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                     key={z.id}
                     className="absolute transition-all duration-150 flex flex-col items-center"
                     style={{
-                      right: `${Math.min(88, z.progress)}%`,
+                      right: `${Math.min(84, z.progress)}%`,
                       top: `${((z.id % 4) + 1) * 20}%`,
                     }}
                   >
                     <div
-                      className={`mb-1 rounded-xl px-2.5 py-1 text-xs font-mono font-bold transition-all shadow-md ${
+                      className={`mb-0.5 sm:mb-1 rounded-lg sm:rounded-xl px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-xs font-mono font-bold transition-all shadow-md max-w-[95px] sm:max-w-none truncate ${
                         isTarget
                           ? 'border-2 border-[#d7ff64] bg-[#111310] text-[#d7ff64] shadow-[0_0_15px_rgba(215,255,100,0.5)] scale-110'
                           : z.type === 'boss'
@@ -1270,11 +1270,11 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                           : 'border border-white/20 bg-black/80 text-white'
                       }`}
                     >
-                      {z.type === 'boss' && <span className="mr-1 text-red-400">⚠️ BOSS:</span>}
+                      {z.type === 'boss' && <span className="mr-0.5 text-red-400">⚠️</span>}
                       {z.word}
                     </div>
 
-                    <div className="relative text-3xl sm:text-4xl animate-bounce duration-700">
+                    <div className="relative text-2xl sm:text-4xl animate-bounce duration-700">
                       <span>{z.avatar}</span>
                       {z.progress > 70 && (
                         <span className="absolute -top-1 -right-1 text-xs animate-ping">🩸</span>
@@ -1285,17 +1285,17 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
               })}
 
               {!zombieStarted && !zombieGameOver && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-                  <div className="h-16 w-16 rounded-3xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-4xl shadow-[0_0_30px_rgba(239,68,68,0.3)] mb-3">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3 sm:p-4">
+                  <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-2xl sm:rounded-3xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-3xl sm:text-4xl shadow-[0_0_30px_rgba(239,68,68,0.3)] mb-2 sm:mb-3">
                     🧟‍♂️
                   </div>
-                  <h4 className="text-2xl font-black text-white">Zombie Defense Outbreak</h4>
+                  <h4 className="text-lg sm:text-2xl font-black text-white">Zombie Defense Outbreak</h4>
                   <p className="max-w-md text-xs sm:text-sm text-gray-400 mt-1">
-                    An undead swarm is marching towards your bunker! Type the floating words to obliterate them before they tear down your barricade.
+                    An undead swarm is marching towards your bunker! Type floating words to obliterate them before they tear down your barricade.
                   </p>
                   <button
                     onClick={startZombieGame}
-                    className="mt-4 flex items-center gap-2 rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-8 py-3 text-sm font-black text-white shadow-[0_0_25px_rgba(239,68,68,0.4)] transition hover:from-red-400 hover:to-rose-500 active:scale-95"
+                    className="mt-3 sm:mt-4 flex items-center gap-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-6 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-black text-white shadow-[0_0_25px_rgba(239,68,68,0.4)] transition hover:from-red-400 hover:to-rose-500 active:scale-95"
                   >
                     <Play className="h-4 w-4 fill-current" />
                     <span>DEFEND BARRICADE (START)</span>
@@ -1304,15 +1304,15 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
               )}
 
               {zombieGameOver && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 bg-black/80 backdrop-blur-sm z-30 animate-in zoom-in-95">
-                  <div className="text-5xl animate-pulse">💀</div>
-                  <h4 className="mt-2 text-2xl sm:text-3xl font-black text-red-400">BARRICADE BREACHED!</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    You survived until <strong className="text-white">Wave {zombieWave}</strong> with <strong className="text-red-400">{zombieKills} Kills</strong> and a score of <strong className="text-[#d7ff64]">{zombieScore}</strong>!
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm z-30 animate-in zoom-in-95">
+                  <div className="text-4xl sm:text-5xl animate-pulse">💀</div>
+                  <h4 className="mt-1 sm:mt-2 text-xl sm:text-3xl font-black text-red-400">BARRICADE BREACHED!</h4>
+                  <p className="text-xs sm:text-sm text-gray-300 mt-1">
+                    You survived until <strong className="text-white">Wave {zombieWave}</strong> with <strong className="text-red-400">{zombieKills} Kills</strong> and score <strong className="text-[#d7ff64]">{zombieScore}</strong>!
                   </p>
                   <button
                     onClick={startZombieGame}
-                    className="mt-4 flex items-center gap-2 rounded-2xl bg-red-500 px-7 py-3 text-xs font-black text-white shadow-lg transition hover:bg-red-400 active:scale-95"
+                    className="mt-3 sm:mt-4 flex items-center gap-2 rounded-xl bg-red-500 px-6 py-2.5 text-xs font-black text-white shadow-lg transition hover:bg-red-400 active:scale-95"
                   >
                     <RotateCcw className="h-4 w-4" />
                     <span>Try Again (Respawn)</span>
@@ -1324,7 +1324,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
 
           {/* Interactive Aim & Shoot Input Console */}
           {zombieStarted && !zombieGameOver && (
-            <div className="mt-4 max-w-lg mx-auto space-y-2">
+            <div className="mt-3 sm:mt-4 max-w-lg mx-auto space-y-2">
               <div className="relative">
                 <input
                   ref={zombieInputRef}
@@ -1332,13 +1332,13 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                   value={zombieInput}
                   onChange={handleZombieInput}
                   placeholder="Target zombie word to fire shotgun blast..."
-                  className="w-full rounded-2xl border-2 border-red-500/40 bg-[#10120f] px-5 py-3.5 text-center font-mono text-lg font-bold text-white shadow-lg outline-none focus:border-red-500 focus:shadow-[0_0_20px_rgba(239,68,68,0.35)]"
+                  className="w-full rounded-xl sm:rounded-2xl border-2 border-red-500/40 bg-[#10120f] px-4 sm:px-5 py-2.5 sm:py-3.5 text-center font-mono text-base sm:text-lg font-bold text-white shadow-lg outline-none focus:border-red-500 focus:shadow-[0_0_20px_rgba(239,68,68,0.35)]"
                   autoComplete="off"
                   spellCheck={false}
                 />
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg opacity-60">🎯</span>
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base sm:text-lg opacity-60">🎯</span>
               </div>
-              <p className="text-center text-[11px] text-gray-400">
+              <p className="text-center text-[10px] sm:text-[11px] text-gray-400">
                 💡 Tip: Type any zombie's word on screen — matching letters highlight in neon lime!
               </p>
             </div>
@@ -1347,10 +1347,10 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* ========================================================= */}
-      {/* GAME: KEYBOARD K.O. (Neon Boxing Arena)                   */}
+      {/* GAME 3: KEYBOARD K.O. (Neon Boxing Arena)                 */}
       {/* ========================================================= */}
       {selectedGame === 'boxing' && (
-        <div className="rounded-3xl border border-cyan-500/20 bg-gradient-to-b from-[#101722] to-[#121417] p-6 shadow-2xl sm:p-8 relative overflow-hidden">
+        <div className="rounded-2xl sm:rounded-3xl border border-cyan-500/20 bg-gradient-to-b from-[#101722] to-[#121417] p-3.5 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
           {/* Cyberpunk Blue & Orange Stadium Spotlight background */}
           <div
             className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-80 w-full max-w-2xl rounded-full opacity-20 blur-[120px]"
@@ -1358,62 +1358,64 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           />
 
           {/* Top Bar: Title & Ring Stats */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-500/10 text-2xl border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3 sm:pb-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl bg-cyan-500/10 text-xl sm:text-2xl border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.25)] shrink-0">
                 🥊
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-black text-white">Keyboard K.O. Fighter</h3>
-                  <span className="rounded-full bg-cyan-500/20 border border-cyan-500/40 px-2 py-0.5 text-[10px] font-bold text-cyan-300 uppercase tracking-wider">
+                  <h3 className="text-base sm:text-xl font-black text-white">Keyboard K.O. Fighter</h3>
+                  <span className="rounded-full bg-cyan-500/20 border border-cyan-500/40 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-cyan-300 uppercase tracking-wider">
                     Round {boxingRound} of 3
                   </span>
                 </div>
-                <p className="text-xs text-gray-400">Type strike combos before the opponent countdown timer hits zero!</p>
+                <p className="text-[11px] sm:text-xs text-gray-400">Type combos before the opponent counter timer hits zero!</p>
               </div>
             </div>
 
             {boxingStarted && !boxingGameOver && !boxingVictory && (
-              <div className="flex items-center gap-4 bg-black/40 px-4 py-2 rounded-2xl border border-white/10">
-                <div className="text-center">
-                  <span className="text-[9px] text-gray-400 block uppercase">Rival Timer</span>
-                  <span className={`font-mono text-sm font-black ${rivalTimer < 1.2 ? 'text-red-400 animate-ping' : 'text-amber-400'}`}>
+              <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto bg-black/40 px-3.5 py-1.5 rounded-xl sm:rounded-2xl border border-white/10">
+                <div className="text-left sm:text-center">
+                  <span className="text-[8px] sm:text-[9px] text-gray-400 block uppercase">Rival Timer</span>
+                  <span className={`font-mono text-xs sm:text-sm font-black ${rivalTimer < 1.2 ? 'text-red-400 animate-ping' : 'text-amber-400'}`}>
                     ⏱️ {rivalTimer.toFixed(1)}s
                   </span>
                 </div>
-                <div className="h-6 w-px bg-white/10" />
-                <div className="text-center">
-                  <span className="text-[9px] text-gray-400 block uppercase">Score</span>
-                  <span className="font-mono text-sm font-black text-[#d7ff64]">{boxingKoScore}</span>
+                <div className="h-5 sm:h-6 w-px bg-white/10" />
+                <div className="text-right sm:text-center">
+                  <span className="text-[8px] sm:text-[9px] text-gray-400 block uppercase">Score</span>
+                  <span className="font-mono text-xs sm:text-sm font-black text-[#d7ff64]">{boxingKoScore}</span>
                 </div>
               </div>
             )}
           </div>
 
           {/* Dual Fighters Health & Ring Showcase */}
-          <div className="mt-5 space-y-4">
+          <div className="mt-4 sm:mt-5 space-y-3 sm:space-y-4">
             {/* Health Bars Row */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-2 sm:gap-4">
               {/* Player Side */}
-              <div className="rounded-2xl border border-cyan-500/30 bg-black/40 p-3.5 space-y-1.5">
-                <div className="flex items-center justify-between text-xs font-black">
-                  <span className="text-cyan-400 flex items-center gap-1.5">
-                    <span>🥷</span> YOU (CYBER BOXER)
+              <div className="rounded-xl sm:rounded-2xl border border-cyan-500/30 bg-black/40 p-2.5 sm:p-3.5 space-y-1.5 overflow-hidden">
+                <div className="flex items-center justify-between text-[11px] sm:text-xs font-black">
+                  <span className="text-cyan-400 flex items-center gap-1 truncate">
+                    <span>🥷</span>
+                    <span className="hidden sm:inline">YOU (BOXER)</span>
+                    <span className="sm:hidden">YOU</span>
                   </span>
-                  <span className="font-mono text-white">{playerHp} HP</span>
+                  <span className="font-mono text-white text-[11px] sm:text-xs shrink-0">{playerHp} HP</span>
                 </div>
-                <div className="h-3 w-full rounded-full bg-black/60 overflow-hidden border border-white/10">
+                <div className="h-2.5 sm:h-3 w-full rounded-full bg-black/60 overflow-hidden border border-white/10">
                   <div
                     className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-300"
                     style={{ width: `${playerHp}%` }}
                   />
                 </div>
                 {/* Super Finisher Meter */}
-                <div className="flex items-center justify-between text-[10px] text-gray-400 font-bold pt-1">
-                  <span>⚡ SUPER METER</span>
-                  <span className={boxingSuperMeter >= 100 ? 'text-[#d7ff64] font-black animate-pulse' : 'text-gray-400 font-mono'}>
-                    {boxingSuperMeter >= 100 ? '🔥 SUPER READY (40 DMG)!' : `${boxingSuperMeter}%`}
+                <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-gray-400 font-bold pt-0.5">
+                  <span className="truncate">⚡ SUPER METER</span>
+                  <span className={boxingSuperMeter >= 100 ? 'text-[#d7ff64] font-black animate-pulse truncate' : 'text-gray-400 font-mono truncate'}>
+                    {boxingSuperMeter >= 100 ? '🔥 READY!' : `${boxingSuperMeter}%`}
                   </span>
                 </div>
                 <div className="h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
@@ -1427,22 +1429,24 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
               </div>
 
               {/* Rival Side */}
-              <div className="rounded-2xl border border-rose-500/30 bg-black/40 p-3.5 space-y-1.5">
-                <div className="flex items-center justify-between text-xs font-black">
-                  <span className="text-rose-400 flex items-center gap-1.5">
-                    <span>🤖</span> TITAN SHADOW (RIVAL)
+              <div className="rounded-xl sm:rounded-2xl border border-rose-500/30 bg-black/40 p-2.5 sm:p-3.5 space-y-1.5 overflow-hidden">
+                <div className="flex items-center justify-between text-[11px] sm:text-xs font-black">
+                  <span className="text-rose-400 flex items-center gap-1 truncate">
+                    <span>🤖</span>
+                    <span className="hidden sm:inline">TITAN SHADOW</span>
+                    <span className="sm:hidden">RIVAL</span>
                   </span>
-                  <span className="font-mono text-white">{rivalHp} HP</span>
+                  <span className="font-mono text-white text-[11px] sm:text-xs shrink-0">{rivalHp} HP</span>
                 </div>
-                <div className="h-3 w-full rounded-full bg-black/60 overflow-hidden border border-white/10">
+                <div className="h-2.5 sm:h-3 w-full rounded-full bg-black/60 overflow-hidden border border-white/10">
                   <div
                     className="h-full bg-gradient-to-r from-rose-500 to-red-600 transition-all duration-300"
                     style={{ width: `${rivalHp}%` }}
                   />
                 </div>
-                <div className="flex items-center justify-between text-[10px] text-gray-400 font-bold pt-1">
-                  <span>ROUND STATUS</span>
-                  <span className="text-rose-300 font-mono">ROUND {boxingRound} / 3</span>
+                <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-gray-400 font-bold pt-0.5">
+                  <span className="truncate">ROUND PROGRESS</span>
+                  <span className="text-rose-300 font-mono text-[9px] sm:text-[10px] truncate">{boxingRound} / 3</span>
                 </div>
                 <div className="h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
                   <div
@@ -1454,37 +1458,37 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             </div>
 
             {/* Boxing Ring Stage */}
-            <div className="relative h-60 sm:h-72 w-full rounded-2xl border border-white/10 bg-[#0d1017] flex items-center justify-between px-8 sm:px-16 overflow-hidden shadow-inner">
+            <div className="relative h-52 sm:h-72 w-full rounded-xl sm:rounded-2xl border border-white/10 bg-[#0d1017] flex items-center justify-between px-3 sm:px-16 overflow-hidden shadow-inner">
               {/* Ring ropes graphic */}
-              <div className="absolute inset-x-0 top-12 border-t border-cyan-500/20" />
-              <div className="absolute inset-x-0 top-24 border-t border-rose-500/20" />
-              <div className="absolute inset-x-0 bottom-12 border-t border-amber-500/20" />
+              <div className="absolute inset-x-0 top-10 sm:top-12 border-t border-cyan-500/20" />
+              <div className="absolute inset-x-0 top-20 sm:top-24 border-t border-rose-500/20" />
+              <div className="absolute inset-x-0 bottom-10 sm:bottom-12 border-t border-amber-500/20" />
 
               {/* Player Fighter Avatar */}
               <div
                 className={`flex flex-col items-center transition-all duration-200 z-10 ${
                   fighterAction === 'player_punch' || fighterAction === 'super_ko'
-                    ? 'translate-x-12 sm:translate-x-16 scale-110'
+                    ? 'translate-x-3 sm:translate-x-14 scale-110'
                     : fighterAction === 'rival_punch'
-                    ? '-translate-x-4 opacity-75'
+                    ? '-translate-x-2 sm:-translate-x-4 opacity-75'
                     : 'animate-bounce duration-1000'
                 }`}
               >
-                <div className="text-5xl sm:text-6xl">🥷</div>
-                <span className="mt-2 text-xs font-black text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
-                  {fighterAction === 'super_ko' ? '💥 SUPER K.O.!' : fighterAction === 'player_punch' ? '🥊 JAB!' : 'YOU'}
+                <div className="text-3xl sm:text-6xl">🥷</div>
+                <span className="mt-1 sm:mt-2 text-[10px] sm:text-xs font-black text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 sm:px-2.5 py-0.5 rounded-full whitespace-nowrap">
+                  {fighterAction === 'super_ko' ? '💥 SUPER!' : fighterAction === 'player_punch' ? '🥊 JAB!' : 'YOU'}
                 </span>
               </div>
 
               {/* Center Combo & Target Word Display */}
-              <div className="flex flex-col items-center justify-center text-center z-10">
+              <div className="flex flex-col items-center justify-center text-center z-10 px-1 max-w-[170px] sm:max-w-none">
                 {boxingStarted && !boxingGameOver && !boxingVictory && (
                   <>
-                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-1">
-                      {boxingSuperMeter >= 100 ? '⚡ UNLEASH SUPER FINISHER' : '⚡ POWER STRIKE WORD'}
+                    <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-amber-400 mb-1">
+                      {boxingSuperMeter >= 100 ? '⚡ SUPER FINISHER' : '⚡ POWER STRIKE'}
                     </span>
-                    <div className="rounded-2xl border-2 border-white/20 bg-black/80 px-6 py-3 shadow-[0_0_25px_rgba(215,255,100,0.2)]">
-                      <span className="font-mono text-3xl sm:text-4xl font-black text-[#d7ff64] tracking-wide">
+                    <div className="rounded-xl sm:rounded-2xl border-2 border-white/20 bg-black/80 px-3.5 py-1.5 sm:px-6 sm:py-3 shadow-[0_0_25px_rgba(215,255,100,0.2)]">
+                      <span className="font-mono text-lg sm:text-3xl font-black text-[#d7ff64] tracking-wide break-all">
                         {currentPunchWord}
                       </span>
                     </div>
@@ -1493,16 +1497,16 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
 
                 {!boxingStarted && !boxingGameOver && !boxingVictory && (
                   <div className="text-center">
-                    <div className="text-5xl mb-2">🥊</div>
-                    <h4 className="text-2xl font-black text-white">Keyboard K.O. Arena</h4>
-                    <p className="text-xs text-gray-400 max-w-xs mt-1">
-                      Knock out Titan Shadow in 3 rounds by typing rapid punch combos before the rival counter timer strikes!
+                    <div className="text-3xl sm:text-5xl mb-1 sm:mb-2">🥊</div>
+                    <h4 className="text-base sm:text-2xl font-black text-white">Keyboard K.O. Arena</h4>
+                    <p className="text-[11px] sm:text-xs text-gray-400 max-w-xs mt-1 hidden xs:block">
+                      Knock out Titan Shadow in 3 rounds by typing rapid punch combos!
                     </p>
                     <button
                       onClick={startBoxingGame}
-                      className="mt-4 flex items-center gap-2 mx-auto rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-7 py-3 text-xs font-black text-[#111310] shadow-[0_0_25px_rgba(6,182,212,0.4)] transition hover:from-cyan-300 hover:to-blue-400 active:scale-95"
+                      className="mt-2.5 sm:mt-4 flex items-center gap-1.5 sm:gap-2 mx-auto rounded-xl sm:rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-5 sm:px-7 py-2 sm:py-3 text-xs font-black text-[#111310] shadow-[0_0_25px_rgba(6,182,212,0.4)] transition hover:from-cyan-300 hover:to-blue-400 active:scale-95"
                     >
-                      <Play className="h-4 w-4 fill-current" />
+                      <Play className="h-3.5 w-3.5 fill-current" />
                       <span>STEP INTO RING (START)</span>
                     </button>
                   </div>
@@ -1510,14 +1514,14 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
 
                 {boxingVictory && (
                   <div className="text-center animate-in zoom-in-95">
-                    <div className="text-5xl animate-bounce">🏆</div>
-                    <h4 className="mt-2 text-2xl font-black text-[#d7ff64]">K.O.! CHAMPION VICTORY!</h4>
+                    <div className="text-4xl sm:text-5xl animate-bounce">🏆</div>
+                    <h4 className="mt-1 sm:mt-2 text-lg sm:text-2xl font-black text-[#d7ff64]">K.O.! CHAMPION!</h4>
                     <p className="text-xs text-gray-300 mt-1">
-                      You knocked out Titan Shadow across all 3 rounds! Score: <strong className="text-[#d7ff64]">{boxingKoScore}</strong>
+                      Knocked out Titan Shadow! Score: <strong className="text-[#d7ff64]">{boxingKoScore}</strong>
                     </p>
                     <button
                       onClick={startBoxingGame}
-                      className="mt-4 flex items-center gap-2 mx-auto rounded-xl bg-[#d7ff64] px-6 py-2.5 text-xs font-bold text-[#111310] shadow-lg transition hover:bg-[#e6ff8f]"
+                      className="mt-3 sm:mt-4 flex items-center gap-2 mx-auto rounded-xl bg-[#d7ff64] px-5 py-2 text-xs font-bold text-[#111310] shadow-lg transition hover:bg-[#e6ff8f]"
                     >
                       <RotateCcw className="h-4 w-4" />
                       <span>Fight Next Match</span>
@@ -1527,14 +1531,14 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
 
                 {boxingGameOver && (
                   <div className="text-center animate-in zoom-in-95">
-                    <div className="text-5xl animate-pulse">😵</div>
-                    <h4 className="mt-2 text-2xl font-black text-rose-400">KNOCKED DOWN!</h4>
+                    <div className="text-4xl sm:text-5xl animate-pulse">😵</div>
+                    <h4 className="mt-1 sm:mt-2 text-lg sm:text-2xl font-black text-rose-400">KNOCKED DOWN!</h4>
                     <p className="text-xs text-gray-300 mt-1">
                       Titan Shadow defeated you in Round {boxingRound}.
                     </p>
                     <button
                       onClick={startBoxingGame}
-                      className="mt-4 flex items-center gap-2 mx-auto rounded-xl bg-rose-500 px-6 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-rose-400"
+                      className="mt-3 sm:mt-4 flex items-center gap-2 mx-auto rounded-xl bg-rose-500 px-5 py-2 text-xs font-bold text-white shadow-lg transition hover:bg-rose-400"
                     >
                       <RotateCcw className="h-4 w-4" />
                       <span>Rematch (Get Up)</span>
@@ -1547,14 +1551,14 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
               <div
                 className={`flex flex-col items-center transition-all duration-200 z-10 ${
                   fighterAction === 'rival_punch'
-                    ? '-translate-x-12 sm:-translate-x-16 scale-110'
+                    ? '-translate-x-3 sm:-translate-x-14 scale-110'
                     : fighterAction === 'player_punch' || fighterAction === 'super_ko'
-                    ? 'translate-x-4 opacity-75'
+                    ? 'translate-x-2 sm:translate-x-4 opacity-75'
                     : 'animate-bounce duration-1000'
                 }`}
               >
-                <div className="text-5xl sm:text-6xl">🤖</div>
-                <span className="mt-2 text-xs font-black text-rose-400 bg-rose-950/60 border border-rose-500/30 px-2.5 py-0.5 rounded-full">
+                <div className="text-3xl sm:text-6xl">🤖</div>
+                <span className="mt-1 sm:mt-2 text-[10px] sm:text-xs font-black text-rose-400 bg-rose-950/60 border border-rose-500/30 px-2 sm:px-2.5 py-0.5 rounded-full whitespace-nowrap">
                   {fighterAction === 'rival_punch' ? '💥 COUNTER!' : 'RIVAL'}
                 </span>
               </div>
@@ -1569,11 +1573,11 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                   value={boxingInput}
                   onChange={handleBoxingInput}
                   placeholder="Type strike word to throw punch..."
-                  className="w-full rounded-2xl border-2 border-cyan-500/40 bg-[#101217] px-5 py-3.5 text-center font-mono text-lg font-bold text-white shadow-lg outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(6,182,212,0.35)]"
+                  className="w-full rounded-xl sm:rounded-2xl border-2 border-cyan-500/40 bg-[#101217] px-4 sm:px-5 py-2.5 sm:py-3.5 text-center font-mono text-base sm:text-lg font-bold text-white shadow-lg outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(6,182,212,0.35)]"
                   autoComplete="off"
                   spellCheck={false}
                 />
-                <p className="text-center text-[11px] text-gray-400">
+                <p className="text-center text-[10px] sm:text-[11px] text-gray-400">
                   ⚡ Type fast before rival timer hits 0.0s! Charge Super Meter for 40 DMG K.O.!
                 </p>
               </div>
@@ -1583,10 +1587,10 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* ========================================================= */}
-      {/* GAME: CYBER HACKER (Matrix Code Breaker)                  */}
+      {/* GAME 4: CYBER HACKER (Matrix Code Breaker)                 */}
       {/* ========================================================= */}
       {selectedGame === 'hacker' && (
-        <div className="rounded-3xl border border-emerald-500/20 bg-gradient-to-b from-[#0a140d] to-[#0c0e0b] p-6 shadow-2xl sm:p-8 relative overflow-hidden">
+        <div className="rounded-2xl sm:rounded-3xl border border-emerald-500/20 bg-gradient-to-b from-[#0a140d] to-[#0c0e0b] p-3.5 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
           {/* Matrix green glow aura */}
           <div
             className="pointer-events-none absolute -top-24 right-1/4 h-80 w-80 rounded-full opacity-20 blur-[120px]"
@@ -1594,31 +1598,31 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           />
 
           {/* Top Bar: Title & Security Node Info */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500/10 text-2xl border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3 sm:pb-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl bg-emerald-500/10 text-xl sm:text-2xl border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.25)] shrink-0">
                 💻
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-black text-white">Cyber Hacker: Terminal Infiltration</h3>
-                  <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2 py-0.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider font-mono">
+                  <h3 className="text-base sm:text-xl font-black text-white">Cyber Hacker: Terminal</h3>
+                  <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-emerald-400 uppercase tracking-wider font-mono">
                     {HACKER_TARGETS[hackerLayerIdx]?.depth || 'SYSTEM ROOT'}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400">Crack security cipher passwords before ICE Alert locks down the mainframe!</p>
+                <p className="text-[11px] sm:text-xs text-gray-400">Crack security cipher passwords before ICE Alert locks down!</p>
               </div>
             </div>
 
             {hackerStarted && !hackerGameOver && !hackerVictory && (
-              <div className="flex items-center gap-4">
+              <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
                 {/* ICE Security Alert Meter */}
-                <div className="text-right">
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400 font-mono">
+                <div className="text-left sm:text-right">
+                  <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-gray-400 font-mono">
                     ICE Tracker Alert
                   </span>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <div className="w-28 sm:w-36 h-2.5 rounded-full bg-black/60 border border-white/10 overflow-hidden">
+                  <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5">
+                    <div className="w-20 sm:w-36 h-2 sm:h-2.5 rounded-full bg-black/60 border border-white/10 overflow-hidden">
                       <div
                         className={`h-full transition-all duration-200 ${
                           hackerIceAlert > 75
@@ -1630,21 +1634,21 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                         style={{ width: `${Math.min(100, hackerIceAlert)}%` }}
                       />
                     </div>
-                    <span className="font-mono text-xs font-black text-white">{Math.round(hackerIceAlert)}%</span>
+                    <span className="font-mono text-[11px] sm:text-xs font-black text-white">{Math.round(hackerIceAlert)}%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 bg-black/50 px-3.5 py-1.5 rounded-2xl border border-white/10">
+                <div className="flex items-center gap-2 sm:gap-3 bg-black/50 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border border-white/10">
                   <div className="text-center">
-                    <span className="text-[9px] text-gray-400 block uppercase font-mono">Layer</span>
-                    <span className="font-mono text-xs font-black text-emerald-400">
+                    <span className="text-[8px] sm:text-[9px] text-gray-400 block uppercase font-mono">Layer</span>
+                    <span className="font-mono text-xs sm:text-sm font-black text-emerald-400">
                       {hackerLayerIdx + 1}/4
                     </span>
                   </div>
-                  <div className="h-6 w-px bg-white/10" />
+                  <div className="h-5 sm:h-6 w-px bg-white/10" />
                   <div className="text-center">
-                    <span className="text-[9px] text-gray-400 block uppercase font-mono">Score</span>
-                    <span className="font-mono text-sm font-black text-[#d7ff64]">{hackerScore}</span>
+                    <span className="text-[8px] sm:text-[9px] text-gray-400 block uppercase font-mono">Score</span>
+                    <span className="font-mono text-xs sm:text-sm font-black text-[#d7ff64]">{hackerScore}</span>
                   </div>
                 </div>
               </div>
@@ -1652,38 +1656,38 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           </div>
 
           {/* Matrix Terminal Console Stage */}
-          <div className="mt-5 space-y-4">
+          <div className="mt-4 sm:mt-5 space-y-3 sm:space-y-4">
             {/* Terminal Window Header */}
-            <div className="rounded-2xl border border-emerald-500/30 bg-[#090d0a] shadow-inner overflow-hidden font-mono">
-              <div className="flex items-center justify-between border-b border-emerald-500/20 bg-emerald-950/40 px-4 py-2 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className="h-3 w-3 rounded-full bg-red-500/80 inline-block" />
-                  <span className="h-3 w-3 rounded-full bg-yellow-500/80 inline-block" />
-                  <span className="h-3 w-3 rounded-full bg-emerald-500/80 inline-block" />
-                  <span className="text-emerald-400 font-bold ml-2">root@typemaster:~# /bin/infiltrate</span>
+            <div className="rounded-xl sm:rounded-2xl border border-emerald-500/30 bg-[#090d0a] shadow-inner overflow-hidden font-mono">
+              <div className="flex items-center justify-between border-b border-emerald-500/20 bg-emerald-950/40 px-3 sm:px-4 py-2 text-xs">
+                <div className="flex items-center gap-2 truncate">
+                  <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-red-500/80 inline-block shrink-0" />
+                  <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-yellow-500/80 inline-block shrink-0" />
+                  <span className="h-2.5 w-2.5 sm:h-3 sm:w-3 rounded-full bg-emerald-500/80 inline-block shrink-0" />
+                  <span className="text-emerald-400 font-bold ml-1 sm:ml-2 truncate max-w-[150px] sm:max-w-none">root@typemaster:~# /bin/infiltrate</span>
                 </div>
-                <div className="text-[10px] text-emerald-500/70">
+                <div className="text-[9px] sm:text-[10px] text-emerald-500/70 hidden sm:block shrink-0">
                   SSL: 4096-BIT ENCRYPTED
                 </div>
               </div>
 
               {/* Terminal Body */}
-              <div className="p-4 sm:p-6 min-h-[220px] flex flex-col justify-between relative">
+              <div className="p-3.5 sm:p-6 min-h-[200px] sm:min-h-[220px] flex flex-col justify-between relative">
                 {/* Matrix Background Watermark */}
-                <div className="absolute right-4 bottom-2 text-6xl opacity-5 select-none pointer-events-none font-mono text-emerald-400">
-                  01101001 01100011 01100101
+                <div className="absolute right-4 bottom-2 text-5xl sm:text-6xl opacity-5 select-none pointer-events-none font-mono text-emerald-400">
+                  01101001 01100011
                 </div>
 
                 {!hackerStarted && !hackerGameOver && !hackerVictory && (
-                  <div className="text-center py-6">
-                    <div className="text-5xl mb-2">💻</div>
-                    <h4 className="text-2xl font-black text-white">Cyber Infiltration Mission</h4>
+                  <div className="text-center py-4 sm:py-6">
+                    <div className="text-4xl sm:text-5xl mb-2">💻</div>
+                    <h4 className="text-lg sm:text-2xl font-black text-white">Cyber Infiltration Mission</h4>
                     <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
                       Infiltrate the MegaCorp AI mainframe across 4 security firewalls. Type encryption passwords before security ICE traces your IP!
                     </p>
                     <button
                       onClick={startHackerGame}
-                      className="mt-4 flex items-center gap-2 mx-auto rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 px-7 py-3 text-xs font-black text-[#111310] shadow-[0_0_20px_rgba(16,185,129,0.35)] transition hover:from-emerald-300 hover:to-teal-400 active:scale-95"
+                      className="mt-3 sm:mt-4 flex items-center gap-2 mx-auto rounded-xl sm:rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 px-6 sm:px-7 py-2.5 sm:py-3 text-xs font-black text-[#111310] shadow-[0_0_20px_rgba(16,185,129,0.35)] transition hover:from-emerald-300 hover:to-teal-400 active:scale-95"
                     >
                       <Play className="h-4 w-4 fill-current" />
                       <span>INITIALIZE TERMINAL (START)</span>
@@ -1692,38 +1696,38 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                 )}
 
                 {hackerStarted && !hackerGameOver && !hackerVictory && (
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {/* Security Node Header */}
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs text-gray-400">TARGET NODE:</span>
-                        <span className="text-sm font-bold text-emerald-300">
+                        <span className="text-[10px] sm:text-xs text-gray-400">TARGET NODE:</span>
+                        <span className="text-xs sm:text-sm font-bold text-emerald-300">
                           {HACKER_TARGETS[hackerLayerIdx].node}
                         </span>
                       </div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-[10px] sm:text-xs text-gray-400">
                         PROGRESS: <strong className="text-[#d7ff64]">{hackerCrackedCount} / {HACKER_TARGETS[hackerLayerIdx].codeReq} Keys Cracked</strong>
                       </div>
                     </div>
 
                     {/* Target Password to Type */}
-                    <div className="text-center py-3">
-                      <span className="text-[10px] uppercase font-bold tracking-widest text-emerald-400/80 block mb-1">
+                    <div className="text-center py-2 sm:py-3">
+                      <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-widest text-emerald-400/80 block mb-1">
                         🔑 DECRYPTION CIPHER KEY
                       </span>
-                      <div className="inline-block rounded-2xl border-2 border-emerald-500/50 bg-black/80 px-8 py-3.5 shadow-[0_0_30px_rgba(16,185,129,0.25)]">
-                        <span className="text-3xl sm:text-4xl font-black text-white tracking-wider">
+                      <div className="inline-block rounded-xl sm:rounded-2xl border-2 border-emerald-500/50 bg-black/80 px-5 sm:px-8 py-2.5 sm:py-3.5 shadow-[0_0_30px_rgba(16,185,129,0.25)] max-w-full">
+                        <span className="text-xl sm:text-4xl font-black text-white tracking-wider break-all">
                           {currentHackWord}
                         </span>
                       </div>
                     </div>
 
                     {/* Live Terminal Log Stream */}
-                    <div className="rounded-xl bg-black/60 border border-white/5 p-2.5 text-[11px] space-y-1 text-emerald-400/80">
+                    <div className="rounded-xl bg-black/60 border border-white/5 p-2 sm:p-2.5 text-[10px] sm:text-[11px] space-y-1 text-emerald-400/80 max-h-24 overflow-y-auto">
                       {hackerLogs.map((log, i) => (
-                        <div key={i} className="flex items-center gap-2">
+                        <div key={i} className="flex items-center gap-1.5 sm:gap-2">
                           <span className="opacity-40">&gt;</span>
-                          <span>{log}</span>
+                          <span className="truncate">{log}</span>
                         </div>
                       ))}
                     </div>
@@ -1731,15 +1735,15 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                 )}
 
                 {hackerVictory && (
-                  <div className="text-center py-6 animate-in zoom-in-95">
-                    <div className="text-5xl animate-bounce">🔓</div>
-                    <h4 className="mt-2 text-2xl font-black text-[#d7ff64]">ACCESS GRANTED // MAINFRAME HACKED!</h4>
+                  <div className="text-center py-4 sm:py-6 animate-in zoom-in-95">
+                    <div className="text-4xl sm:text-5xl animate-bounce">🔓</div>
+                    <h4 className="mt-2 text-lg sm:text-2xl font-black text-[#d7ff64]">ACCESS GRANTED // MAINFRAME HACKED!</h4>
                     <p className="text-xs text-gray-300 mt-1">
-                      You cracked all 4 security firewalls with a total score of <strong className="text-[#d7ff64]">{hackerScore}</strong>!
+                      You cracked all 4 security firewalls with score <strong className="text-[#d7ff64]">{hackerScore}</strong>!
                     </p>
                     <button
                       onClick={startHackerGame}
-                      className="mt-4 flex items-center gap-2 mx-auto rounded-xl bg-[#d7ff64] px-6 py-2.5 text-xs font-bold text-[#111310] shadow-lg transition hover:bg-[#e6ff8f]"
+                      className="mt-3 sm:mt-4 flex items-center gap-2 mx-auto rounded-xl bg-[#d7ff64] px-5 sm:px-6 py-2.5 text-xs font-bold text-[#111310] shadow-lg transition hover:bg-[#e6ff8f]"
                     >
                       <RotateCcw className="h-4 w-4" />
                       <span>Hack Again</span>
@@ -1748,15 +1752,15 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                 )}
 
                 {hackerGameOver && (
-                  <div className="text-center py-6 animate-in zoom-in-95">
-                    <div className="text-5xl animate-pulse">🚨</div>
-                    <h4 className="mt-2 text-2xl font-black text-red-400">TRACE COMPLETE // SYSTEM LOCKDOWN!</h4>
+                  <div className="text-center py-4 sm:py-6 animate-in zoom-in-95">
+                    <div className="text-4xl sm:text-5xl animate-pulse">🚨</div>
+                    <h4 className="mt-2 text-lg sm:text-2xl font-black text-red-400">TRACE COMPLETE // LOCKDOWN!</h4>
                     <p className="text-xs text-gray-300 mt-1">
                       ICE security defense intercepted your connection on Layer {hackerLayerIdx + 1}.
                     </p>
                     <button
                       onClick={startHackerGame}
-                      className="mt-4 flex items-center gap-2 mx-auto rounded-xl bg-red-500 px-6 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-red-400"
+                      className="mt-3 sm:mt-4 flex items-center gap-2 mx-auto rounded-xl bg-red-500 px-5 sm:px-6 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-red-400"
                     >
                       <RotateCcw className="h-4 w-4" />
                       <span>Retry Infiltration</span>
@@ -1776,13 +1780,13 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                     value={hackerInput}
                     onChange={handleHackerInput}
                     placeholder="Type cipher password to bypass firewall..."
-                    className="w-full rounded-2xl border-2 border-emerald-500/40 bg-[#080d09] px-5 py-3.5 text-center font-mono text-lg font-bold text-emerald-300 shadow-lg outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(16,185,129,0.35)]"
+                    className="w-full rounded-xl sm:rounded-2xl border-2 border-emerald-500/40 bg-[#080d09] px-4 sm:px-5 py-2.5 sm:py-3.5 text-center font-mono text-base sm:text-lg font-bold text-emerald-300 shadow-lg outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(16,185,129,0.35)]"
                     autoComplete="off"
                     spellCheck={false}
                   />
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-mono text-emerald-500">$&gt;</span>
+                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm font-mono text-emerald-500">$&gt;</span>
                 </div>
-                <p className="text-center text-[11px] text-gray-400">
+                <p className="text-center text-[10px] sm:text-[11px] text-gray-400">
                   ⚡ Each successful password reduces ICE Alert by 14%! Type quickly to stay untraced!
                 </p>
               </div>
@@ -1792,10 +1796,10 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* ========================================================= */}
-      {/* GAME: METEOR SHIELD (City Missile Defense)                */}
+      {/* GAME 5: METEOR SHIELD (City Missile Defense)               */}
       {/* ========================================================= */}
       {selectedGame === 'meteor' && (
-        <div className="rounded-3xl border border-amber-500/20 bg-gradient-to-b from-[#18140f] to-[#12110e] p-6 shadow-2xl sm:p-8 relative overflow-hidden">
+        <div className="rounded-2xl sm:rounded-3xl border border-amber-500/20 bg-gradient-to-b from-[#18140f] to-[#12110e] p-3.5 sm:p-6 md:p-8 shadow-2xl relative overflow-hidden">
           {/* Fiery meteor glow background */}
           <div
             className="pointer-events-none absolute -top-20 left-1/3 h-80 w-80 rounded-full opacity-20 blur-[120px]"
@@ -1803,28 +1807,28 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           />
 
           {/* Top Bar: Title & City Status */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/10 text-2xl border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.25)]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3 sm:pb-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl bg-amber-500/10 text-xl sm:text-2xl border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.25)] shrink-0">
                 ☄️
               </span>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-xl font-black text-white">Meteor Shield: City Defense</h3>
-                  <span className="rounded-full bg-amber-500/20 border border-amber-500/40 px-2 py-0.5 text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+                  <h3 className="text-base sm:text-xl font-black text-white">Meteor Shield: City Defense</h3>
+                  <span className="rounded-full bg-amber-500/20 border border-amber-500/40 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold text-amber-400 uppercase tracking-wider">
                     Wave {meteorWave}
                   </span>
                 </div>
-                <p className="text-xs text-gray-400">Type meteor words to launch anti-orbital laser interceptors!</p>
+                <p className="text-[11px] sm:text-xs text-gray-400">Type meteor words to launch anti-orbital laser interceptors!</p>
               </div>
             </div>
 
             {meteorStarted && !meteorGameOver && (
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400">Metropolis Shield</span>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <div className="w-28 sm:w-36 h-2.5 rounded-full bg-black/60 border border-white/10 overflow-hidden">
+              <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 w-full sm:w-auto">
+                <div className="text-left sm:text-right">
+                  <span className="text-[9px] sm:text-[10px] uppercase font-bold tracking-wider text-gray-400">Metropolis Shield</span>
+                  <div className="flex items-center gap-1.5 sm:gap-2 mt-0.5">
+                    <div className="w-20 sm:w-36 h-2 sm:h-2.5 rounded-full bg-black/60 border border-white/10 overflow-hidden">
                       <div
                         className={`h-full transition-all duration-300 ${
                           cityHealth > 50 ? 'bg-[#d7ff64]' : cityHealth > 25 ? 'bg-amber-400' : 'bg-red-500 animate-pulse'
@@ -1832,19 +1836,19 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                         style={{ width: `${cityHealth}%` }}
                       />
                     </div>
-                    <span className="font-mono text-xs font-black text-white">{cityHealth}%</span>
+                    <span className="font-mono text-[11px] sm:text-xs font-black text-white">{cityHealth}%</span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 bg-black/40 px-3.5 py-1.5 rounded-2xl border border-white/10">
+                <div className="flex items-center gap-2 sm:gap-3 bg-black/40 px-2.5 sm:px-3.5 py-1.5 rounded-xl sm:rounded-2xl border border-white/10">
                   <div className="text-center">
-                    <span className="text-[9px] text-gray-400 block uppercase">Destroyed</span>
-                    <span className="font-mono text-sm font-black text-amber-400">{meteorsDestroyed} 💥</span>
+                    <span className="text-[8px] sm:text-[9px] text-gray-400 block uppercase">Destroyed</span>
+                    <span className="font-mono text-xs sm:text-sm font-black text-amber-400">{meteorsDestroyed} 💥</span>
                   </div>
-                  <div className="h-6 w-px bg-white/10" />
+                  <div className="h-5 sm:h-6 w-px bg-white/10" />
                   <div className="text-center">
-                    <span className="text-[9px] text-gray-400 block uppercase">Score</span>
-                    <span className="font-mono text-sm font-black text-[#d7ff64]">{meteorScore}</span>
+                    <span className="text-[8px] sm:text-[9px] text-gray-400 block uppercase">Score</span>
+                    <span className="font-mono text-xs sm:text-sm font-black text-[#d7ff64]">{meteorScore}</span>
                   </div>
                 </div>
               </div>
@@ -1852,7 +1856,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           </div>
 
           {/* Sky & City Stage */}
-          <div className="relative mt-5 h-72 sm:h-80 w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0d0f14] shadow-inner flex flex-col justify-between p-4">
+          <div className="relative mt-4 sm:mt-5 h-64 sm:h-80 w-full overflow-hidden rounded-xl sm:rounded-2xl border border-white/10 bg-[#0d0f14] shadow-inner flex flex-col justify-between p-3 sm:p-4">
             {/* Stars background */}
             <div
               className="absolute inset-0 opacity-20 pointer-events-none"
@@ -1863,15 +1867,15 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             />
 
             {/* Bottom Cyberpunk City Skyline */}
-            <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black via-black/80 to-transparent flex items-end justify-around px-4 z-10 border-b-2 border-cyan-500/30">
-              <span className="text-2xl opacity-60">🏙️</span>
-              <span className="text-3xl opacity-70">🏢</span>
+            <div className="absolute inset-x-0 bottom-0 h-14 sm:h-16 bg-gradient-to-t from-black via-black/80 to-transparent flex items-end justify-around px-2 sm:px-4 z-10 border-b-2 border-cyan-500/30">
+              <span className="text-xl sm:text-2xl opacity-60">🏙️</span>
+              <span className="text-2xl sm:text-3xl opacity-70">🏢</span>
               <div className="flex flex-col items-center">
-                <span className="text-3xl filter drop-shadow-[0_0_12px_#38bdf8]">🛰️</span>
-                <span className="text-[9px] font-black text-cyan-400 tracking-wider uppercase">TURRET</span>
+                <span className="text-2xl sm:text-3xl filter drop-shadow-[0_0_12px_#38bdf8]">🛰️</span>
+                <span className="text-[8px] sm:text-[9px] font-black text-cyan-400 tracking-wider uppercase">TURRET</span>
               </div>
-              <span className="text-3xl opacity-70">🏬</span>
-              <span className="text-2xl opacity-60">🏙️</span>
+              <span className="text-2xl sm:text-3xl opacity-70">🏬</span>
+              <span className="text-xl sm:text-2xl opacity-60">🏙️</span>
             </div>
 
             {/* Laser Beam Flash Animation */}
@@ -1903,7 +1907,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                     }}
                   >
                     <div
-                      className={`mb-1 rounded-xl px-2.5 py-1 text-xs font-mono font-bold transition-all shadow-md ${
+                      className={`mb-0.5 sm:mb-1 rounded-lg sm:rounded-xl px-2 sm:px-2.5 py-0.5 sm:py-1 text-[10px] sm:text-xs font-mono font-bold transition-all shadow-md max-w-[100px] sm:max-w-none truncate ${
                         isTarget
                           ? 'border-2 border-[#d7ff64] bg-[#111310] text-[#d7ff64] shadow-[0_0_15px_rgba(215,255,100,0.5)] scale-110'
                           : m.size === 'huge'
@@ -1911,11 +1915,11 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                           : 'border border-white/20 bg-black/80 text-white'
                       }`}
                     >
-                      {m.size === 'huge' && <span className="mr-1 text-amber-400">🔥 MEGA:</span>}
+                      {m.size === 'huge' && <span className="mr-0.5 text-amber-400">🔥</span>}
                       {m.word}
                     </div>
 
-                    <div className="relative text-2xl sm:text-3xl animate-pulse">
+                    <div className="relative text-xl sm:text-3xl animate-pulse">
                       <span>{m.size === 'huge' ? '☄️' : '🔥'}</span>
                     </div>
                   </div>
@@ -1923,17 +1927,17 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
               })}
 
               {!meteorStarted && !meteorGameOver && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 z-20">
-                  <div className="h-16 w-16 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-4xl shadow-[0_0_30px_rgba(245,158,11,0.3)] mb-3">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3 sm:p-4 z-20">
+                  <div className="h-12 w-12 sm:h-16 sm:w-16 rounded-2xl sm:rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-3xl sm:text-4xl shadow-[0_0_30px_rgba(245,158,11,0.3)] mb-2 sm:mb-3">
                     ☄️
                   </div>
-                  <h4 className="text-2xl font-black text-white">Meteor Defense Command</h4>
+                  <h4 className="text-lg sm:text-2xl font-black text-white">Meteor Defense Command</h4>
                   <p className="max-w-md text-xs sm:text-sm text-gray-400 mt-1">
-                    An asteroid storm is plummeting toward the metropolis! Type meteor words to launch surface-to-air anti-orbital laser beams.
+                    An asteroid storm is plummeting toward the metropolis! Type meteor words to launch anti-orbital laser beams.
                   </p>
                   <button
                     onClick={startMeteorGame}
-                    className="mt-4 flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 px-8 py-3 text-sm font-black text-white shadow-[0_0_25px_rgba(245,158,11,0.4)] transition hover:from-amber-400 hover:to-orange-500 active:scale-95"
+                    className="mt-3 sm:mt-4 flex items-center gap-2 rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 px-6 sm:px-8 py-2.5 sm:py-3 text-xs sm:text-sm font-black text-white shadow-[0_0_25px_rgba(245,158,11,0.4)] transition hover:from-amber-400 hover:to-orange-500 active:scale-95"
                   >
                     <Play className="h-4 w-4 fill-current" />
                     <span>DEFEND METROPOLIS (START)</span>
@@ -1942,15 +1946,15 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
               )}
 
               {meteorGameOver && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 bg-black/80 backdrop-blur-sm z-30 animate-in zoom-in-95">
-                  <div className="text-5xl animate-pulse">💥</div>
-                  <h4 className="mt-2 text-2xl sm:text-3xl font-black text-amber-400">CITY SHIELD COLLAPSED!</h4>
-                  <p className="text-sm text-gray-300 mt-1">
-                    You survived until <strong className="text-white">Wave {meteorWave}</strong> with <strong className="text-amber-400">{meteorsDestroyed} Meteors Intercepted</strong> and a score of <strong className="text-[#d7ff64]">{meteorScore}</strong>!
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3 sm:p-4 bg-black/80 backdrop-blur-sm z-30 animate-in zoom-in-95">
+                  <div className="text-4xl sm:text-5xl animate-pulse">💥</div>
+                  <h4 className="mt-1 sm:mt-2 text-xl sm:text-3xl font-black text-amber-400">CITY SHIELD COLLAPSED!</h4>
+                  <p className="text-xs sm:text-sm text-gray-300 mt-1">
+                    You survived until <strong className="text-white">Wave {meteorWave}</strong> with <strong className="text-amber-400">{meteorsDestroyed} Meteors</strong> and score <strong className="text-[#d7ff64]">{meteorScore}</strong>!
                   </p>
                   <button
                     onClick={startMeteorGame}
-                    className="mt-4 flex items-center gap-2 rounded-2xl bg-amber-500 px-7 py-3 text-xs font-black text-white shadow-lg transition hover:bg-amber-400 active:scale-95"
+                    className="mt-3 sm:mt-4 flex items-center gap-2 rounded-xl bg-amber-500 px-6 py-2.5 text-xs font-black text-white shadow-lg transition hover:bg-amber-400 active:scale-95"
                   >
                     <RotateCcw className="h-4 w-4" />
                     <span>Re-engage Turrets</span>
@@ -1962,7 +1966,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
 
           {/* Interactive Laser Input Console */}
           {meteorStarted && !meteorGameOver && (
-            <div className="mt-4 max-w-lg mx-auto space-y-2">
+            <div className="mt-3 sm:mt-4 max-w-lg mx-auto space-y-2">
               <div className="relative">
                 <input
                   ref={meteorInputRef}
@@ -1970,13 +1974,13 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                   value={meteorInput}
                   onChange={handleMeteorInput}
                   placeholder="Target falling meteor word to fire laser cannon..."
-                  className="w-full rounded-2xl border-2 border-amber-500/40 bg-[#14120e] px-5 py-3.5 text-center font-mono text-lg font-bold text-white shadow-lg outline-none focus:border-amber-400 focus:shadow-[0_0_20px_rgba(245,158,11,0.35)]"
+                  className="w-full rounded-xl sm:rounded-2xl border-2 border-amber-500/40 bg-[#14120e] px-4 sm:px-5 py-2.5 sm:py-3.5 text-center font-mono text-base sm:text-lg font-bold text-white shadow-lg outline-none focus:border-amber-400 focus:shadow-[0_0_20px_rgba(245,158,11,0.35)]"
                   autoComplete="off"
                   spellCheck={false}
                 />
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg opacity-60">🎯</span>
+                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-base sm:text-lg opacity-60">🎯</span>
               </div>
-              <p className="text-center text-[11px] text-gray-400">
+              <p className="text-center text-[10px] sm:text-[11px] text-gray-400">
                 💡 Tip: Prioritize meteors closest to the bottom skyline before they strike the city shield!
               </p>
             </div>
@@ -1985,27 +1989,27 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* ========================================================= */}
-      {/* GAME 4: COSMIC ALIEN BLASTER                              */}
+      {/* GAME 6: COSMIC ALIEN BLASTER                              */}
       {/* ========================================================= */}
       {selectedGame === 'space' && (
-        <div className="rounded-3xl border border-white/10 bg-[#161814] p-6 shadow-2xl sm:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-400/10 text-2xl">
+        <div className="rounded-2xl sm:rounded-3xl border border-white/10 bg-[#161814] p-3.5 sm:p-6 md:p-8 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3 sm:pb-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl bg-cyan-400/10 text-xl sm:text-2xl shrink-0">
                 🚀
               </span>
               <div>
-                <h3 className="text-xl font-black text-white">Cosmic Alien Blaster</h3>
-                <p className="text-xs text-gray-400">Type alien UFO words to fire laser cannons before they reach Earth!</p>
+                <h3 className="text-base sm:text-xl font-black text-white">Cosmic Alien Blaster</h3>
+                <p className="text-[11px] sm:text-xs text-gray-400">Type alien UFO words to fire laser cannons before they reach Earth!</p>
               </div>
             </div>
 
             {spaceStarted && (
-              <div className="flex items-center gap-4 text-xs font-bold">
-                <span className="rounded-xl bg-[#111310] px-3.5 py-1.5 text-cyan-400">
+              <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 text-xs font-bold w-full sm:w-auto">
+                <span className="rounded-xl bg-[#111310] px-3 py-1.5 text-cyan-400">
                   Wave: {spaceWave}
                 </span>
-                <span className="rounded-xl bg-[#111310] px-3.5 py-1.5 text-[#d7ff64]">
+                <span className="rounded-xl bg-[#111310] px-3 py-1.5 text-[#d7ff64]">
                   Score: {spaceScore} pts
                 </span>
               </div>
@@ -2013,16 +2017,16 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           </div>
 
           {/* Deep Space Battle Screen */}
-          <div className="relative my-6 h-72 rounded-2xl border border-white/5 bg-[#0a0c09] p-4 select-none overflow-hidden">
+          <div className="relative my-4 sm:my-6 h-64 sm:h-72 rounded-xl sm:rounded-2xl border border-white/5 bg-[#0a0c09] p-3 sm:p-4 select-none overflow-hidden">
             {/* Stars background */}
             <div className="absolute inset-0 bg-[radial-gradient(#ffffff15_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
 
             {!spaceStarted && !spaceOver && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <p className="text-sm text-gray-400">Enemy starships descend from deep space.</p>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-3 sm:p-4">
+                <p className="text-xs sm:text-sm text-gray-400">Enemy starships descend from deep space.</p>
                 <button
                   onClick={startSpaceGame}
-                  className="mt-4 flex items-center gap-2 rounded-xl bg-cyan-400 px-6 py-2.5 text-xs font-bold text-[#111310] shadow-[0_0_15px_rgba(34,211,238,0.4)] transition hover:bg-cyan-300"
+                  className="mt-3 sm:mt-4 flex items-center gap-2 rounded-xl bg-cyan-400 px-5 sm:px-6 py-2.5 text-xs font-bold text-[#111310] shadow-[0_0_15px_rgba(34,211,238,0.4)] transition hover:bg-cyan-300 active:scale-95"
                 >
                   <Play className="h-4 w-4 fill-current" />
                   <span>Launch Starfighter</span>
@@ -2031,13 +2035,13 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             )}
 
             {spaceOver && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-black/70 animate-in zoom-in-95">
-                <ShieldAlert className="h-10 w-10 text-red-400 mx-auto" />
-                <h4 className="mt-2 text-xl font-black text-white">Base Overrun!</h4>
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-black/70 animate-in zoom-in-95 p-3 sm:p-4">
+                <ShieldAlert className="h-8 w-8 sm:h-10 sm:w-10 text-red-400 mx-auto" />
+                <h4 className="mt-1 sm:mt-2 text-lg sm:text-xl font-black text-white">Base Overrun!</h4>
                 <p className="text-xs text-gray-400">You eliminated aliens for {spaceScore} points (Wave {spaceWave}).</p>
                 <button
                   onClick={startSpaceGame}
-                  className="mt-4 flex items-center gap-1.5 rounded-xl bg-cyan-400 px-5 py-2 text-xs font-bold text-[#111310]"
+                  className="mt-3 sm:mt-4 flex items-center gap-1.5 rounded-xl bg-cyan-400 px-5 py-2 text-xs font-bold text-[#111310]"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
                   <span>Try Again</span>
@@ -2054,8 +2058,8 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                   style={{ left: `${inv.x}%`, top: `${inv.y}%` }}
                   className="absolute -translate-x-1/2 flex flex-col items-center transition-all duration-100"
                 >
-                  <span className="text-xl">🛸</span>
-                  <span className="rounded-md border border-cyan-400/40 bg-black/80 px-2 py-0.5 font-mono text-xs font-bold text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.3)]">
+                  <span className="text-lg sm:text-xl">🛸</span>
+                  <span className="rounded-md border border-cyan-400/40 bg-black/80 px-1.5 sm:px-2 py-0.5 font-mono text-[10px] sm:text-xs font-bold text-cyan-300 shadow-[0_0_10px_rgba(34,211,238,0.3)]">
                     {inv.word}
                   </span>
                 </div>
@@ -2080,7 +2084,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             {/* Player Starfighter at bottom */}
             {spaceStarted && !spaceOver && (
               <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center">
-                <span className="text-3xl filter drop-shadow-[0_0_10px_#22d3ee]">🚀</span>
+                <span className="text-2xl sm:text-3xl filter drop-shadow-[0_0_10px_#22d3ee]">🚀</span>
               </div>
             )}
           </div>
@@ -2094,7 +2098,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                 value={spaceInput}
                 onChange={handleSpaceInput}
                 placeholder="Type UFO word to fire plasma cannon..."
-                className="w-full rounded-2xl border border-white/10 bg-[#111310] p-3 text-center font-mono text-base text-cyan-300 outline-none focus:border-cyan-400"
+                className="w-full rounded-xl sm:rounded-2xl border border-white/10 bg-[#111310] p-3 sm:p-4 text-center font-mono text-base sm:text-lg text-cyan-300 outline-none focus:border-cyan-400"
                 autoComplete="off"
                 spellCheck={false}
               />
@@ -2104,27 +2108,27 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* ========================================================= */}
-      {/* GAME 3: SKY DROP (Word Rush)                              */}
+      {/* GAME 7: SKY DROP (Word Rush)                               */}
       {/* ========================================================= */}
       {selectedGame === 'skydrop' && (
-        <div className="rounded-3xl border border-white/10 bg-[#161814] p-6 shadow-2xl sm:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#d7ff64]/10 text-2xl">
+        <div className="rounded-2xl sm:rounded-3xl border border-white/10 bg-[#161814] p-3.5 sm:p-6 md:p-8 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3 sm:pb-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl bg-[#d7ff64]/10 text-xl sm:text-2xl shrink-0">
                 👾
               </span>
               <div>
-                <h3 className="text-xl font-black text-white">Sky Drop: Word Rush</h3>
-                <p className="text-xs text-gray-400">Words drop from the sky. Type them before they touch the laser floor!</p>
+                <h3 className="text-base sm:text-xl font-black text-white">Sky Drop: Word Rush</h3>
+                <p className="text-[11px] sm:text-xs text-gray-400">Words drop from the sky. Type them before they touch the laser floor!</p>
               </div>
             </div>
 
             {playingRush && (
-              <div className="flex items-center gap-4 text-xs font-bold">
-                <span className="rounded-xl bg-[#111310] px-3.5 py-1.5 text-gray-300">
+              <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 text-xs font-bold w-full sm:w-auto">
+                <span className="rounded-xl bg-[#111310] px-3 py-1.5 text-gray-300">
                   Lives: {'❤️'.repeat(rushLives)}
                 </span>
-                <span className="rounded-xl bg-[#111310] px-3.5 py-1.5 text-[#d7ff64]">
+                <span className="rounded-xl bg-[#111310] px-3 py-1.5 text-[#d7ff64]">
                   Score: {rushScore} pts
                 </span>
               </div>
@@ -2132,13 +2136,13 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           </div>
 
           {/* Falling Word Box */}
-          <div className="relative my-6 flex h-64 flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/5 bg-[#111310] p-4 select-none">
+          <div className="relative my-4 sm:my-6 flex h-56 sm:h-64 flex-col items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl border border-white/5 bg-[#111310] p-3 sm:p-4 select-none">
             {!playingRush && !rushOver && (
               <div className="text-center">
-                <p className="text-sm text-gray-400">Test your reaction speed against gravity!</p>
+                <p className="text-xs sm:text-sm text-gray-400">Test your reaction speed against gravity!</p>
                 <button
                   onClick={startRush}
-                  className="mt-4 rounded-xl bg-[#d7ff64] px-6 py-2.5 text-sm font-bold text-[#111310] transition hover:bg-[#e6ff8f]"
+                  className="mt-3 sm:mt-4 rounded-xl bg-[#d7ff64] px-5 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-[#111310] transition hover:bg-[#e6ff8f] active:scale-95"
                 >
                   Start Sky Drop
                 </button>
@@ -2147,12 +2151,12 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
 
             {rushOver && (
               <div className="text-center animate-in zoom-in-95">
-                <Award className="mx-auto h-10 w-10 text-amber-400" />
-                <h4 className="mt-2 text-xl font-black text-white">Game Over!</h4>
+                <Award className="mx-auto h-8 w-8 sm:h-10 sm:w-10 text-amber-400" />
+                <h4 className="mt-1 sm:mt-2 text-lg sm:text-xl font-black text-white">Game Over!</h4>
                 <p className="text-xs text-gray-400">Final Score: {rushScore} points</p>
                 <button
                   onClick={startRush}
-                  className="mt-4 flex items-center gap-1.5 mx-auto rounded-xl bg-[#d7ff64] px-5 py-2 text-xs font-bold text-[#111310]"
+                  className="mt-3 sm:mt-4 flex items-center gap-1.5 mx-auto rounded-xl bg-[#d7ff64] px-5 py-2 text-xs font-bold text-[#111310]"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
                   <span>Play Again</span>
@@ -2166,7 +2170,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                   style={{ top: `${fallProgress}%` }}
                   className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all duration-100 ease-linear"
                 >
-                  <span className="rounded-xl border border-[#d7ff64]/40 bg-[#d7ff64]/15 px-4 py-2 font-mono text-xl font-black text-[#d7ff64] shadow-[0_0_15px_rgba(215,255,100,0.3)]">
+                  <span className="rounded-xl border border-[#d7ff64]/40 bg-[#d7ff64]/15 px-3 sm:px-4 py-1.5 sm:py-2 font-mono text-base sm:text-xl font-black text-[#d7ff64] shadow-[0_0_15px_rgba(215,255,100,0.3)]">
                     {rushTarget}
                   </span>
                 </div>
@@ -2183,7 +2187,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                 value={rushInput}
                 onChange={handleRushInput}
                 placeholder="Type the falling word..."
-                className="w-full rounded-2xl border border-white/10 bg-[#111310] p-3 text-center font-mono text-base text-white outline-none focus:border-[#d7ff64]"
+                className="w-full rounded-xl sm:rounded-2xl border border-white/10 bg-[#111310] p-3 sm:p-4 text-center font-mono text-base sm:text-lg text-white outline-none focus:border-[#d7ff64]"
                 autoComplete="off"
                 spellCheck={false}
               />
@@ -2193,23 +2197,23 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* ========================================================= */}
-      {/* GAME 4: TIME BOMB DEFUSAL (Panic Timer)                   */}
+      {/* GAME 8: TIME BOMB DEFUSAL (Panic Timer)                   */}
       {/* ========================================================= */}
       {selectedGame === 'bomb' && (
-        <div className="rounded-3xl border border-white/10 bg-[#161814] p-6 shadow-2xl sm:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-400/10 text-2xl">
+        <div className="rounded-2xl sm:rounded-3xl border border-white/10 bg-[#161814] p-3.5 sm:p-6 md:p-8 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3 sm:pb-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl bg-amber-400/10 text-xl sm:text-2xl shrink-0">
                 💣
               </span>
               <div>
-                <h3 className="text-xl font-black text-white">Time Bomb Defusal</h3>
-                <p className="text-xs text-gray-400">Type the passkey before the digital countdown reaches zero!</p>
+                <h3 className="text-base sm:text-xl font-black text-white">Time Bomb Defusal</h3>
+                <p className="text-[11px] sm:text-xs text-gray-400">Type the passkey before the digital countdown reaches zero!</p>
               </div>
             </div>
 
             {bombStarted && (
-              <div className="flex items-center gap-3 text-xs font-bold">
+              <div className="flex items-center justify-between sm:justify-end gap-3 text-xs font-bold w-full sm:w-auto">
                 <span className="rounded-xl bg-[#111310] px-3.5 py-1.5 text-amber-400">
                   Defused: {bombStreak} bombs
                 </span>
@@ -2217,13 +2221,13 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             )}
           </div>
 
-          <div className="my-6 rounded-2xl border border-white/5 bg-[#111310] p-6 text-center select-none">
+          <div className="my-4 sm:my-6 rounded-xl sm:rounded-2xl border border-white/5 bg-[#111310] p-4 sm:p-6 text-center select-none">
             {!bombStarted && !bombOver && (
               <div>
-                <p className="text-sm text-gray-400 mb-4">You have seconds to disarm each ticking bomb.</p>
+                <p className="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4">You have seconds to disarm each ticking bomb.</p>
                 <button
                   onClick={startBombGame}
-                  className="rounded-xl bg-amber-400 px-6 py-2.5 text-xs font-bold text-[#111310] transition hover:bg-amber-300"
+                  className="rounded-xl bg-amber-400 px-5 sm:px-6 py-2 sm:py-2.5 text-xs font-bold text-[#111310] transition hover:bg-amber-300 active:scale-95"
                 >
                   Start Bomb Defusal
                 </button>
@@ -2232,12 +2236,12 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
 
             {bombOver && (
               <div className="animate-in zoom-in-95">
-                <span className="text-4xl">💥</span>
-                <h4 className="mt-2 text-xl font-black text-red-400">BOOM! Time Expired</h4>
+                <span className="text-3xl sm:text-4xl">💥</span>
+                <h4 className="mt-1 sm:mt-2 text-lg sm:text-xl font-black text-red-400">BOOM! Time Expired</h4>
                 <p className="text-xs text-gray-400">You safely defused {bombStreak} bombs in a row.</p>
                 <button
                   onClick={startBombGame}
-                  className="mt-4 flex items-center gap-1.5 mx-auto rounded-xl bg-amber-400 px-5 py-2 text-xs font-bold text-[#111310]"
+                  className="mt-3 sm:mt-4 flex items-center gap-1.5 mx-auto rounded-xl bg-amber-400 px-5 py-2 text-xs font-bold text-[#111310]"
                 >
                   <RotateCcw className="h-3.5 w-3.5" />
                   <span>Try Again</span>
@@ -2246,18 +2250,18 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             )}
 
             {bombStarted && !bombOver && (
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 <div className="flex items-center justify-center gap-2">
-                  <span className="font-mono text-4xl font-black text-red-400 animate-pulse">
+                  <span className="font-mono text-3xl sm:text-4xl font-black text-red-400 animate-pulse">
                     00:0{bombTimeLeft}
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-xs uppercase tracking-widest text-gray-400 font-bold">
+                  <span className="text-[10px] sm:text-xs uppercase tracking-widest text-gray-400 font-bold">
                     Defusal Code
                   </span>
-                  <p className="mt-1 font-mono text-3xl font-black text-[#d7ff64]">
+                  <p className="mt-1 font-mono text-2xl sm:text-3xl font-black text-[#d7ff64] break-all">
                     {bombTarget}
                   </p>
                 </div>
@@ -2273,7 +2277,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                 value={bombInput}
                 onChange={handleBombInput}
                 placeholder="Type the defusal code..."
-                className="w-full rounded-2xl border border-white/10 bg-[#111310] p-3 text-center font-mono text-base text-white outline-none focus:border-amber-400"
+                className="w-full rounded-xl sm:rounded-2xl border border-white/10 bg-[#111310] p-3 sm:p-4 text-center font-mono text-base sm:text-lg text-white outline-none focus:border-amber-400"
                 autoComplete="off"
                 spellCheck={false}
               />
@@ -2283,23 +2287,23 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* ========================================================= */}
-      {/* GAME 5: GHOST MEMORY (Flash & Blind Type)                  */}
+      {/* GAME 9: GHOST MEMORY (Flash & Blind Type)                  */}
       {/* ========================================================= */}
       {selectedGame === 'ghost' && (
-        <div className="rounded-3xl border border-white/10 bg-[#161814] p-6 shadow-2xl sm:p-8">
-          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-purple-400/10 text-2xl">
+        <div className="rounded-2xl sm:rounded-3xl border border-white/10 bg-[#161814] p-3.5 sm:p-6 md:p-8 shadow-2xl">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-3 sm:pb-4">
+            <div className="flex items-center gap-2.5 sm:gap-3">
+              <span className="flex h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl sm:rounded-2xl bg-purple-400/10 text-xl sm:text-2xl shrink-0">
                 👻
               </span>
               <div>
-                <h3 className="text-xl font-black text-white">Ghost Memory Challenge</h3>
-                <p className="text-xs text-gray-400">Words flash for 2 seconds then disappear. Type them from memory!</p>
+                <h3 className="text-base sm:text-xl font-black text-white">Ghost Memory Challenge</h3>
+                <p className="text-[11px] sm:text-xs text-gray-400">Words flash for 2 seconds then disappear. Type them from memory!</p>
               </div>
             </div>
 
             {ghostStarted && (
-              <div className="flex items-center gap-3 text-xs font-bold">
+              <div className="flex items-center justify-between sm:justify-end gap-3 text-xs font-bold w-full sm:w-auto">
                 <span className="rounded-xl bg-[#111310] px-3.5 py-1.5 text-purple-300">
                   Memory Streak: {ghostStreak}
                 </span>
@@ -2307,13 +2311,13 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             )}
           </div>
 
-          <div className="my-6 rounded-2xl border border-white/5 bg-[#111310] p-8 text-center select-none">
+          <div className="my-4 sm:my-6 rounded-xl sm:rounded-2xl border border-white/5 bg-[#111310] p-4 sm:p-8 text-center select-none">
             {!ghostStarted && (
               <div>
-                <p className="text-sm text-gray-400 mb-4">Strengthen cognitive memory and touch typing recall.</p>
+                <p className="text-xs sm:text-sm text-gray-400 mb-3 sm:mb-4">Strengthen cognitive memory and touch typing recall.</p>
                 <button
                   onClick={startGhostGame}
-                  className="rounded-xl bg-purple-400 px-6 py-2.5 text-xs font-bold text-[#111310] transition hover:bg-purple-300"
+                  className="rounded-xl bg-purple-400 px-5 sm:px-6 py-2 sm:py-2.5 text-xs font-bold text-[#111310] transition hover:bg-purple-300 active:scale-95"
                 >
                   Start Ghost Challenge
                 </button>
@@ -2321,36 +2325,36 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             )}
 
             {ghostStarted && ghostPhase === 'memorize' && (
-              <div className="space-y-3 animate-in fade-in">
-                <span className="text-xs font-bold uppercase tracking-widest text-amber-400">
+              <div className="space-y-2 sm:space-y-3 animate-in fade-in">
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-amber-400">
                   Memorize this phrase...
                 </span>
-                <p className="font-mono text-3xl font-black text-[#d7ff64] sm:text-4xl">
+                <p className="font-mono text-2xl sm:text-4xl font-black text-[#d7ff64] break-all">
                   {ghostTarget}
                 </p>
               </div>
             )}
 
             {ghostStarted && ghostPhase === 'typing' && (
-              <div className="space-y-3">
-                <div className="flex items-center justify-center gap-2 text-xs font-bold uppercase text-purple-300">
-                  <EyeOff className="h-4 w-4" />
+              <div className="space-y-2 sm:space-y-3">
+                <div className="flex items-center justify-center gap-1.5 sm:gap-2 text-[11px] sm:text-xs font-bold uppercase text-purple-300">
+                  <EyeOff className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   <span>Hidden in Ghost Mode! Type now:</span>
                 </div>
-                <form onSubmit={handleGhostSubmit} className="max-w-md mx-auto mt-4">
+                <form onSubmit={handleGhostSubmit} className="max-w-md mx-auto mt-3 sm:mt-4">
                   <input
                     ref={ghostInputRef}
                     type="text"
                     value={ghostInput}
                     onChange={(e) => setGhostInput(e.target.value)}
                     placeholder="Type what you memorized..."
-                    className="w-full rounded-2xl border border-white/10 bg-[#161814] p-3 text-center font-mono text-base text-white outline-none focus:border-purple-400"
+                    className="w-full rounded-xl sm:rounded-2xl border border-white/10 bg-[#161814] p-3 sm:p-4 text-center font-mono text-base sm:text-lg text-white outline-none focus:border-purple-400"
                     autoComplete="off"
                     spellCheck={false}
                   />
                   <button
                     type="submit"
-                    className="mt-3 rounded-xl bg-purple-400 px-5 py-2 text-xs font-bold text-[#111310]"
+                    className="mt-3 rounded-xl bg-purple-400 px-5 py-2 text-xs font-bold text-[#111310] active:scale-95"
                   >
                     Submit Guess
                   </button>
@@ -2359,8 +2363,8 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
             )}
 
             {ghostStarted && ghostPhase === 'result' && (
-              <div className="space-y-3 animate-in zoom-in-95">
-                <h4 className="text-xl font-bold text-white">
+              <div className="space-y-2 sm:space-y-3 animate-in zoom-in-95">
+                <h4 className="text-lg sm:text-xl font-bold text-white">
                   {ghostSuccess ? '✅ Flawless Memory!' : '❌ Missed!'}
                 </h4>
                 <p className="text-xs text-gray-400">
@@ -2371,7 +2375,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
                 </p>
                 <button
                   onClick={nextGhostRound}
-                  className="mt-3 rounded-xl bg-[#d7ff64] px-5 py-2 text-xs font-bold text-[#111310]"
+                  className="mt-3 rounded-xl bg-[#d7ff64] px-5 py-2 text-xs font-bold text-[#111310] active:scale-95"
                 >
                   Next Phrase →
                 </button>
@@ -2382,28 +2386,28 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* Speed & Accuracy Quick Cards */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <div className="rounded-2xl border border-white/10 bg-[#161814] p-5 flex items-center justify-between">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 sm:grid-cols-2">
+        <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-[#161814] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h4 className="font-bold text-white text-base">15-Second Speed Sprint</h4>
-            <p className="text-xs text-gray-400 mt-1">High-intensity speed burst challenge</p>
+            <h4 className="font-bold text-white text-sm sm:text-base">15-Second Speed Sprint</h4>
+            <p className="text-xs text-gray-400 mt-0.5 sm:mt-1">High-intensity speed burst challenge</p>
           </div>
           <button
             onClick={onStartSprint}
-            className="rounded-xl bg-[#d7ff64] px-4 py-2 text-xs font-bold text-[#111310] hover:bg-[#e6ff8f]"
+            className="w-full sm:w-auto rounded-xl bg-[#d7ff64] px-4 py-2.5 sm:py-2 text-xs font-bold text-[#111310] hover:bg-[#e6ff8f] text-center active:scale-95"
           >
             Launch Sprint
           </button>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-[#161814] p-5 flex items-center justify-between">
+        <div className="rounded-xl sm:rounded-2xl border border-white/10 bg-[#161814] p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h4 className="font-bold text-white text-base">98% Accuracy Challenge</h4>
-            <p className="text-xs text-gray-400 mt-1">Hone strict precision with zero typos</p>
+            <h4 className="font-bold text-white text-sm sm:text-base">98% Accuracy Challenge</h4>
+            <p className="text-xs text-gray-400 mt-0.5 sm:mt-1">Hone strict precision with zero typos</p>
           </div>
           <button
             onClick={onStartAccuracyChallenge}
-            className="rounded-xl border border-cyan-400/50 bg-cyan-400/10 px-4 py-2 text-xs font-bold text-cyan-300 hover:bg-cyan-400 hover:text-[#111310]"
+            className="w-full sm:w-auto rounded-xl border border-cyan-400/50 bg-cyan-400/10 px-4 py-2.5 sm:py-2 text-xs font-bold text-cyan-300 hover:bg-cyan-400 hover:text-[#111310] text-center active:scale-95"
           >
             Launch Precision
           </button>
