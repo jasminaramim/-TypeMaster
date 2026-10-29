@@ -378,19 +378,68 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <section className="text-center">
-        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#d7ff64]/30 bg-[#d7ff64]/10 px-4 py-1.5 text-xs font-bold tracking-wide text-[#d7ff64]">
-          <Gamepad2 className="h-3.5 w-3.5" />
-          <span>ARCADE GAME ZONE</span>
+      {/* Header Framed Closely by Floating Gaming Icons */}
+      <div className="relative mx-auto w-full max-w-3xl px-4">
+        {/* Left Floating Gaming Icons (Tightly hugging the title text) */}
+        <div
+          className="pointer-events-none absolute -left-6 sm:-left-12 lg:-left-16 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-2.5 select-none"
+          aria-hidden="true"
+        >
+          {/* Gamepad */}
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-[#d7ff64]/40 bg-[#161a12]/80 backdrop-blur-sm shadow-[0_0_18px_rgba(215,255,100,0.25)] animate-float-game-1">
+            <Gamepad2 className="h-5 w-5 text-[#d7ff64]" />
+          </div>
+          {/* Rocket */}
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-cyan-500/40 bg-[#121c22]/80 backdrop-blur-sm shadow-[0_0_18px_rgba(6,182,212,0.25)] animate-float-game-2">
+            <Rocket className="h-5 w-5 text-cyan-400" />
+          </div>
+          {/* Flame */}
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-amber-500/40 bg-[#221912]/80 backdrop-blur-sm shadow-[0_0_18px_rgba(245,158,11,0.25)] animate-float-game-3">
+            <Flame className="h-5 w-5 text-amber-400" />
+          </div>
+          {/* Keycap W */}
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-[#171914] shadow-[0_3px_0_rgba(255,255,255,0.08)] animate-float-game-1">
+            <span className="font-mono text-xs font-black text-gray-300">W</span>
+          </div>
         </div>
-        <h2 className="text-3xl font-black text-white sm:text-5xl">
-          Level Up Your <span className="text-[#d7ff64]">Speed & Reflexes</span>
-        </h2>
-        <p className="mx-auto mt-3 max-w-2xl text-sm text-[#a4a69d] sm:text-base">
-          Interactive games designed to make typing practice thrilling, competitive, and deeply rewarding.
-        </p>
-      </section>
+
+        {/* Right Floating Gaming Icons (Tightly hugging the title text) */}
+        <div
+          className="pointer-events-none absolute -right-6 sm:-right-12 lg:-right-16 top-1/2 -translate-y-1/2 hidden md:flex flex-col items-center gap-2.5 select-none"
+          aria-hidden="true"
+        >
+          {/* Trophy */}
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-purple-500/40 bg-[#1e1428]/80 backdrop-blur-sm shadow-[0_0_18px_rgba(168,85,247,0.25)] animate-float-game-1">
+            <Trophy className="h-5 w-5 text-purple-400" />
+          </div>
+          {/* Bomb */}
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-rose-500/40 bg-[#241317]/80 backdrop-blur-sm shadow-[0_0_18px_rgba(244,63,94,0.25)] animate-float-game-2">
+            <Bomb className="h-5 w-5 text-rose-400" />
+          </div>
+          {/* Zap */}
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-emerald-500/40 bg-[#102219]/80 backdrop-blur-sm shadow-[0_0_18px_rgba(16,185,129,0.25)] animate-float-game-3">
+            <Zap className="h-5 w-5 text-emerald-400" />
+          </div>
+          {/* Keycap D */}
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/15 bg-[#171914] shadow-[0_3px_0_rgba(255,255,255,0.08)] animate-float-game-2">
+            <span className="font-mono text-xs font-black text-gray-300">D</span>
+          </div>
+        </div>
+
+        {/* Header Text */}
+        <section className="text-center">
+          <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#d7ff64]/30 bg-[#d7ff64]/10 px-4 py-1.5 text-xs font-bold tracking-wide text-[#d7ff64]">
+            <Gamepad2 className="h-3.5 w-3.5" />
+            <span>ARCADE GAME ZONE</span>
+          </div>
+          <h2 className="text-3xl font-black text-white sm:text-5xl">
+            Level Up Your <span className="text-[#d7ff64]">Speed & Reflexes</span>
+          </h2>
+          <p className="mx-auto mt-3 max-w-2xl text-sm text-[#a4a69d] sm:text-base">
+            Interactive games designed to make typing practice thrilling, competitive, and deeply rewarding.
+          </p>
+        </section>
+      </div>
 
       {/* Game Selector Arcade Menu */}
       <div className="flex flex-wrap items-center justify-center gap-2">
