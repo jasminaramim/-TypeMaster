@@ -39,11 +39,43 @@ const COMMON_WORDS = [
   'circuit', 'glory', 'reflex', 'precision', 'zen', 'spark', 'cosmic', 'legend',
 ];
 
+const ARCADE_GAMES: { id: ActiveGame; label: string; badge: string }[] = [
+  { id: 'nitro', label: '🏎️ Nitro Racer', badge: 'Popular' },
+  { id: 'zombie', label: '🧟 Zombie Rush', badge: 'Survival' },
+  { id: 'boxing', label: '🥊 Keyboard K.O.', badge: 'Combat' },
+  { id: 'hacker', label: '💻 Cyber Hacker', badge: 'Matrix' },
+  { id: 'meteor', label: '☄️ Meteor Shield', badge: 'Defense' },
+  { id: 'space', label: '🚀 Cosmic Blaster', badge: 'Action' },
+  { id: 'skydrop', label: '👾 Sky Drop', badge: 'Classic' },
+  { id: 'bomb', label: '💣 Time Bomb', badge: 'Panic' },
+  { id: 'ghost', label: '👻 Ghost Memory', badge: 'Brain' },
+];
+
 export const TypingGames: React.FC<TypingGamesProps> = ({
   onStartSprint,
   onStartAccuracyChallenge,
 }) => {
   const [selectedGame, setSelectedGame] = useState<ActiveGame>('nitro');
+  const [isMarqueePaused, setIsMarqueePaused] = useState(false);
+  const marqueeTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handleMarqueeTouchStart = () => {
+    if (marqueeTimerRef.current) clearTimeout(marqueeTimerRef.current);
+    setIsMarqueePaused(true);
+  };
+
+  const handleMarqueeTouchEnd = () => {
+    if (marqueeTimerRef.current) clearTimeout(marqueeTimerRef.current);
+    marqueeTimerRef.current = setTimeout(() => {
+      setIsMarqueePaused(false);
+    }, 2200);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (marqueeTimerRef.current) clearTimeout(marqueeTimerRef.current);
+    };
+  }, []);
 
   // ==========================================
   // GAME 1: NITRO RACER (2D Racetrack)
@@ -947,40 +979,108 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
         </section>
       </div>
 
-      {/* Game Selector Arcade Menu - Swipeable on mobile, centered wrap on tablet/desktop */}
-      <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto pb-2 pt-1 px-1 scrollbar-none sm:flex-wrap sm:justify-center">
-        {[
-          { id: 'nitro' as ActiveGame, label: '🏎️ Nitro Racer', badge: 'Popular' },
-          { id: 'zombie' as ActiveGame, label: '🧟 Zombie Rush', badge: 'Survival' },
-          { id: 'boxing' as ActiveGame, label: '🥊 Keyboard K.O.', badge: 'Combat' },
-          { id: 'hacker' as ActiveGame, label: '💻 Cyber Hacker', badge: 'Matrix' },
-          { id: 'meteor' as ActiveGame, label: '☄️ Meteor Shield', badge: 'Defense' },
-          { id: 'space' as ActiveGame, label: '🚀 Cosmic Blaster', badge: 'Action' },
-          { id: 'skydrop' as ActiveGame, label: '👾 Sky Drop', badge: 'Classic' },
-          { id: 'bomb' as ActiveGame, label: '💣 Time Bomb', badge: 'Panic' },
-          { id: 'ghost' as ActiveGame, label: '👻 Ghost Memory', badge: 'Brain' },
-        ].map((game) => (
-          <button
-            key={game.id}
-            onClick={() => setSelectedGame(game.id)}
-            className={`flex flex-shrink-0 items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs font-bold transition whitespace-nowrap active:scale-95 sm:text-sm ${
-              selectedGame === game.id
-                ? 'bg-[#d7ff64] text-[#111310] shadow-[0_0_20px_rgba(215,255,100,0.35)]'
-                : 'border border-white/10 bg-[#161814] text-gray-300 hover:border-white/20 hover:text-white'
-            }`}
+      {/* Game Selector Arcade Menu: Infinite Marquee on Mobile/Tablet, Centered Wrap on Desktop */}
+      <div className="space-y-1">
+        {/* Mobile & Tablet Auto-Scrolling Infinite Marquee */}
+        <div className="relative w-full overflow-hidden py-1.5 lg:hidden select-none">
+          {/* Subtle Left & Right Shadow Gradient Overlays */}
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-r from-[#111310] via-[#111310]/85 to-transparent z-10" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-8 sm:w-16 bg-gradient-to-l from-[#111310] via-[#111310]/85 to-transparent z-10" />
+
+          {/* Marquee Track: duplicated 2 times for seamless infinite scroll */}
+          <div
+            className="animate-arcade-marquee flex items-center gap-2 pr-2"
+            style={{
+              animationPlayState: isMarqueePaused ? 'paused' : 'running',
+            }}
+            onMouseEnter={() => setIsMarqueePaused(true)}
+            onMouseLeave={() => setIsMarqueePaused(false)}
+            onTouchStart={handleMarqueeTouchStart}
+            onTouchEnd={handleMarqueeTouchEnd}
           >
-            <span>{game.label}</span>
-            <span
-              className={`rounded-full px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] ${
-                selectedGame === game.id
-                  ? 'bg-[#111310] text-[#d7ff64]'
-                  : 'bg-white/10 text-gray-400'
-              }`}
-            >
-              {game.badge}
-            </span>
-          </button>
-        ))}
+            {/* First Set */}
+            {ARCADE_GAMES.map((game) => {
+              const isSelected = selectedGame === game.id;
+              return (
+                <button
+                  key={`m1-${game.id}`}
+                  onClick={() => setSelectedGame(game.id)}
+                  className={`flex flex-shrink-0 items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-3.5 py-2 sm:px-4 sm:py-2.5 text-xs font-bold transition whitespace-nowrap active:scale-95 sm:text-sm ${
+                    isSelected
+                      ? 'bg-[#d7ff64] text-[#111310] shadow-[0_0_20px_rgba(215,255,100,0.35)] scale-[1.02]'
+                      : 'border border-white/10 bg-[#161814] text-gray-300 hover:border-white/20 hover:text-white'
+                  }`}
+                >
+                  <span>{game.label}</span>
+                  <span
+                    className={`rounded-full px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] ${
+                      isSelected
+                        ? 'bg-[#111310] text-[#d7ff64]'
+                        : 'bg-white/10 text-gray-400'
+                    }`}
+                  >
+                    {game.badge}
+                  </span>
+                </button>
+              );
+            })}
+            {/* Second Duplicate Set for 100% Seamless Infinite Loop */}
+            {ARCADE_GAMES.map((game) => {
+              const isSelected = selectedGame === game.id;
+              return (
+                <button
+                  key={`m2-${game.id}`}
+                  onClick={() => setSelectedGame(game.id)}
+                  className={`flex flex-shrink-0 items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-3.5 py-2 sm:px-4 sm:py-2.5 text-xs font-bold transition whitespace-nowrap active:scale-95 sm:text-sm ${
+                    isSelected
+                      ? 'bg-[#d7ff64] text-[#111310] shadow-[0_0_20px_rgba(215,255,100,0.35)] scale-[1.02]'
+                      : 'border border-white/10 bg-[#161814] text-gray-300 hover:border-white/20 hover:text-white'
+                  }`}
+                >
+                  <span>{game.label}</span>
+                  <span
+                    className={`rounded-full px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] ${
+                      isSelected
+                        ? 'bg-[#111310] text-[#d7ff64]'
+                        : 'bg-white/10 text-gray-400'
+                    }`}
+                  >
+                    {game.badge}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop Centered Menu (Visible on lg and larger screens) */}
+        <div className="hidden lg:flex flex-wrap items-center justify-center gap-2">
+          {ARCADE_GAMES.map((game) => {
+            const isSelected = selectedGame === game.id;
+            return (
+              <button
+                key={`desk-${game.id}`}
+                onClick={() => setSelectedGame(game.id)}
+                className={`flex flex-shrink-0 items-center gap-1.5 sm:gap-2 rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-2.5 text-xs font-bold transition whitespace-nowrap active:scale-95 sm:text-sm ${
+                  isSelected
+                    ? 'bg-[#d7ff64] text-[#111310] shadow-[0_0_20px_rgba(215,255,100,0.35)]'
+                    : 'border border-white/10 bg-[#161814] text-gray-300 hover:border-white/20 hover:text-white'
+                }`}
+              >
+                <span>{game.label}</span>
+                <span
+                  className={`rounded-full px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-[10px] ${
+                    isSelected
+                      ? 'bg-[#111310] text-[#d7ff64]'
+                      : 'bg-white/10 text-gray-400'
+                  }`}
+                >
+                  {game.badge}
+                </span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* ========================================================= */}

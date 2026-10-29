@@ -215,3 +215,24 @@ input:focus-visible {
   scrollbar-width: none;
 }
 
+/* Arcade Game Menu Infinite Marquee */
+@keyframes arcade-marquee-slide {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-arcade-marquee {
+  display: flex;
+  width: max-content;
+  animation: arcade-marquee-slide 30s linear infinite;
+  will-change: transform;
+}
+
+.animate-arcade-marquee:hover {
+  animation-play-state: paused;
+}
+
