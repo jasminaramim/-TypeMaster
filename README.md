@@ -49,9 +49,11 @@ Practice touch typing in **English** and **Bangla (বাংলা)** with real-
 - **Finger Placement Guides:** Visual interactive keyboard drills targeting Home Row, Top Row, Bottom Row, and Number/Symbol Rows.
 - **Speed Drills:** Focus on weak fingers and improve muscle memory systematically.
 
-### 🎮 Arcade Game Arena (7 High-Octane Games)
-- **🧟 Zombie Rush (Survival Defense):** Defend your bunker barricade from invading undead waves with shotgun blasts and headshots!
+### 🎮 Arcade Game Arena (9 High-Octane Games)
+- **🧟 Zombie Rush (Survival Defense):** Defend your bunker barricade from invading undead waves with shotgun blasts, headshots, and balanced wave transitions!
 - **🥊 Keyboard K.O. (Neon Boxing Ring):** Throw jab and uppercut punch combos, dodge counter-attacks, and charge up the 40 DMG Super K.O.!
+- **💻 Cyber Hacker (Matrix Terminal Infiltration):** Infiltrate MegaCorp AI mainframe across 4 security layers before ICE security alert traces your IP!
+- **☄️ Meteor Shield (City Missile Defense):** Intercept fiery asteroids threatening the metropolis skyline with surface-to-air plasma laser turrets!
 - **🏎️ Nitro Racer:** 3-lane adrenaline race against intelligent AI ghost cars.
 - **🚀 Cosmic Blaster:** Shoot down alien UFO starships before they penetrate Earth's orbit.
 - **👾 Sky Drop:** Intercept falling neon words before they hit the ground.

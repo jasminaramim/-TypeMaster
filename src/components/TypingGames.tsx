@@ -19,6 +19,8 @@ import {
   Swords,
   Crosshair,
   Heart,
+  Terminal,
+  Radio,
 } from 'lucide-react';
 import { soundManager } from '../utils/sound';
 
@@ -27,7 +29,7 @@ interface TypingGamesProps {
   onStartAccuracyChallenge: () => void;
 }
 
-type ActiveGame = 'nitro' | 'zombie' | 'boxing' | 'space' | 'skydrop' | 'bomb' | 'ghost';
+type ActiveGame = 'nitro' | 'zombie' | 'boxing' | 'hacker' | 'meteor' | 'space' | 'skydrop' | 'bomb' | 'ghost';
 
 const COMMON_WORDS = [
   'speed', 'master', 'focus', 'accuracy', 'keyboard', 'keystroke', 'bangla', 'english',
@@ -398,6 +400,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
   const [zombieScore, setZombieScore] = useState(0);
   const [zombieKills, setZombieKills] = useState(0);
   const [zombieWave, setZombieWave] = useState(1);
+  const [zombieWaveBanner, setZombieWaveBanner] = useState<string | null>(null);
   const [barricadeHp, setBarricadeHp] = useState(100);
   const [zombies, setZombies] = useState<ZombieEnemy[]>([]);
   const [zombieInput, setZombieInput] = useState('');
@@ -423,6 +426,8 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
     setZombieCombo(0);
     setZombieInput('');
     setLastShotEffect(null);
+    setZombieWaveBanner('⚡ WAVE 1: DEFEND BARRICADE!');
+    setTimeout(() => setZombieWaveBanner(null), 2000);
     spawnZombieWave(1);
     setTimeout(() => zombieInputRef.current?.focus(), 100);
   };
@@ -444,8 +449,10 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       newZombies.push({
         id: Date.now() + i * 100,
         word,
-        progress: 5 + i * 10 + Math.random() * 8,
-        speed: (0.35 + wave * 0.08 + Math.random() * 0.15) * (isBoss ? 0.7 : 1),
+        // Start far right at 0% to 15% distance
+        progress: Math.min(15, i * 3 + Math.random() * 2),
+        // Gentle, steady speed tuned for comfortable typing across all waves
+        speed: (0.16 + Math.min(0.18, (wave - 1) * 0.035) + Math.random() * 0.04) * (isBoss ? 0.6 : 1),
         avatar: isBoss ? '👹' : avatars[Math.floor(Math.random() * avatars.length)],
         type: isBoss ? 'boss' : i % 2 === 0 ? 'runner' : 'walker',
       });
@@ -486,9 +493,13 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           soundManager.playSuccess();
           setZombieWave((w) => {
             const nextWave = w + 1;
-            setBarricadeHp((hp) => Math.min(100, hp + 20));
+            setBarricadeHp((hp) => Math.min(100, hp + 25));
             setZombieScore((s) => s + 500 * w);
-            setTimeout(() => spawnZombieWave(nextWave), 800);
+            setZombieWaveBanner(`⚡ WAVE ${nextWave} INCOMING! PREPARE DEFENSE...`);
+            setTimeout(() => {
+              setZombieWaveBanner(null);
+              spawnZombieWave(nextWave);
+            }, 2500);
             return nextWave;
           });
         }
@@ -633,6 +644,244 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
     }
   };
 
+  // ==========================================
+  // GAME 8: CYBER HACKER (Matrix Code Breaker)
+  // ==========================================
+  const HACKER_TARGETS = [
+    { node: 'GATEWAY FIREWALL', depth: 'LAYER 1/4', codeReq: 3, iceSpeed: 0.22, color: 'text-emerald-400' },
+    { node: 'ENCRYPTION VAULT', depth: 'LAYER 2/4', codeReq: 4, iceSpeed: 0.28, color: 'text-cyan-400' },
+    { node: 'QUANTUM NEURAL CORE', depth: 'LAYER 3/4', codeReq: 5, iceSpeed: 0.35, color: 'text-purple-400' },
+    { node: 'AI MAINFRAME OVERRIDE', depth: 'FINAL BOSS LAYER', codeReq: 6, iceSpeed: 0.42, color: 'text-red-400' },
+  ];
+
+  const HACK_WORDS = [
+    'bypass', 'cipher', 'decrypt', 'firewall', 'terminal', 'protocol', 'quantum',
+    'override', 'payload', 'exploit', 'proxy', 'rootkit', 'backdoor', 'zeroday',
+    'algorithm', 'blockchain', 'satellite', 'trojan', 'packet', 'subroutine',
+    'kernel', 'buffer', 'socket', 'hexcode', 'crypto', 'firestorm', 'daemon'
+  ];
+
+  const [hackerStarted, setHackerStarted] = useState(false);
+  const [hackerGameOver, setHackerGameOver] = useState(false);
+  const [hackerVictory, setHackerVictory] = useState(false);
+  const [hackerLayerIdx, setHackerLayerIdx] = useState(0);
+  const [hackerCrackedCount, setHackerCrackedCount] = useState(0);
+  const [hackerIceAlert, setHackerIceAlert] = useState(0);
+  const [hackerScore, setHackerScore] = useState(0);
+  const [currentHackWord, setCurrentHackWord] = useState('');
+  const [hackerInput, setHackerInput] = useState('');
+  const [hackerLogs, setHackerLogs] = useState<string[]>([]);
+  const hackerInputRef = useRef<HTMLInputElement>(null);
+
+  const startHackerGame = () => {
+    setHackerStarted(true);
+    setHackerGameOver(false);
+    setHackerVictory(false);
+    setHackerLayerIdx(0);
+    setHackerCrackedCount(0);
+    setHackerIceAlert(10);
+    setHackerScore(0);
+    setHackerLogs(['[SYS] Infiltrating host: 192.168.0.254', '[ICE] Security tracker initialized...']);
+    pickNextHackWord();
+    setTimeout(() => hackerInputRef.current?.focus(), 100);
+  };
+
+  const pickNextHackWord = () => {
+    const word = HACK_WORDS[Math.floor(Math.random() * HACK_WORDS.length)];
+    setCurrentHackWord(word);
+    setHackerInput('');
+  };
+
+  useEffect(() => {
+    if (!hackerStarted || hackerGameOver || hackerVictory) return;
+
+    const layer = HACKER_TARGETS[hackerLayerIdx];
+    const interval = setInterval(() => {
+      setHackerIceAlert((prev) => {
+        const next = prev + (layer?.iceSpeed || 0.25);
+        if (next >= 100) {
+          soundManager.playError();
+          setHackerGameOver(true);
+          return 100;
+        }
+        return next;
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [hackerStarted, hackerGameOver, hackerVictory, hackerLayerIdx]);
+
+  const handleHackerInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!hackerStarted || hackerGameOver || hackerVictory) return;
+    const val = e.target.value;
+    setHackerInput(val);
+
+    if (val.trim().toLowerCase() === currentHackWord.toLowerCase()) {
+      soundManager.playSuccess();
+      const currentLayer = HACKER_TARGETS[hackerLayerIdx];
+      const newCracked = hackerCrackedCount + 1;
+      const pts = 250 * (hackerLayerIdx + 1);
+
+      setHackerScore((s) => s + pts);
+      setHackerIceAlert((ice) => Math.max(0, ice - 14));
+
+      setHackerLogs((logs) => [
+        `[AUTH_OK] Bypassed "${currentHackWord}" -> +${pts} pts`,
+        ...logs.slice(0, 4),
+      ]);
+
+      if (newCracked >= currentLayer.codeReq) {
+        if (hackerLayerIdx + 1 >= HACKER_TARGETS.length) {
+          setHackerVictory(true);
+        } else {
+          setHackerLayerIdx((idx) => idx + 1);
+          setHackerCrackedCount(0);
+          setHackerLogs((logs) => [
+            `[SYSTEM] LAYER BREACHED! Advancing to ${HACKER_TARGETS[hackerLayerIdx + 1].node}`,
+            ...logs.slice(0, 4),
+          ]);
+        }
+      } else {
+        setHackerCrackedCount(newCracked);
+      }
+
+      pickNextHackWord();
+    }
+  };
+
+  // ==========================================
+  // GAME 9: METEOR SHIELD (City Missile Defense)
+  // ==========================================
+  interface MeteorItem {
+    id: number;
+    word: string;
+    x: number;
+    y: number;
+    speed: number;
+    size: 'small' | 'medium' | 'huge';
+  }
+
+  const METEOR_POOL = [
+    'comet', 'impact', 'plasma', 'laser', 'shield', 'turret', 'orbit', 'gravity',
+    'velocity', 'deflect', 'stellar', 'galaxy', 'defense', 'sector', 'energy',
+    'missile', 'asteroid', 'barrier', 'quantum', 'beacon', 'blitz', 'supernova'
+  ];
+
+  const [meteorStarted, setMeteorStarted] = useState(false);
+  const [meteorGameOver, setMeteorGameOver] = useState(false);
+  const [cityHealth, setCityHealth] = useState(100);
+  const [meteorScore, setMeteorScore] = useState(0);
+  const [meteorsDestroyed, setMeteorsDestroyed] = useState(0);
+  const [meteorWave, setMeteorWave] = useState(1);
+  const [meteors, setMeteors] = useState<MeteorItem[]>([]);
+  const [meteorInput, setMeteorInput] = useState('');
+  const [laserBeamEffect, setLaserBeamEffect] = useState<{ x: number; y: number } | null>(null);
+  const meteorInputRef = useRef<HTMLInputElement>(null);
+
+  const startMeteorGame = () => {
+    setMeteorStarted(true);
+    setMeteorGameOver(false);
+    setCityHealth(100);
+    setMeteorScore(0);
+    setMeteorsDestroyed(0);
+    setMeteorWave(1);
+    setMeteorInput('');
+    setLaserBeamEffect(null);
+    spawnMeteorShower(1);
+    setTimeout(() => meteorInputRef.current?.focus(), 100);
+  };
+
+  const spawnMeteorShower = (wave: number) => {
+    const count = 3 + wave;
+    const newMeteors: MeteorItem[] = [];
+    const usedWords = new Set<string>();
+
+    for (let i = 0; i < count; i++) {
+      let word = METEOR_POOL[Math.floor(Math.random() * METEOR_POOL.length)];
+      while (usedWords.has(word)) {
+        word = METEOR_POOL[Math.floor(Math.random() * METEOR_POOL.length)];
+      }
+      usedWords.add(word);
+
+      newMeteors.push({
+        id: Date.now() + i * 150,
+        word,
+        x: 12 + ((i * 22) % 76) + (Math.random() * 6 - 3),
+        y: Math.min(18, i * 4 + Math.random() * 3),
+        speed: 0.16 + Math.min(0.18, (wave - 1) * 0.035) + Math.random() * 0.04,
+        size: i % 3 === 0 ? 'huge' : i % 2 === 0 ? 'medium' : 'small',
+      });
+    }
+    setMeteors(newMeteors);
+  };
+
+  useEffect(() => {
+    if (!meteorStarted || meteorGameOver) return;
+
+    const interval = setInterval(() => {
+      setMeteors((prev) => {
+        let cityDamage = 0;
+        const remaining = prev
+          .map((m) => {
+            const nextY = m.y + m.speed;
+            if (nextY >= 88) {
+              cityDamage += m.size === 'huge' ? 25 : 15;
+              soundManager.playError();
+              return null;
+            }
+            return { ...m, y: nextY };
+          })
+          .filter(Boolean) as MeteorItem[];
+
+        if (cityDamage > 0) {
+          setCityHealth((hp) => {
+            const nextHp = Math.max(0, hp - cityDamage);
+            if (nextHp <= 0) {
+              setMeteorGameOver(true);
+            }
+            return nextHp;
+          });
+        }
+
+        if (remaining.length === 0 && !meteorGameOver) {
+          soundManager.playSuccess();
+          setMeteorWave((w) => {
+            const nextWave = w + 1;
+            setCityHealth((hp) => Math.min(100, hp + 20));
+            setMeteorScore((s) => s + 400 * w);
+            setTimeout(() => spawnMeteorShower(nextWave), 1500);
+            return nextWave;
+          });
+        }
+
+        return remaining;
+      });
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, [meteorStarted, meteorGameOver]);
+
+  const handleMeteorInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!meteorStarted || meteorGameOver) return;
+    const val = e.target.value.toLowerCase().trim();
+    setMeteorInput(e.target.value);
+
+    const matchIdx = meteors.findIndex((m) => m.word.toLowerCase() === val);
+    if (matchIdx !== -1) {
+      const hit = meteors[matchIdx];
+      soundManager.playSuccess();
+      setLaserBeamEffect({ x: hit.x, y: hit.y });
+      setTimeout(() => setLaserBeamEffect(null), 400);
+
+      const pts = (hit.size === 'huge' ? 250 : 120) * meteorWave;
+      setMeteorScore((s) => s + pts);
+      setMeteorsDestroyed((k) => k + 1);
+      setMeteorInput('');
+
+      setMeteors((prev) => prev.filter((_, idx) => idx !== matchIdx));
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header Framed Closely by Floating Gaming Icons */}
@@ -702,8 +951,10 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       <div className="flex flex-wrap items-center justify-center gap-2">
         {[
           { id: 'nitro' as ActiveGame, label: '🏎️ Nitro Racer', badge: 'Popular' },
-          { id: 'zombie' as ActiveGame, label: '🧟 Zombie Rush', badge: 'Hot' },
-          { id: 'boxing' as ActiveGame, label: '🥊 Keyboard K.O.', badge: 'New' },
+          { id: 'zombie' as ActiveGame, label: '🧟 Zombie Rush', badge: 'Survival' },
+          { id: 'boxing' as ActiveGame, label: '🥊 Keyboard K.O.', badge: 'Combat' },
+          { id: 'hacker' as ActiveGame, label: '💻 Cyber Hacker', badge: 'Matrix' },
+          { id: 'meteor' as ActiveGame, label: '☄️ Meteor Shield', badge: 'Defense' },
           { id: 'space' as ActiveGame, label: '🚀 Cosmic Blaster', badge: 'Action' },
           { id: 'skydrop' as ActiveGame, label: '👾 Sky Drop', badge: 'Classic' },
           { id: 'bomb' as ActiveGame, label: '💣 Time Bomb', badge: 'Panic' },
@@ -974,6 +1225,17 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
               <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />
               OUTBREAK ZONE • WAVE {zombieWave}
             </div>
+
+            {/* Wave Notice Banner */}
+            {zombieWaveBanner && (
+              <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-sm pointer-events-none animate-in zoom-in-95">
+                <div className="rounded-2xl border-2 border-red-500 bg-red-950/95 px-6 py-3 text-center shadow-[0_0_35px_rgba(239,68,68,0.7)]">
+                  <span className="font-mono text-base sm:text-lg font-black text-white tracking-widest uppercase">
+                    {zombieWaveBanner}
+                  </span>
+                </div>
+              </div>
+            )}
 
             {/* Shotgun Flash Effect */}
             {lastShotEffect && (
@@ -1319,6 +1581,412 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
           </div>
         </div>
       )}
+
+      {/* ========================================================= */}
+      {/* GAME: CYBER HACKER (Matrix Code Breaker)                  */}
+      {/* ========================================================= */}
+      {selectedGame === 'hacker' && (
+        <div className="rounded-3xl border border-emerald-500/20 bg-gradient-to-b from-[#0a140d] to-[#0c0e0b] p-6 shadow-2xl sm:p-8 relative overflow-hidden">
+          {/* Matrix green glow aura */}
+          <div
+            className="pointer-events-none absolute -top-24 right-1/4 h-80 w-80 rounded-full opacity-20 blur-[120px]"
+            style={{ background: 'radial-gradient(circle, rgba(16,185,129,0.7) 0%, transparent 70%)' }}
+          />
+
+          {/* Top Bar: Title & Security Node Info */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-500/10 text-2xl border border-emerald-500/30 shadow-[0_0_15px_rgba(16,185,129,0.25)]">
+                💻
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xl font-black text-white">Cyber Hacker: Terminal Infiltration</h3>
+                  <span className="rounded-full bg-emerald-500/20 border border-emerald-500/40 px-2 py-0.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider font-mono">
+                    {HACKER_TARGETS[hackerLayerIdx]?.depth || 'SYSTEM ROOT'}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400">Crack security cipher passwords before ICE Alert locks down the mainframe!</p>
+              </div>
+            </div>
+
+            {hackerStarted && !hackerGameOver && !hackerVictory && (
+              <div className="flex items-center gap-4">
+                {/* ICE Security Alert Meter */}
+                <div className="text-right">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400 font-mono">
+                    ICE Tracker Alert
+                  </span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <div className="w-28 sm:w-36 h-2.5 rounded-full bg-black/60 border border-white/10 overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-200 ${
+                          hackerIceAlert > 75
+                            ? 'bg-red-500 animate-pulse shadow-[0_0_10px_#ef4444]'
+                            : hackerIceAlert > 45
+                            ? 'bg-amber-400'
+                            : 'bg-emerald-400'
+                        }`}
+                        style={{ width: `${Math.min(100, hackerIceAlert)}%` }}
+                      />
+                    </div>
+                    <span className="font-mono text-xs font-black text-white">{Math.round(hackerIceAlert)}%</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 bg-black/50 px-3.5 py-1.5 rounded-2xl border border-white/10">
+                  <div className="text-center">
+                    <span className="text-[9px] text-gray-400 block uppercase font-mono">Layer</span>
+                    <span className="font-mono text-xs font-black text-emerald-400">
+                      {hackerLayerIdx + 1}/4
+                    </span>
+                  </div>
+                  <div className="h-6 w-px bg-white/10" />
+                  <div className="text-center">
+                    <span className="text-[9px] text-gray-400 block uppercase font-mono">Score</span>
+                    <span className="font-mono text-sm font-black text-[#d7ff64]">{hackerScore}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Matrix Terminal Console Stage */}
+          <div className="mt-5 space-y-4">
+            {/* Terminal Window Header */}
+            <div className="rounded-2xl border border-emerald-500/30 bg-[#090d0a] shadow-inner overflow-hidden font-mono">
+              <div className="flex items-center justify-between border-b border-emerald-500/20 bg-emerald-950/40 px-4 py-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <span className="h-3 w-3 rounded-full bg-red-500/80 inline-block" />
+                  <span className="h-3 w-3 rounded-full bg-yellow-500/80 inline-block" />
+                  <span className="h-3 w-3 rounded-full bg-emerald-500/80 inline-block" />
+                  <span className="text-emerald-400 font-bold ml-2">root@typemaster:~# /bin/infiltrate</span>
+                </div>
+                <div className="text-[10px] text-emerald-500/70">
+                  SSL: 4096-BIT ENCRYPTED
+                </div>
+              </div>
+
+              {/* Terminal Body */}
+              <div className="p-4 sm:p-6 min-h-[220px] flex flex-col justify-between relative">
+                {/* Matrix Background Watermark */}
+                <div className="absolute right-4 bottom-2 text-6xl opacity-5 select-none pointer-events-none font-mono text-emerald-400">
+                  01101001 01100011 01100101
+                </div>
+
+                {!hackerStarted && !hackerGameOver && !hackerVictory && (
+                  <div className="text-center py-6">
+                    <div className="text-5xl mb-2">💻</div>
+                    <h4 className="text-2xl font-black text-white">Cyber Infiltration Mission</h4>
+                    <p className="text-xs text-gray-400 max-w-sm mx-auto mt-1">
+                      Infiltrate the MegaCorp AI mainframe across 4 security firewalls. Type encryption passwords before security ICE traces your IP!
+                    </p>
+                    <button
+                      onClick={startHackerGame}
+                      className="mt-4 flex items-center gap-2 mx-auto rounded-2xl bg-gradient-to-r from-emerald-400 to-teal-500 px-7 py-3 text-xs font-black text-[#111310] shadow-[0_0_20px_rgba(16,185,129,0.35)] transition hover:from-emerald-300 hover:to-teal-400 active:scale-95"
+                    >
+                      <Play className="h-4 w-4 fill-current" />
+                      <span>INITIALIZE TERMINAL (START)</span>
+                    </button>
+                  </div>
+                )}
+
+                {hackerStarted && !hackerGameOver && !hackerVictory && (
+                  <div className="space-y-4">
+                    {/* Security Node Header */}
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-gray-400">TARGET NODE:</span>
+                        <span className="text-sm font-bold text-emerald-300">
+                          {HACKER_TARGETS[hackerLayerIdx].node}
+                        </span>
+                      </div>
+                      <div className="text-xs text-gray-400">
+                        PROGRESS: <strong className="text-[#d7ff64]">{hackerCrackedCount} / {HACKER_TARGETS[hackerLayerIdx].codeReq} Keys Cracked</strong>
+                      </div>
+                    </div>
+
+                    {/* Target Password to Type */}
+                    <div className="text-center py-3">
+                      <span className="text-[10px] uppercase font-bold tracking-widest text-emerald-400/80 block mb-1">
+                        🔑 DECRYPTION CIPHER KEY
+                      </span>
+                      <div className="inline-block rounded-2xl border-2 border-emerald-500/50 bg-black/80 px-8 py-3.5 shadow-[0_0_30px_rgba(16,185,129,0.25)]">
+                        <span className="text-3xl sm:text-4xl font-black text-white tracking-wider">
+                          {currentHackWord}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Live Terminal Log Stream */}
+                    <div className="rounded-xl bg-black/60 border border-white/5 p-2.5 text-[11px] space-y-1 text-emerald-400/80">
+                      {hackerLogs.map((log, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                          <span className="opacity-40">&gt;</span>
+                          <span>{log}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {hackerVictory && (
+                  <div className="text-center py-6 animate-in zoom-in-95">
+                    <div className="text-5xl animate-bounce">🔓</div>
+                    <h4 className="mt-2 text-2xl font-black text-[#d7ff64]">ACCESS GRANTED // MAINFRAME HACKED!</h4>
+                    <p className="text-xs text-gray-300 mt-1">
+                      You cracked all 4 security firewalls with a total score of <strong className="text-[#d7ff64]">{hackerScore}</strong>!
+                    </p>
+                    <button
+                      onClick={startHackerGame}
+                      className="mt-4 flex items-center gap-2 mx-auto rounded-xl bg-[#d7ff64] px-6 py-2.5 text-xs font-bold text-[#111310] shadow-lg transition hover:bg-[#e6ff8f]"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      <span>Hack Again</span>
+                    </button>
+                  </div>
+                )}
+
+                {hackerGameOver && (
+                  <div className="text-center py-6 animate-in zoom-in-95">
+                    <div className="text-5xl animate-pulse">🚨</div>
+                    <h4 className="mt-2 text-2xl font-black text-red-400">TRACE COMPLETE // SYSTEM LOCKDOWN!</h4>
+                    <p className="text-xs text-gray-300 mt-1">
+                      ICE security defense intercepted your connection on Layer {hackerLayerIdx + 1}.
+                    </p>
+                    <button
+                      onClick={startHackerGame}
+                      className="mt-4 flex items-center gap-2 mx-auto rounded-xl bg-red-500 px-6 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-red-400"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      <span>Retry Infiltration</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Terminal Input Command Bar */}
+            {hackerStarted && !hackerGameOver && !hackerVictory && (
+              <div className="max-w-md mx-auto space-y-2">
+                <div className="relative">
+                  <input
+                    ref={hackerInputRef}
+                    type="text"
+                    value={hackerInput}
+                    onChange={handleHackerInput}
+                    placeholder="Type cipher password to bypass firewall..."
+                    className="w-full rounded-2xl border-2 border-emerald-500/40 bg-[#080d09] px-5 py-3.5 text-center font-mono text-lg font-bold text-emerald-300 shadow-lg outline-none focus:border-emerald-400 focus:shadow-[0_0_20px_rgba(16,185,129,0.35)]"
+                    autoComplete="off"
+                    spellCheck={false}
+                  />
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-sm font-mono text-emerald-500">$&gt;</span>
+                </div>
+                <p className="text-center text-[11px] text-gray-400">
+                  ⚡ Each successful password reduces ICE Alert by 14%! Type quickly to stay untraced!
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* GAME: METEOR SHIELD (City Missile Defense)                */}
+      {/* ========================================================= */}
+      {selectedGame === 'meteor' && (
+        <div className="rounded-3xl border border-amber-500/20 bg-gradient-to-b from-[#18140f] to-[#12110e] p-6 shadow-2xl sm:p-8 relative overflow-hidden">
+          {/* Fiery meteor glow background */}
+          <div
+            className="pointer-events-none absolute -top-20 left-1/3 h-80 w-80 rounded-full opacity-20 blur-[120px]"
+            style={{ background: 'radial-gradient(circle, rgba(245,158,11,0.7) 0%, transparent 70%)' }}
+          />
+
+          {/* Top Bar: Title & City Status */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-500/10 text-2xl border border-amber-500/30 shadow-[0_0_15px_rgba(245,158,11,0.25)]">
+                ☄️
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xl font-black text-white">Meteor Shield: City Defense</h3>
+                  <span className="rounded-full bg-amber-500/20 border border-amber-500/40 px-2 py-0.5 text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+                    Wave {meteorWave}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400">Type meteor words to launch anti-orbital laser interceptors!</p>
+              </div>
+            </div>
+
+            {meteorStarted && !meteorGameOver && (
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400">Metropolis Shield</span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <div className="w-28 sm:w-36 h-2.5 rounded-full bg-black/60 border border-white/10 overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-300 ${
+                          cityHealth > 50 ? 'bg-[#d7ff64]' : cityHealth > 25 ? 'bg-amber-400' : 'bg-red-500 animate-pulse'
+                        }`}
+                        style={{ width: `${cityHealth}%` }}
+                      />
+                    </div>
+                    <span className="font-mono text-xs font-black text-white">{cityHealth}%</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 bg-black/40 px-3.5 py-1.5 rounded-2xl border border-white/10">
+                  <div className="text-center">
+                    <span className="text-[9px] text-gray-400 block uppercase">Destroyed</span>
+                    <span className="font-mono text-sm font-black text-amber-400">{meteorsDestroyed} 💥</span>
+                  </div>
+                  <div className="h-6 w-px bg-white/10" />
+                  <div className="text-center">
+                    <span className="text-[9px] text-gray-400 block uppercase">Score</span>
+                    <span className="font-mono text-sm font-black text-[#d7ff64]">{meteorScore}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Sky & City Stage */}
+          <div className="relative mt-5 h-72 sm:h-80 w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0d0f14] shadow-inner flex flex-col justify-between p-4">
+            {/* Stars background */}
+            <div
+              className="absolute inset-0 opacity-20 pointer-events-none"
+              style={{
+                backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)',
+                backgroundSize: '28px 28px',
+              }}
+            />
+
+            {/* Bottom Cyberpunk City Skyline */}
+            <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black via-black/80 to-transparent flex items-end justify-around px-4 z-10 border-b-2 border-cyan-500/30">
+              <span className="text-2xl opacity-60">🏙️</span>
+              <span className="text-3xl opacity-70">🏢</span>
+              <div className="flex flex-col items-center">
+                <span className="text-3xl filter drop-shadow-[0_0_12px_#38bdf8]">🛰️</span>
+                <span className="text-[9px] font-black text-cyan-400 tracking-wider uppercase">TURRET</span>
+              </div>
+              <span className="text-3xl opacity-70">🏬</span>
+              <span className="text-2xl opacity-60">🏙️</span>
+            </div>
+
+            {/* Laser Beam Flash Animation */}
+            {laserBeamEffect && (
+              <div
+                className="absolute bottom-12 left-1/2 -translate-x-1/2 z-20 pointer-events-none animate-in fade-in zoom-in duration-100 flex items-center justify-center"
+                style={{
+                  height: `${100 - laserBeamEffect.y}%`,
+                  width: '3px',
+                  background: 'linear-gradient(to top, #38bdf8, #d7ff64)',
+                  boxShadow: '0 0 15px #38bdf8',
+                  transform: `rotate(${(laserBeamEffect.x - 50) * 0.7}deg)`,
+                  transformOrigin: 'bottom center',
+                }}
+              />
+            )}
+
+            {/* Falling Meteors */}
+            <div className="relative h-full w-full">
+              {meteors.map((m) => {
+                const isTarget = meteorInput.length > 0 && m.word.toLowerCase().startsWith(meteorInput.trim().toLowerCase());
+                return (
+                  <div
+                    key={m.id}
+                    className="absolute transition-all duration-150 flex flex-col items-center -translate-x-1/2"
+                    style={{
+                      left: `${m.x}%`,
+                      top: `${m.y}%`,
+                    }}
+                  >
+                    <div
+                      className={`mb-1 rounded-xl px-2.5 py-1 text-xs font-mono font-bold transition-all shadow-md ${
+                        isTarget
+                          ? 'border-2 border-[#d7ff64] bg-[#111310] text-[#d7ff64] shadow-[0_0_15px_rgba(215,255,100,0.5)] scale-110'
+                          : m.size === 'huge'
+                          ? 'border border-amber-500 bg-amber-950/80 text-amber-200'
+                          : 'border border-white/20 bg-black/80 text-white'
+                      }`}
+                    >
+                      {m.size === 'huge' && <span className="mr-1 text-amber-400">🔥 MEGA:</span>}
+                      {m.word}
+                    </div>
+
+                    <div className="relative text-2xl sm:text-3xl animate-pulse">
+                      <span>{m.size === 'huge' ? '☄️' : '🔥'}</span>
+                    </div>
+                  </div>
+                );
+              })}
+
+              {!meteorStarted && !meteorGameOver && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 z-20">
+                  <div className="h-16 w-16 rounded-3xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-4xl shadow-[0_0_30px_rgba(245,158,11,0.3)] mb-3">
+                    ☄️
+                  </div>
+                  <h4 className="text-2xl font-black text-white">Meteor Defense Command</h4>
+                  <p className="max-w-md text-xs sm:text-sm text-gray-400 mt-1">
+                    An asteroid storm is plummeting toward the metropolis! Type meteor words to launch surface-to-air anti-orbital laser beams.
+                  </p>
+                  <button
+                    onClick={startMeteorGame}
+                    className="mt-4 flex items-center gap-2 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-600 px-8 py-3 text-sm font-black text-white shadow-[0_0_25px_rgba(245,158,11,0.4)] transition hover:from-amber-400 hover:to-orange-500 active:scale-95"
+                  >
+                    <Play className="h-4 w-4 fill-current" />
+                    <span>DEFEND METROPOLIS (START)</span>
+                  </button>
+                </div>
+              )}
+
+              {meteorGameOver && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 bg-black/80 backdrop-blur-sm z-30 animate-in zoom-in-95">
+                  <div className="text-5xl animate-pulse">💥</div>
+                  <h4 className="mt-2 text-2xl sm:text-3xl font-black text-amber-400">CITY SHIELD COLLAPSED!</h4>
+                  <p className="text-sm text-gray-300 mt-1">
+                    You survived until <strong className="text-white">Wave {meteorWave}</strong> with <strong className="text-amber-400">{meteorsDestroyed} Meteors Intercepted</strong> and a score of <strong className="text-[#d7ff64]">{meteorScore}</strong>!
+                  </p>
+                  <button
+                    onClick={startMeteorGame}
+                    className="mt-4 flex items-center gap-2 rounded-2xl bg-amber-500 px-7 py-3 text-xs font-black text-white shadow-lg transition hover:bg-amber-400 active:scale-95"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                    <span>Re-engage Turrets</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Interactive Laser Input Console */}
+          {meteorStarted && !meteorGameOver && (
+            <div className="mt-4 max-w-lg mx-auto space-y-2">
+              <div className="relative">
+                <input
+                  ref={meteorInputRef}
+                  type="text"
+                  value={meteorInput}
+                  onChange={handleMeteorInput}
+                  placeholder="Target falling meteor word to fire laser cannon..."
+                  className="w-full rounded-2xl border-2 border-amber-500/40 bg-[#14120e] px-5 py-3.5 text-center font-mono text-lg font-bold text-white shadow-lg outline-none focus:border-amber-400 focus:shadow-[0_0_20px_rgba(245,158,11,0.35)]"
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg opacity-60">🎯</span>
+              </div>
+              <p className="text-center text-[11px] text-gray-400">
+                💡 Tip: Prioritize meteors closest to the bottom skyline before they strike the city shield!
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* GAME 4: COSMIC ALIEN BLASTER                              */}
+      {/* ========================================================= */}
       {selectedGame === 'space' && (
         <div className="rounded-3xl border border-white/10 bg-[#161814] p-6 shadow-2xl sm:p-8">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
