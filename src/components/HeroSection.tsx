@@ -14,16 +14,19 @@ import {
   Zap,
   Globe2,
   ShieldCheck,
+  Timer,
 } from 'lucide-react';
 
 interface HeroSectionProps {
   onStartTyping: () => void;
   onScrollToGrammar: () => void;
+  onScrollToMinuteSpeed?: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onStartTyping,
   onScrollToGrammar,
+  onScrollToMinuteSpeed,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -147,18 +150,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         </p>
 
         {/* CTA Buttons */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
           <button
-            onClick={onStartTyping}
+            onClick={onScrollToMinuteSpeed || onStartTyping}
             className="group flex items-center gap-2.5 rounded-2xl bg-[#d7ff64] px-6 py-3.5 text-sm font-black text-[#111310] shadow-[0_0_25px_rgba(215,255,100,0.4)] transition hover:scale-105 hover:bg-[#bbf43d]"
           >
-            <Keyboard className="h-4 w-4 transition group-hover:-translate-y-0.5" />
-            <span>Start Typing Test</span>
+            <Timer className="h-4 w-4 transition group-hover:rotate-12" />
+            <span>1-Minute Word Speed Test</span>
+          </button>
+
+          <button
+            onClick={onStartTyping}
+            className="group flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:border-[#d7ff64]/50 hover:bg-[#d7ff64]/10 hover:text-[#d7ff64]"
+          >
+            <Keyboard className="h-4 w-4 text-[#d7ff64]" />
+            <span>Passage Test</span>
           </button>
 
           <button
             onClick={onScrollToGrammar}
-            className="group flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:border-[#d7ff64]/50 hover:bg-[#d7ff64]/10 hover:text-[#d7ff64]"
+            className="group flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:border-white/30 hover:bg-white/10"
           >
             <Sparkles className="h-4 w-4 text-[#d7ff64] transition group-hover:rotate-12" />
             <span>AI Grammar Rewriter</span>

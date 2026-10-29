@@ -17,7 +17,7 @@ export const Footer: React.FC<FooterProps> = ({ onScrollToGrammar, setTab }) => 
               <img
                 src="/logo.png"
                 alt="TypeMaster Logo"
-                className="h-8 w-auto object-contain drop-shadow-[0_0_10px_rgba(215,255,100,0.2)]"
+                className="h-12 sm:h-16 md:h-20 w-auto max-w-[240px] sm:max-w-[300px] object-contain drop-shadow-[0_0_20px_rgba(215,255,100,0.35)]"
               />
             </div>
             <p className="text-gray-400 leading-relaxed">

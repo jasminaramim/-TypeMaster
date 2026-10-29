@@ -9,6 +9,7 @@ import {
   History,
   Gamepad2,
   Languages,
+  Timer,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -17,6 +18,7 @@ interface HeaderProps {
   soundEnabled: boolean;
   toggleSound: () => void;
   onScrollToGrammar: () => void;
+  onScrollToMinuteSpeed?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -25,6 +27,7 @@ export const Header: React.FC<HeaderProps> = ({
   soundEnabled,
   toggleSound,
   onScrollToGrammar,
+  onScrollToMinuteSpeed,
 }) => {
   const navItems = [
     { id: 'test', label: 'Typing Test', icon: Keyboard },
@@ -95,6 +98,18 @@ export const Header: React.FC<HeaderProps> = ({
               <Languages className="h-3.5 w-3.5 text-[#d7ff64]" />
               <span>বাংলা / EN</span>
             </div>
+
+            {/* 1-Minute Speed Challenge Quick Jump */}
+            {onScrollToMinuteSpeed && (
+              <button
+                onClick={onScrollToMinuteSpeed}
+                className="flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-gray-200 transition hover:border-[#d7ff64]/40 hover:bg-[#d7ff64]/10 hover:text-[#d7ff64] sm:text-sm"
+                title="Jump to 1-Minute & Custom Minute Speed Test"
+              >
+                <Timer className="h-3.5 w-3.5 text-[#d7ff64]" />
+                <span className="hidden sm:inline">1-Min</span> Challenge
+              </button>
+            )}
 
             {/* Grammar & AI Rewriter Quick Jump Button */}
             <button
