@@ -47,6 +47,100 @@ const RULES: Rule[] = [
     replacement: 'resolve these $3',
     explanation: 'Demonstrative pronoun should agree in number: "these things" instead of "this things".',
   },
+  // Missing Copula / Introductions (e.g. "My nme Jasmin", "My name John")
+  {
+    regex: /\b(my|his|her|their|our)\s+(nme|name)\s+([A-Za-z]+)\b/gi,
+    category: 'Grammar',
+    replacement: (_m, poss, _word, name) => `${poss.charAt(0).toUpperCase() + poss.slice(1).toLowerCase()} name is ${name.charAt(0).toUpperCase() + name.slice(1).toLowerCase()}`,
+    explanation: 'Missing linking verb "is" in introducing names (e.g. "My name is...").',
+  },
+  {
+    regex: /\bnme\b/gi,
+    category: 'Spelling',
+    replacement: 'name',
+    explanation: 'Spelling mistake: "nme" should be "name".',
+  },
+  {
+    regex: /\b(what)\s+(your\s+name)\b/gi,
+    category: 'Grammar',
+    replacement: 'What is your name',
+    explanation: 'Missing linking verb "is": use "What is your name?".',
+  },
+  {
+    regex: /\b(where)\s+(you\s+from)\b/gi,
+    category: 'Grammar',
+    replacement: 'Where are you from',
+    explanation: 'Missing auxiliary verb "are": use "Where are you from?".',
+  },
+  {
+    regex: /\b(how)\s+(are\s+u|u)\b/gi,
+    category: 'Grammar',
+    replacement: 'How are you',
+    explanation: 'Spell out "you" and maintain proper sentence structure.',
+  },
+  {
+    regex: /\b(how)\s+(you)\b/gi,
+    category: 'Grammar',
+    replacement: 'How are you',
+    explanation: 'Missing auxiliary verb "are": use "How are you?".',
+  },
+  {
+    regex: /\b(i|he|she)\s+(a|an)\s+(student|teacher|doctor|engineer|developer|designer|writer|person)\b/gi,
+    category: 'Grammar',
+    replacement: (_m, subj, art, role) => {
+      const s = subj.toLowerCase();
+      const verb = s === 'i' ? 'am' : 'is';
+      return `${subj.charAt(0).toUpperCase() + subj.slice(1).toLowerCase()} ${verb} ${art} ${role}`;
+    },
+    explanation: 'Missing linking verb (am/is) before predicate noun.',
+  },
+  {
+    regex: /\b(i|he|she)\s+(student|doctor|teacher|engineer|developer)\b/gi,
+    category: 'Grammar',
+    replacement: (_m, subj, role) => {
+      const s = subj.toLowerCase();
+      const verb = s === 'i' ? 'am' : 'is';
+      const art = /^[aeiou]/i.test(role) ? 'an' : 'a';
+      return `${subj.charAt(0).toUpperCase() + subj.slice(1).toLowerCase()} ${verb} ${art} ${role}`;
+    },
+    explanation: 'Missing linking verb and article (e.g. "I am a student").',
+  },
+  {
+    regex: /\b(this|that)\s+(is\s+a\s+|a\s+|)(car|book|pen|computer|phone|table|house|room)\b/gi,
+    category: 'Grammar',
+    replacement: (_m, dem, _mid, item) => `${dem.charAt(0).toUpperCase() + dem.slice(1).toLowerCase()} is a ${item}`,
+    explanation: 'Singular countable noun requires article and linking verb: "This is a ...".',
+  },
+  {
+    regex: /\b(plz|pls)\b/gi,
+    category: 'Spelling',
+    replacement: 'please',
+    explanation: 'Colloquial abbreviation: use standard "please".',
+  },
+  {
+    regex: /\b(thx|thanx)\b/gi,
+    category: 'Spelling',
+    replacement: 'thanks',
+    explanation: 'Colloquial abbreviation: use standard "thanks".',
+  },
+  {
+    regex: /\bu\b/g,
+    category: 'Spelling',
+    replacement: 'you',
+    explanation: 'Informal texting abbreviation: use standard "you".',
+  },
+  {
+    regex: /\br\b/g,
+    category: 'Spelling',
+    replacement: 'are',
+    explanation: 'Informal texting abbreviation: use standard "are".',
+  },
+  {
+    regex: /\bur\b/gi,
+    category: 'Spelling',
+    replacement: 'your',
+    explanation: 'Informal texting abbreviation: use standard "your".',
+  },
   {
     regex: /\b(i\s+am)\s+(write)\s+to\s+you\b/gi,
     category: 'Grammar',
@@ -923,6 +1017,12 @@ export function runLocalGrammarCorrect(text: string): { correctedText: string; i
 
   // Capitalize isolated 'i'
   corrected = corrected.replace(/\b(i)\b/g, 'I');
+
+  // Sentence ending punctuation check
+  if (!/[.!?।]$/.test(corrected.trim())) {
+    corrected = corrected.trim() + '.';
+    improvements.push('Added missing ending punctuation.');
+  }
 
   // Deduplicate improvements
   const uniqueImprovements = Array.from(new Set(improvements)).slice(0, 6);
