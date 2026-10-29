@@ -49,9 +49,14 @@ Practice touch typing in **English** and **Bangla (বাংলা)** with real-
 - **Finger Placement Guides:** Visual interactive keyboard drills targeting Home Row, Top Row, Bottom Row, and Number/Symbol Rows.
 - **Speed Drills:** Focus on weak fingers and improve muscle memory systematically.
 
-### 🎮 Typing Games
-- **Time Sprint:** Fast-paced adrenaline drills to shatter personal speed records.
-- **Accuracy Defense:** Challenge yourself to achieve 98%+ precision without backspaces.
+### 🎮 Arcade Game Arena (7 High-Octane Games)
+- **🧟 Zombie Rush (Survival Defense):** Defend your bunker barricade from invading undead waves with shotgun blasts and headshots!
+- **🥊 Keyboard K.O. (Neon Boxing Ring):** Throw jab and uppercut punch combos, dodge counter-attacks, and charge up the 40 DMG Super K.O.!
+- **🏎️ Nitro Racer:** 3-lane adrenaline race against intelligent AI ghost cars.
+- **🚀 Cosmic Blaster:** Shoot down alien UFO starships before they penetrate Earth's orbit.
+- **👾 Sky Drop:** Intercept falling neon words before they hit the ground.
+- **💣 Time Bomb:** Diffuse ticking explosive devices before the fuse runs out.
+- **👻 Ghost Memory:** Memorize rapid flashing words and type them accurately from memory.
 
 ### 📊 Performance Analytics & Leaderboard
 - **Detailed History:** Tracks the last 50 tests in local storage with timestamps, passage snippets, and statistics.

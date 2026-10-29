@@ -14,6 +14,11 @@ import {
   Trophy,
   ShieldAlert,
   Sparkles,
+  Skull,
+  Shield,
+  Swords,
+  Crosshair,
+  Heart,
 } from 'lucide-react';
 import { soundManager } from '../utils/sound';
 
@@ -22,7 +27,7 @@ interface TypingGamesProps {
   onStartAccuracyChallenge: () => void;
 }
 
-type ActiveGame = 'nitro' | 'space' | 'skydrop' | 'bomb' | 'ghost';
+type ActiveGame = 'nitro' | 'zombie' | 'boxing' | 'space' | 'skydrop' | 'bomb' | 'ghost';
 
 const COMMON_WORDS = [
   'speed', 'master', 'focus', 'accuracy', 'keyboard', 'keystroke', 'bangla', 'english',
@@ -376,6 +381,258 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
     }
   };
 
+  // ==========================================
+  // GAME 6: ZOMBIE RUSH (Survival Defense)
+  // ==========================================
+  interface ZombieEnemy {
+    id: number;
+    word: string;
+    progress: number;
+    speed: number;
+    avatar: string;
+    type: 'crawler' | 'walker' | 'runner' | 'boss';
+  }
+
+  const [zombieStarted, setZombieStarted] = useState(false);
+  const [zombieGameOver, setZombieGameOver] = useState(false);
+  const [zombieScore, setZombieScore] = useState(0);
+  const [zombieKills, setZombieKills] = useState(0);
+  const [zombieWave, setZombieWave] = useState(1);
+  const [barricadeHp, setBarricadeHp] = useState(100);
+  const [zombies, setZombies] = useState<ZombieEnemy[]>([]);
+  const [zombieInput, setZombieInput] = useState('');
+  const [zombieCombo, setZombieCombo] = useState(0);
+  const [lastShotEffect, setLastShotEffect] = useState<{ word: string; x: number } | null>(null);
+  const zombieInputRef = useRef<HTMLInputElement>(null);
+
+  const ZOMBIE_POOL = [
+    'brains', 'shotgun', 'zombie', 'apocalypse', 'infect', 'quarantine',
+    'survival', 'shelter', 'barricade', 'toxic', 'outbreak', 'serum',
+    'radiation', 'bunker', 'hazard', 'mutant', 'crawlers', 'nightmare',
+    'undead', 'reloading', 'headshot', 'defense', 'creeper', 'plasma',
+    'danger', 'scout', 'bite', 'curfew', 'biohazard', 'crossfire',
+  ];
+
+  const startZombieGame = () => {
+    setZombieStarted(true);
+    setZombieGameOver(false);
+    setZombieScore(0);
+    setZombieKills(0);
+    setZombieWave(1);
+    setBarricadeHp(100);
+    setZombieCombo(0);
+    setZombieInput('');
+    setLastShotEffect(null);
+    spawnZombieWave(1);
+    setTimeout(() => zombieInputRef.current?.focus(), 100);
+  };
+
+  const spawnZombieWave = (wave: number) => {
+    const avatars = ['🧟‍♂️', '🧟', '🧟‍♀️', '👹', '💀'];
+    const count = 3 + wave;
+    const newZombies: ZombieEnemy[] = [];
+    const usedWords = new Set<string>();
+
+    for (let i = 0; i < count; i++) {
+      let word = ZOMBIE_POOL[Math.floor(Math.random() * ZOMBIE_POOL.length)];
+      while (usedWords.has(word)) {
+        word = ZOMBIE_POOL[Math.floor(Math.random() * ZOMBIE_POOL.length)];
+      }
+      usedWords.add(word);
+
+      const isBoss = i === count - 1 && wave >= 2;
+      newZombies.push({
+        id: Date.now() + i * 100,
+        word,
+        progress: 5 + i * 10 + Math.random() * 8,
+        speed: (0.35 + wave * 0.08 + Math.random() * 0.15) * (isBoss ? 0.7 : 1),
+        avatar: isBoss ? '👹' : avatars[Math.floor(Math.random() * avatars.length)],
+        type: isBoss ? 'boss' : i % 2 === 0 ? 'runner' : 'walker',
+      });
+    }
+    setZombies(newZombies);
+  };
+
+  useEffect(() => {
+    if (!zombieStarted || zombieGameOver) return;
+
+    const interval = setInterval(() => {
+      setZombies((prevZombies) => {
+        let damageToBarricade = 0;
+        const updated = prevZombies
+          .map((z) => {
+            const nextProgress = z.progress + z.speed;
+            if (nextProgress >= 95) {
+              damageToBarricade += z.type === 'boss' ? 25 : 15;
+              soundManager.playError();
+              return null;
+            }
+            return { ...z, progress: nextProgress };
+          })
+          .filter(Boolean) as ZombieEnemy[];
+
+        if (damageToBarricade > 0) {
+          setBarricadeHp((hp) => {
+            const nextHp = Math.max(0, hp - damageToBarricade);
+            if (nextHp <= 0) {
+              setZombieGameOver(true);
+            }
+            return nextHp;
+          });
+          setZombieCombo(0);
+        }
+
+        if (updated.length === 0 && !zombieGameOver) {
+          soundManager.playSuccess();
+          setZombieWave((w) => {
+            const nextWave = w + 1;
+            setBarricadeHp((hp) => Math.min(100, hp + 20));
+            setZombieScore((s) => s + 500 * w);
+            setTimeout(() => spawnZombieWave(nextWave), 800);
+            return nextWave;
+          });
+        }
+
+        return updated;
+      });
+    }, 150);
+
+    return () => clearInterval(interval);
+  }, [zombieStarted, zombieGameOver]);
+
+  const handleZombieInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!zombieStarted || zombieGameOver) return;
+    const val = e.target.value.toLowerCase().trim();
+    setZombieInput(e.target.value);
+
+    const matchedIdx = zombies.findIndex((z) => z.word.toLowerCase() === val);
+    if (matchedIdx !== -1) {
+      const killed = zombies[matchedIdx];
+      soundManager.playSuccess();
+      setLastShotEffect({ word: killed.word, x: killed.progress });
+      setTimeout(() => setLastShotEffect(null), 600);
+
+      const pts = (killed.type === 'boss' ? 300 : 100) * zombieWave;
+      setZombieScore((s) => s + pts);
+      setZombieKills((k) => k + 1);
+      setZombieCombo((c) => c + 1);
+      setZombieInput('');
+
+      setZombies((prev) => prev.filter((_, idx) => idx !== matchedIdx));
+    }
+  };
+
+  // ==========================================
+  // GAME 7: KEYBOARD K.O. (Neon Boxing Ring)
+  // ==========================================
+  const BOXING_WORDS = [
+    'jab', 'hook', 'cross', 'punch', 'combo', 'dodge', 'uppercut',
+    'strike', 'counter', 'heavyweight', 'velocity', 'thunder',
+    'impact', 'champion', 'blitz', 'stamina', 'clinch', 'haymaker',
+    'dynamite', 'reflex', 'fighter', 'ringside', 'guard', 'knockout',
+  ];
+
+  const [boxingStarted, setBoxingStarted] = useState(false);
+  const [boxingGameOver, setBoxingGameOver] = useState(false);
+  const [boxingVictory, setBoxingVictory] = useState(false);
+  const [playerHp, setPlayerHp] = useState(100);
+  const [rivalHp, setRivalHp] = useState(100);
+  const [boxingRound, setBoxingRound] = useState(1);
+  const [boxingKoScore, setBoxingKoScore] = useState(0);
+  const [boxingSuperMeter, setBoxingSuperMeter] = useState(0);
+  const [currentPunchWord, setCurrentPunchWord] = useState('');
+  const [boxingInput, setBoxingInput] = useState('');
+  const [fighterAction, setFighterAction] = useState<'idle' | 'player_punch' | 'rival_punch' | 'super_ko'>('idle');
+  const [rivalTimer, setRivalTimer] = useState(3.5);
+  const boxingInputRef = useRef<HTMLInputElement>(null);
+
+  const startBoxingGame = () => {
+    setBoxingStarted(true);
+    setBoxingGameOver(false);
+    setBoxingVictory(false);
+    setPlayerHp(100);
+    setRivalHp(100);
+    setBoxingRound(1);
+    setBoxingKoScore(0);
+    setBoxingSuperMeter(0);
+    setBoxingInput('');
+    setFighterAction('idle');
+    setRivalTimer(3.5);
+    pickNextPunchWord();
+    setTimeout(() => boxingInputRef.current?.focus(), 100);
+  };
+
+  const pickNextPunchWord = () => {
+    const nextWord = BOXING_WORDS[Math.floor(Math.random() * BOXING_WORDS.length)];
+    setCurrentPunchWord(nextWord);
+    setBoxingInput('');
+    setRivalTimer(3.5);
+  };
+
+  useEffect(() => {
+    if (!boxingStarted || boxingGameOver || boxingVictory) return;
+
+    const interval = setInterval(() => {
+      setRivalTimer((prev) => {
+        if (prev <= 0.2) {
+          soundManager.playError();
+          setFighterAction('rival_punch');
+          setTimeout(() => setFighterAction('idle'), 500);
+
+          setPlayerHp((hp) => {
+            const nextHp = Math.max(0, hp - 18);
+            if (nextHp <= 0) {
+              setBoxingGameOver(true);
+            }
+            return nextHp;
+          });
+
+          const nextWord = BOXING_WORDS[Math.floor(Math.random() * BOXING_WORDS.length)];
+          setCurrentPunchWord(nextWord);
+          setBoxingInput('');
+          return 3.5;
+        }
+        return Math.max(0, +(prev - 0.1).toFixed(1));
+      });
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [boxingStarted, boxingGameOver, boxingVictory]);
+
+  const handleBoxingInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!boxingStarted || boxingGameOver || boxingVictory) return;
+    const val = e.target.value;
+    setBoxingInput(val);
+
+    if (val.trim().toLowerCase() === currentPunchWord.toLowerCase()) {
+      soundManager.playSuccess();
+      const isSuper = boxingSuperMeter >= 100;
+      const damage = isSuper ? 40 : 18;
+
+      setFighterAction(isSuper ? 'super_ko' : 'player_punch');
+      setTimeout(() => setFighterAction('idle'), 600);
+
+      setBoxingSuperMeter((prev) => (isSuper ? 0 : Math.min(100, prev + 25)));
+      setBoxingKoScore((s) => s + (isSuper ? 500 : 150));
+
+      setRivalHp((rhp) => {
+        const nextRivalHp = Math.max(0, rhp - damage);
+        if (nextRivalHp <= 0) {
+          if (boxingRound >= 3) {
+            setBoxingVictory(true);
+          } else {
+            setBoxingRound((r) => r + 1);
+            setPlayerHp(100);
+            return 100;
+          }
+        }
+        return nextRivalHp;
+      });
+
+      pickNextPunchWord();
+    }
+  };
+
   return (
     <div className="space-y-8">
       {/* Header Framed Closely by Floating Gaming Icons */}
@@ -445,6 +702,8 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       <div className="flex flex-wrap items-center justify-center gap-2">
         {[
           { id: 'nitro' as ActiveGame, label: '🏎️ Nitro Racer', badge: 'Popular' },
+          { id: 'zombie' as ActiveGame, label: '🧟 Zombie Rush', badge: 'Hot' },
+          { id: 'boxing' as ActiveGame, label: '🥊 Keyboard K.O.', badge: 'New' },
           { id: 'space' as ActiveGame, label: '🚀 Cosmic Blaster', badge: 'Action' },
           { id: 'skydrop' as ActiveGame, label: '👾 Sky Drop', badge: 'Classic' },
           { id: 'bomb' as ActiveGame, label: '💣 Time Bomb', badge: 'Panic' },
@@ -622,8 +881,444 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
       )}
 
       {/* ========================================================= */}
-      {/* GAME 2: SPACE INVADERS (Cosmic Alien Blaster)             */}
+      {/* GAME: ZOMBIE RUSH (Survival Barricade Defense)             */}
       {/* ========================================================= */}
+      {selectedGame === 'zombie' && (
+        <div className="rounded-3xl border border-red-500/20 bg-gradient-to-b from-[#181214] to-[#121411] p-6 shadow-2xl sm:p-8 relative overflow-hidden">
+          {/* Blood & Biohazard Neon Glow background */}
+          <div
+            className="pointer-events-none absolute -top-20 right-0 h-72 w-72 rounded-full opacity-20 blur-[100px]"
+            style={{ background: 'radial-gradient(circle, rgba(239,68,68,0.8) 0%, transparent 70%)' }}
+          />
+
+          {/* Top Bar: Title & Stats */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-500/10 text-2xl border border-red-500/30 shadow-[0_0_15px_rgba(239,68,68,0.25)]">
+                🧟
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xl font-black text-white">Zombie Rush: Survival Defense</h3>
+                  <span className="rounded-full bg-red-500/20 border border-red-500/40 px-2 py-0.5 text-[10px] font-bold text-red-400 uppercase tracking-wider">
+                    Wave {zombieWave}
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400">Type words floating above invading undead to fire shotgun blasts!</p>
+              </div>
+            </div>
+
+            {zombieStarted && !zombieGameOver && (
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <span className="text-[10px] uppercase font-bold tracking-wider text-gray-400">Barricade Armor</span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <div className="w-28 sm:w-36 h-2.5 rounded-full bg-black/50 border border-white/10 overflow-hidden">
+                      <div
+                        className={`h-full transition-all duration-300 ${
+                          barricadeHp > 50 ? 'bg-[#d7ff64]' : barricadeHp > 25 ? 'bg-amber-400' : 'bg-red-500 animate-pulse'
+                        }`}
+                        style={{ width: `${barricadeHp}%` }}
+                      />
+                    </div>
+                    <span className="font-mono text-xs font-black text-white">{barricadeHp}%</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 bg-black/40 px-3.5 py-1.5 rounded-2xl border border-white/10">
+                  <div className="text-center">
+                    <span className="text-[9px] text-gray-400 block uppercase">Kills</span>
+                    <span className="font-mono text-sm font-black text-red-400">{zombieKills} 💀</span>
+                  </div>
+                  <div className="h-6 w-px bg-white/10" />
+                  <div className="text-center">
+                    <span className="text-[9px] text-gray-400 block uppercase">Score</span>
+                    <span className="font-mono text-sm font-black text-[#d7ff64]">{zombieScore}</span>
+                  </div>
+                  {zombieCombo > 1 && (
+                    <>
+                      <div className="h-6 w-px bg-white/10" />
+                      <div className="text-center animate-bounce">
+                        <span className="text-[9px] text-amber-400 block uppercase">Combo</span>
+                        <span className="font-mono text-xs font-black text-amber-300">{zombieCombo}x 🔥</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Battlefield Area */}
+          <div className="relative mt-5 h-72 sm:h-80 w-full overflow-hidden rounded-2xl border border-white/10 bg-[#0e100c] shadow-inner flex flex-col justify-between p-4">
+            {/* Toxic Fog Grid */}
+            <div
+              className="absolute inset-0 opacity-15 pointer-events-none"
+              style={{
+                backgroundImage: 'linear-gradient(to right, #ffffff08 1px, transparent 1px), linear-gradient(to bottom, #ffffff08 1px, transparent 1px)',
+                backgroundSize: '24px 24px',
+              }}
+            />
+
+            {/* Left Defense Barricade Wall */}
+            <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-20 border-r-2 border-red-500/40 bg-gradient-to-r from-black/80 to-red-950/20 z-10 flex flex-col items-center justify-around py-4">
+              <span className="text-xs font-black tracking-widest text-red-400/80 [writing-mode:vertical-lr] rotate-180 uppercase">
+                🛡️ BARRICADE
+              </span>
+              <div className="h-10 w-2.5 rounded-full bg-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.5)]" />
+              <div className="text-xl">🚪</div>
+            </div>
+
+            {/* Danger Zone Marker */}
+            <div className="absolute right-0 top-2 px-3 py-1 bg-red-950/40 border border-red-500/20 rounded-lg text-[10px] text-red-300 font-mono flex items-center gap-1.5 z-10">
+              <span className="h-2 w-2 rounded-full bg-red-500 animate-ping" />
+              OUTBREAK ZONE • WAVE {zombieWave}
+            </div>
+
+            {/* Shotgun Flash Effect */}
+            {lastShotEffect && (
+              <div
+                className="absolute top-1/2 -translate-y-1/2 z-20 pointer-events-none animate-in fade-in zoom-in duration-150 flex items-center gap-2 bg-red-600/90 text-white font-black px-4 py-2 rounded-2xl shadow-[0_0_30px_rgba(239,68,68,0.8)] border border-yellow-300"
+                style={{ right: `${lastShotEffect.x}%` }}
+              >
+                <span>💥 HEADSHOT!</span>
+                <span className="font-mono text-yellow-300">+{100 * zombieWave}</span>
+              </div>
+            )}
+
+            {/* Active Zombies on the Battlefield */}
+            <div className="relative h-full w-full pl-16 sm:pl-20">
+              {zombies.map((z) => {
+                const isTarget = zombieInput.length > 0 && z.word.toLowerCase().startsWith(zombieInput.trim().toLowerCase());
+                return (
+                  <div
+                    key={z.id}
+                    className="absolute transition-all duration-150 flex flex-col items-center"
+                    style={{
+                      right: `${Math.min(88, z.progress)}%`,
+                      top: `${((z.id % 4) + 1) * 20}%`,
+                    }}
+                  >
+                    <div
+                      className={`mb-1 rounded-xl px-2.5 py-1 text-xs font-mono font-bold transition-all shadow-md ${
+                        isTarget
+                          ? 'border-2 border-[#d7ff64] bg-[#111310] text-[#d7ff64] shadow-[0_0_15px_rgba(215,255,100,0.5)] scale-110'
+                          : z.type === 'boss'
+                          ? 'border border-red-500 bg-red-950/80 text-red-200'
+                          : 'border border-white/20 bg-black/80 text-white'
+                      }`}
+                    >
+                      {z.type === 'boss' && <span className="mr-1 text-red-400">⚠️ BOSS:</span>}
+                      {z.word}
+                    </div>
+
+                    <div className="relative text-3xl sm:text-4xl animate-bounce duration-700">
+                      <span>{z.avatar}</span>
+                      {z.progress > 70 && (
+                        <span className="absolute -top-1 -right-1 text-xs animate-ping">🩸</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+
+              {!zombieStarted && !zombieGameOver && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
+                  <div className="h-16 w-16 rounded-3xl bg-red-500/10 border border-red-500/30 flex items-center justify-center text-4xl shadow-[0_0_30px_rgba(239,68,68,0.3)] mb-3">
+                    🧟‍♂️
+                  </div>
+                  <h4 className="text-2xl font-black text-white">Zombie Defense Outbreak</h4>
+                  <p className="max-w-md text-xs sm:text-sm text-gray-400 mt-1">
+                    An undead swarm is marching towards your bunker! Type the floating words to obliterate them before they tear down your barricade.
+                  </p>
+                  <button
+                    onClick={startZombieGame}
+                    className="mt-4 flex items-center gap-2 rounded-2xl bg-gradient-to-r from-red-500 to-rose-600 px-8 py-3 text-sm font-black text-white shadow-[0_0_25px_rgba(239,68,68,0.4)] transition hover:from-red-400 hover:to-rose-500 active:scale-95"
+                  >
+                    <Play className="h-4 w-4 fill-current" />
+                    <span>DEFEND BARRICADE (START)</span>
+                  </button>
+                </div>
+              )}
+
+              {zombieGameOver && (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 bg-black/80 backdrop-blur-sm z-30 animate-in zoom-in-95">
+                  <div className="text-5xl animate-pulse">💀</div>
+                  <h4 className="mt-2 text-2xl sm:text-3xl font-black text-red-400">BARRICADE BREACHED!</h4>
+                  <p className="text-sm text-gray-300 mt-1">
+                    You survived until <strong className="text-white">Wave {zombieWave}</strong> with <strong className="text-red-400">{zombieKills} Kills</strong> and a score of <strong className="text-[#d7ff64]">{zombieScore}</strong>!
+                  </p>
+                  <button
+                    onClick={startZombieGame}
+                    className="mt-4 flex items-center gap-2 rounded-2xl bg-red-500 px-7 py-3 text-xs font-black text-white shadow-lg transition hover:bg-red-400 active:scale-95"
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                    <span>Try Again (Respawn)</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Interactive Aim & Shoot Input Console */}
+          {zombieStarted && !zombieGameOver && (
+            <div className="mt-4 max-w-lg mx-auto space-y-2">
+              <div className="relative">
+                <input
+                  ref={zombieInputRef}
+                  type="text"
+                  value={zombieInput}
+                  onChange={handleZombieInput}
+                  placeholder="Target zombie word to fire shotgun blast..."
+                  className="w-full rounded-2xl border-2 border-red-500/40 bg-[#10120f] px-5 py-3.5 text-center font-mono text-lg font-bold text-white shadow-lg outline-none focus:border-red-500 focus:shadow-[0_0_20px_rgba(239,68,68,0.35)]"
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-lg opacity-60">🎯</span>
+              </div>
+              <p className="text-center text-[11px] text-gray-400">
+                💡 Tip: Type any zombie's word on screen — matching letters highlight in neon lime!
+              </p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ========================================================= */}
+      {/* GAME: KEYBOARD K.O. (Neon Boxing Arena)                   */}
+      {/* ========================================================= */}
+      {selectedGame === 'boxing' && (
+        <div className="rounded-3xl border border-cyan-500/20 bg-gradient-to-b from-[#101722] to-[#121417] p-6 shadow-2xl sm:p-8 relative overflow-hidden">
+          {/* Cyberpunk Blue & Orange Stadium Spotlight background */}
+          <div
+            className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-80 w-full max-w-2xl rounded-full opacity-20 blur-[120px]"
+            style={{ background: 'radial-gradient(circle, rgba(6,182,212,0.6) 0%, rgba(245,158,11,0.4) 60%, transparent 80%)' }}
+          />
+
+          {/* Top Bar: Title & Ring Stats */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-500/10 text-2xl border border-cyan-500/30 shadow-[0_0_15px_rgba(6,182,212,0.25)]">
+                🥊
+              </span>
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-xl font-black text-white">Keyboard K.O. Fighter</h3>
+                  <span className="rounded-full bg-cyan-500/20 border border-cyan-500/40 px-2 py-0.5 text-[10px] font-bold text-cyan-300 uppercase tracking-wider">
+                    Round {boxingRound} of 3
+                  </span>
+                </div>
+                <p className="text-xs text-gray-400">Type strike combos before the opponent countdown timer hits zero!</p>
+              </div>
+            </div>
+
+            {boxingStarted && !boxingGameOver && !boxingVictory && (
+              <div className="flex items-center gap-4 bg-black/40 px-4 py-2 rounded-2xl border border-white/10">
+                <div className="text-center">
+                  <span className="text-[9px] text-gray-400 block uppercase">Rival Timer</span>
+                  <span className={`font-mono text-sm font-black ${rivalTimer < 1.2 ? 'text-red-400 animate-ping' : 'text-amber-400'}`}>
+                    ⏱️ {rivalTimer.toFixed(1)}s
+                  </span>
+                </div>
+                <div className="h-6 w-px bg-white/10" />
+                <div className="text-center">
+                  <span className="text-[9px] text-gray-400 block uppercase">Score</span>
+                  <span className="font-mono text-sm font-black text-[#d7ff64]">{boxingKoScore}</span>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Dual Fighters Health & Ring Showcase */}
+          <div className="mt-5 space-y-4">
+            {/* Health Bars Row */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Player Side */}
+              <div className="rounded-2xl border border-cyan-500/30 bg-black/40 p-3.5 space-y-1.5">
+                <div className="flex items-center justify-between text-xs font-black">
+                  <span className="text-cyan-400 flex items-center gap-1.5">
+                    <span>🥷</span> YOU (CYBER BOXER)
+                  </span>
+                  <span className="font-mono text-white">{playerHp} HP</span>
+                </div>
+                <div className="h-3 w-full rounded-full bg-black/60 overflow-hidden border border-white/10">
+                  <div
+                    className="h-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-300"
+                    style={{ width: `${playerHp}%` }}
+                  />
+                </div>
+                {/* Super Finisher Meter */}
+                <div className="flex items-center justify-between text-[10px] text-gray-400 font-bold pt-1">
+                  <span>⚡ SUPER METER</span>
+                  <span className={boxingSuperMeter >= 100 ? 'text-[#d7ff64] font-black animate-pulse' : 'text-gray-400 font-mono'}>
+                    {boxingSuperMeter >= 100 ? '🔥 SUPER READY (40 DMG)!' : `${boxingSuperMeter}%`}
+                  </span>
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
+                  <div
+                    className={`h-full transition-all duration-300 ${
+                      boxingSuperMeter >= 100 ? 'bg-[#d7ff64] shadow-[0_0_10px_#d7ff64]' : 'bg-purple-500'
+                    }`}
+                    style={{ width: `${boxingSuperMeter}%` }}
+                  />
+                </div>
+              </div>
+
+              {/* Rival Side */}
+              <div className="rounded-2xl border border-rose-500/30 bg-black/40 p-3.5 space-y-1.5">
+                <div className="flex items-center justify-between text-xs font-black">
+                  <span className="text-rose-400 flex items-center gap-1.5">
+                    <span>🤖</span> TITAN SHADOW (RIVAL)
+                  </span>
+                  <span className="font-mono text-white">{rivalHp} HP</span>
+                </div>
+                <div className="h-3 w-full rounded-full bg-black/60 overflow-hidden border border-white/10">
+                  <div
+                    className="h-full bg-gradient-to-r from-rose-500 to-red-600 transition-all duration-300"
+                    style={{ width: `${rivalHp}%` }}
+                  />
+                </div>
+                <div className="flex items-center justify-between text-[10px] text-gray-400 font-bold pt-1">
+                  <span>ROUND STATUS</span>
+                  <span className="text-rose-300 font-mono">ROUND {boxingRound} / 3</span>
+                </div>
+                <div className="h-1.5 w-full rounded-full bg-white/5 overflow-hidden">
+                  <div
+                    className="h-full bg-rose-500/70 transition-all duration-300"
+                    style={{ width: `${(boxingRound / 3) * 100}%` }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Boxing Ring Stage */}
+            <div className="relative h-60 sm:h-72 w-full rounded-2xl border border-white/10 bg-[#0d1017] flex items-center justify-between px-8 sm:px-16 overflow-hidden shadow-inner">
+              {/* Ring ropes graphic */}
+              <div className="absolute inset-x-0 top-12 border-t border-cyan-500/20" />
+              <div className="absolute inset-x-0 top-24 border-t border-rose-500/20" />
+              <div className="absolute inset-x-0 bottom-12 border-t border-amber-500/20" />
+
+              {/* Player Fighter Avatar */}
+              <div
+                className={`flex flex-col items-center transition-all duration-200 z-10 ${
+                  fighterAction === 'player_punch' || fighterAction === 'super_ko'
+                    ? 'translate-x-12 sm:translate-x-16 scale-110'
+                    : fighterAction === 'rival_punch'
+                    ? '-translate-x-4 opacity-75'
+                    : 'animate-bounce duration-1000'
+                }`}
+              >
+                <div className="text-5xl sm:text-6xl">🥷</div>
+                <span className="mt-2 text-xs font-black text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2.5 py-0.5 rounded-full">
+                  {fighterAction === 'super_ko' ? '💥 SUPER K.O.!' : fighterAction === 'player_punch' ? '🥊 JAB!' : 'YOU'}
+                </span>
+              </div>
+
+              {/* Center Combo & Target Word Display */}
+              <div className="flex flex-col items-center justify-center text-center z-10">
+                {boxingStarted && !boxingGameOver && !boxingVictory && (
+                  <>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-amber-400 mb-1">
+                      {boxingSuperMeter >= 100 ? '⚡ UNLEASH SUPER FINISHER' : '⚡ POWER STRIKE WORD'}
+                    </span>
+                    <div className="rounded-2xl border-2 border-white/20 bg-black/80 px-6 py-3 shadow-[0_0_25px_rgba(215,255,100,0.2)]">
+                      <span className="font-mono text-3xl sm:text-4xl font-black text-[#d7ff64] tracking-wide">
+                        {currentPunchWord}
+                      </span>
+                    </div>
+                  </>
+                )}
+
+                {!boxingStarted && !boxingGameOver && !boxingVictory && (
+                  <div className="text-center">
+                    <div className="text-5xl mb-2">🥊</div>
+                    <h4 className="text-2xl font-black text-white">Keyboard K.O. Arena</h4>
+                    <p className="text-xs text-gray-400 max-w-xs mt-1">
+                      Knock out Titan Shadow in 3 rounds by typing rapid punch combos before the rival counter timer strikes!
+                    </p>
+                    <button
+                      onClick={startBoxingGame}
+                      className="mt-4 flex items-center gap-2 mx-auto rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 px-7 py-3 text-xs font-black text-[#111310] shadow-[0_0_25px_rgba(6,182,212,0.4)] transition hover:from-cyan-300 hover:to-blue-400 active:scale-95"
+                    >
+                      <Play className="h-4 w-4 fill-current" />
+                      <span>STEP INTO RING (START)</span>
+                    </button>
+                  </div>
+                )}
+
+                {boxingVictory && (
+                  <div className="text-center animate-in zoom-in-95">
+                    <div className="text-5xl animate-bounce">🏆</div>
+                    <h4 className="mt-2 text-2xl font-black text-[#d7ff64]">K.O.! CHAMPION VICTORY!</h4>
+                    <p className="text-xs text-gray-300 mt-1">
+                      You knocked out Titan Shadow across all 3 rounds! Score: <strong className="text-[#d7ff64]">{boxingKoScore}</strong>
+                    </p>
+                    <button
+                      onClick={startBoxingGame}
+                      className="mt-4 flex items-center gap-2 mx-auto rounded-xl bg-[#d7ff64] px-6 py-2.5 text-xs font-bold text-[#111310] shadow-lg transition hover:bg-[#e6ff8f]"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      <span>Fight Next Match</span>
+                    </button>
+                  </div>
+                )}
+
+                {boxingGameOver && (
+                  <div className="text-center animate-in zoom-in-95">
+                    <div className="text-5xl animate-pulse">😵</div>
+                    <h4 className="mt-2 text-2xl font-black text-rose-400">KNOCKED DOWN!</h4>
+                    <p className="text-xs text-gray-300 mt-1">
+                      Titan Shadow defeated you in Round {boxingRound}.
+                    </p>
+                    <button
+                      onClick={startBoxingGame}
+                      className="mt-4 flex items-center gap-2 mx-auto rounded-xl bg-rose-500 px-6 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-rose-400"
+                    >
+                      <RotateCcw className="h-4 w-4" />
+                      <span>Rematch (Get Up)</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Rival Fighter Avatar */}
+              <div
+                className={`flex flex-col items-center transition-all duration-200 z-10 ${
+                  fighterAction === 'rival_punch'
+                    ? '-translate-x-12 sm:-translate-x-16 scale-110'
+                    : fighterAction === 'player_punch' || fighterAction === 'super_ko'
+                    ? 'translate-x-4 opacity-75'
+                    : 'animate-bounce duration-1000'
+                }`}
+              >
+                <div className="text-5xl sm:text-6xl">🤖</div>
+                <span className="mt-2 text-xs font-black text-rose-400 bg-rose-950/60 border border-rose-500/30 px-2.5 py-0.5 rounded-full">
+                  {fighterAction === 'rival_punch' ? '💥 COUNTER!' : 'RIVAL'}
+                </span>
+              </div>
+            </div>
+
+            {/* Boxing Punch Typing Input */}
+            {boxingStarted && !boxingGameOver && !boxingVictory && (
+              <div className="max-w-md mx-auto space-y-2">
+                <input
+                  ref={boxingInputRef}
+                  type="text"
+                  value={boxingInput}
+                  onChange={handleBoxingInput}
+                  placeholder="Type strike word to throw punch..."
+                  className="w-full rounded-2xl border-2 border-cyan-500/40 bg-[#101217] px-5 py-3.5 text-center font-mono text-lg font-bold text-white shadow-lg outline-none focus:border-cyan-400 focus:shadow-[0_0_20px_rgba(6,182,212,0.35)]"
+                  autoComplete="off"
+                  spellCheck={false}
+                />
+                <p className="text-center text-[11px] text-gray-400">
+                  ⚡ Type fast before rival timer hits 0.0s! Charge Super Meter for 40 DMG K.O.!
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       {selectedGame === 'space' && (
         <div className="rounded-3xl border border-white/10 bg-[#161814] p-6 shadow-2xl sm:p-8">
           <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-4">
