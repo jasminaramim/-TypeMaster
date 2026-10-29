@@ -13,6 +13,8 @@ import {
   Award,
   ArrowRight,
   TrendingUp,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { soundManager } from '../utils/sound';
 
@@ -229,6 +231,43 @@ export const MinuteSpeedChallenge: React.FC = () => {
 
   const rank = getSpeedRank(currentWpm);
 
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
+
+  // Dynamic Speech bubble text based on live performance
+  const getCompanionSpeech = () => {
+    if (isFinished) {
+      return `🎉 "Good job! You did great work speed! Look at that amazing score of ${correctWordsCount} words!"`;
+    }
+    if (isRunning) {
+      if (currentWpm >= 80) {
+        return `⚡ "SUPERSONIC! ${currentWpm} WPM! You are an absolute typing machine!"`;
+      }
+      if (currentWpm >= 45) {
+        return `🔥 "Awesome flow! Look at your fingers fly! Keep up this great speed!"`;
+      }
+      return `🚀 "Great tempo! Keep going, your fingers are finding their rhythm!"`;
+    }
+    return `👋 "Hi! Ready to test your speed? Pick your minute target (${selectedMinutes} min) and start typing!"`;
+  };
+
+  const speakText = (text: string) => {
+    if (!voiceEnabled || typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+    try {
+      window.speechSynthesis.cancel();
+      const clean = text.replace(/[\u{1F600}-\u{1F6FF}|[\u{2600}-\u{26FF}]|[🎉⚡🔥🚀👋"]/gu, '').trim();
+      const utterance = new SpeechSynthesisUtterance(clean);
+      utterance.rate = 1.05;
+      utterance.pitch = 1.15;
+      window.speechSynthesis.speak(utterance);
+    } catch {}
+  };
+
+  useEffect(() => {
+    if (isFinished) {
+      speakText(`Good job! You did great work speed! You completed ${correctWordsCount} words at ${currentWpm} words per minute!`);
+    }
+  }, [isFinished]);
+
   const copyResult = () => {
     const text = `🏆 I typed ${correctWordsCount} Words in ${selectedMinutes} Minute(s) on TypeMaster!\n⚡ Speed: ${currentWpm} WPM • Accuracy: ${accuracy}%\nTry it now at http://localhost:3000`;
     navigator.clipboard.writeText(text);
@@ -237,7 +276,7 @@ export const MinuteSpeedChallenge: React.FC = () => {
   };
 
   return (
-    <section id="minute-speed-section" className="scroll-mt-24 space-y-8 pt-8">
+    <section id="minute-speed-section" className="scroll-mt-20 space-y-6 py-[25px] overflow-hidden">
       {/* Toast Alert */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-2xl border border-[#d7ff64]/50 bg-[#191b17] px-5 py-3 text-sm font-semibold text-[#d7ff64] shadow-[0_10px_30px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom-4">
@@ -248,48 +287,184 @@ export const MinuteSpeedChallenge: React.FC = () => {
 
       {/* Header Banner */}
       <div className="text-center">
-        <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#d7ff64]/30 bg-[#d7ff64]/10 px-4 py-1.5 text-xs font-bold tracking-wider text-[#d7ff64] shadow-[0_0_20px_rgba(215,255,100,0.15)]">
+        <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-[#d7ff64]/30 bg-[#d7ff64]/10 px-4 py-1 text-xs font-bold tracking-wider text-[#d7ff64] shadow-[0_0_20px_rgba(215,255,100,0.15)]">
           <Timer className="h-3.5 w-3.5" />
           <span>MINUTE-WISE SPEED CHALLENGE • 1 MIN • 2 MIN • 3 MIN • 5 MIN</span>
         </div>
 
-        <h2 className="text-3xl font-black tracking-tight text-white sm:text-5xl">
+        <h2 className="text-2xl font-black tracking-tight text-white sm:text-4xl md:text-5xl">
           Let&apos;s Test Your Typing <span className="text-[#d7ff64]">Word Count Speed!</span>
         </h2>
 
-        <p className="mx-auto mt-3 max-w-2xl text-base text-[#a4a69d] sm:text-lg">
+        <p className="mx-auto mt-2 max-w-2xl text-xs sm:text-sm text-[#a4a69d]">
           Select your minute target (1, 2, 3, or 5 minutes), start typing, and discover exactly how many words
           you can complete with real-time WPM, accuracy, and live countdown!
         </p>
       </div>
 
-      {/* Main Interactive Challenge Console */}
-      <div className="relative mx-auto w-full max-w-5xl rounded-3xl border border-white/10 bg-[#161814] p-5 shadow-2xl transition sm:p-8">
-        {/* Top Controls: Minute Selector, Language, and Mode */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-5">
-          {/* Minute Selector Buttons */}
-          <div className="flex items-center gap-1.5">
-            <span className="mr-1 text-xs font-bold uppercase tracking-wider text-gray-400">
-              Duration:
-            </span>
-            {([1, 2, 3, 5] as MinuteOption[]).map((mins) => (
+      {/* 3D Animated Typing Companion Motion Showcase */}
+      <div className="relative mx-auto w-full max-w-5xl overflow-hidden rounded-3xl border border-[#d7ff64]/25 bg-gradient-to-br from-[#1b1f17] via-[#141612] to-[#0e100d] p-4 sm:p-6 shadow-[0_20px_60px_rgba(0,0,0,0.7)]">
+        <div className="grid grid-cols-1 items-center gap-6 md:grid-cols-12">
+          {/* Left: 3D Character Model with Video-like Live Motion */}
+          <div className="relative md:col-span-5 flex flex-col items-center justify-center">
+            {/* Dynamic Speech Bubble pointing to the girl */}
+            <div className="relative mb-3 w-full max-w-sm rounded-2xl border border-[#d7ff64]/40 bg-[#181c15]/95 px-4 py-3 shadow-[0_10px_25px_rgba(215,255,100,0.2)] backdrop-blur-md animate-speech-pulse">
+              <div className="flex items-center justify-between gap-2 border-b border-white/10 pb-1.5 mb-1.5">
+                <div className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-[#d7ff64]">
+                  <Sparkles className="h-3 w-3 text-[#d7ff64]" />
+                  <span>SPEED COACH • KAMI</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const next = !voiceEnabled;
+                    setVoiceEnabled(next);
+                    if (next) speakText(getCompanionSpeech());
+                  }}
+                  className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] font-bold text-gray-300 hover:text-[#d7ff64] transition"
+                  title={voiceEnabled ? 'Mute coach voice' : 'Enable coach voice'}
+                >
+                  {voiceEnabled ? <Volume2 className="h-3 w-3 text-[#d7ff64]" /> : <VolumeX className="h-3 w-3 text-gray-500" />}
+                  <span>{voiceEnabled ? 'Voice ON' : 'Muted'}</span>
+                </button>
+              </div>
+
+              <p className="text-xs font-semibold leading-relaxed text-white sm:text-sm">
+                {getCompanionSpeech()}
+              </p>
+
+              {/* Triangle Pointer down to girl's face */}
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 h-0 w-0 border-l-[7px] border-l-transparent border-r-[7px] border-r-transparent border-t-[7px] border-t-[#181c15]" />
+            </div>
+
+            {/* 3D Character Container with Video-like motion and floating keycaps */}
+            <div className="relative flex items-center justify-center w-full max-w-[280px] sm:max-w-[340px]">
+              {/* Neon Glow Pulse behind Speedometer Gauge */}
+              <div className="pointer-events-none absolute left-6 top-8 h-28 w-28 rounded-full bg-[#d7ff64]/25 blur-2xl animate-neon-pulse" />
+
+              {/* Floating Keycaps ASDF */}
+              <div className="pointer-events-none absolute -left-1 top-12 flex flex-col gap-2 z-10">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-[#d7ff64]/50 bg-[#161814]/90 font-mono text-xs font-black text-[#d7ff64] shadow-lg animate-float-key" style={{ animationDelay: '0s' }}>
+                  A
+                </span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-cyan-400/50 bg-[#161814]/90 font-mono text-xs font-black text-cyan-400 shadow-lg animate-float-key" style={{ animationDelay: '0.4s' }}>
+                  S
+                </span>
+              </div>
+              <div className="pointer-events-none absolute -right-1 top-16 flex flex-col gap-2 z-10">
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-emerald-400/50 bg-[#161814]/90 font-mono text-xs font-black text-emerald-400 shadow-lg animate-float-key" style={{ animationDelay: '0.2s' }}>
+                  D
+                </span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-amber-400/50 bg-[#161814]/90 font-mono text-xs font-black text-amber-400 shadow-lg animate-float-key" style={{ animationDelay: '0.6s' }}>
+                  F
+                </span>
+              </div>
+
+              {/* 3D Character Image with Motion Layers */}
+              <div className={`relative transition-transform duration-300 animate-companion-breathe ${isRunning ? 'animate-companion-hands' : ''}`}>
+                <div className="animate-companion-face">
+                  <img
+                    src="/typing-companion.png"
+                    alt="3D Animated Typing Companion Coach"
+                    className="h-auto w-full max-h-[260px] sm:max-h-[300px] object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.8)]"
+                    loading="eager"
+                  />
+                </div>
+              </div>
+
+              {/* Live Motion Status Tag */}
+              <div className="absolute -bottom-2 flex items-center gap-1.5 rounded-full border border-white/10 bg-[#111310]/90 px-3 py-1 text-[10px] font-bold text-gray-300 backdrop-blur-md shadow-lg">
+                <span className={`h-2 w-2 rounded-full ${isRunning ? 'bg-[#d7ff64] animate-ping' : 'bg-emerald-400'}`} />
+                <span>{isRunning ? 'Coach Observing Live Speed ⚡' : 'Live Motion Coach Active 🎬'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right: Quick Speed Targets & Live Challenge Highlights */}
+          <div className="md:col-span-7 flex flex-col justify-center space-y-4">
+            <div className="rounded-2xl border border-white/10 bg-[#111310]/70 p-4 backdrop-blur-sm">
+              <h4 className="flex items-center gap-2 text-sm font-black text-white sm:text-base">
+                <Flame className="h-4 w-4 text-[#d7ff64]" />
+                <span>Target Speed Goals & Live Feedback</span>
+              </h4>
+              <p className="mt-1 text-xs text-gray-400">
+                Kami reacts to every word you type! Test your endurance and find out how many words you can conquer before the timer reaches 0:00.
+              </p>
+
+              {/* Badges Row */}
+              <div className="mt-3 grid grid-cols-3 gap-2 text-center">
+                <div className="rounded-xl border border-white/5 bg-white/[0.03] p-2">
+                  <span className="block text-[10px] font-bold text-gray-500 uppercase">Target</span>
+                  <span className="text-xs font-black text-[#d7ff64] sm:text-sm">85+ WPM</span>
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/[0.03] p-2">
+                  <span className="block text-[10px] font-bold text-gray-500 uppercase">Standard</span>
+                  <span className="text-xs font-black text-cyan-400 sm:text-sm">Faster & Better</span>
+                </div>
+                <div className="rounded-xl border border-white/5 bg-white/[0.03] p-2">
+                  <span className="block text-[10px] font-bold text-gray-500 uppercase">Feedback</span>
+                  <span className="text-xs font-black text-emerald-400 sm:text-sm">Real-time Voice</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Interactive Prompt */}
+            <div className="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-[#d7ff64]/20 bg-[#d7ff64]/5 px-4 py-2.5">
+              <span className="text-xs font-bold text-gray-300">
+                💡 <strong className="text-white">Pro Tip:</strong> Select your minutes below, keep your eyes on the word stream, and press SPACE after each word!
+              </span>
               <button
-                key={mins}
-                onClick={() => resetTest(mins)}
-                disabled={isRunning}
-                className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition sm:text-sm ${
-                  selectedMinutes === mins
-                    ? 'border border-[#d7ff64]/50 bg-[#d7ff64] text-[#111310] shadow-[0_0_15px_rgba(215,255,100,0.3)]'
-                    : 'border border-white/10 bg-[#111310] text-gray-400 hover:border-white/20 hover:text-white'
-                } disabled:opacity-50`}
+                type="button"
+                onClick={() => {
+                  speakText(getCompanionSpeech());
+                }}
+                className="inline-flex items-center gap-1 text-[11px] font-bold text-[#d7ff64] hover:underline"
               >
-                {mins} {mins === 1 ? 'Minute' : 'Minutes'}
+                <span>🔊 Hear Kami</span>
               </button>
-            ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Interactive Challenge Console */}
+      <div className="relative mx-auto w-full max-w-5xl rounded-3xl border border-white/10 bg-[#161814] p-4 shadow-2xl transition sm:p-8">
+        {/* Top Controls: Minute Selector, Language, and Mode */}
+        <div className="mb-6 flex flex-col gap-4 border-b border-white/5 pb-5 lg:flex-row lg:items-center lg:justify-between">
+          {/* Responsive Duration Selector */}
+          <div className="w-full lg:w-auto">
+            <div className="mb-1.5 flex items-center justify-between gap-2 sm:justify-start">
+              <span className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gray-400">
+                <Timer className="h-3.5 w-3.5 text-[#d7ff64]" />
+                Duration Target:
+              </span>
+              <span className="text-[11px] font-bold text-[#d7ff64] sm:hidden">
+                {selectedMinutes} {selectedMinutes === 1 ? 'Minute' : 'Minutes'}
+              </span>
+            </div>
+
+            {/* Responsive grid for 1m, 2m, 3m, 5m that NEVER clips or overflows */}
+            <div className="grid grid-cols-4 gap-1.5 w-full sm:flex sm:items-center sm:gap-2">
+              {([1, 2, 3, 5] as MinuteOption[]).map((mins) => (
+                <button
+                  key={mins}
+                  onClick={() => resetTest(mins)}
+                  disabled={isRunning}
+                  className={`rounded-xl px-2.5 sm:px-3.5 py-2 text-xs font-bold transition text-center whitespace-nowrap ${
+                    selectedMinutes === mins
+                      ? 'border border-[#d7ff64]/60 bg-[#d7ff64] text-[#111310] shadow-[0_0_15px_rgba(215,255,100,0.35)] font-black'
+                      : 'border border-white/10 bg-[#111310] text-gray-300 hover:border-white/25 hover:text-white'
+                  } disabled:opacity-50`}
+                >
+                  <span className="sm:hidden">{mins}m</span>
+                  <span className="hidden sm:inline">{mins} {mins === 1 ? 'Minute' : 'Minutes'}</span>
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Right Controls: Mode + Language + Reset */}
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2 w-full lg:w-auto">
             {/* Mode Selector */}
             <div className="flex items-center rounded-xl border border-white/5 bg-[#111310] p-1">
               <button
@@ -297,7 +472,7 @@ export const MinuteSpeedChallenge: React.FC = () => {
                   setMode('words');
                   resetTest();
                 }}
-                className={`rounded-lg px-3 py-1 text-xs font-bold transition ${
+                className={`rounded-lg px-2.5 sm:px-3 py-1 text-xs font-bold transition ${
                   mode === 'words' ? 'bg-[#d7ff64] text-[#111310]' : 'text-gray-400 hover:text-white'
                 }`}
               >
@@ -308,7 +483,7 @@ export const MinuteSpeedChallenge: React.FC = () => {
                   setMode('free');
                   resetTest();
                 }}
-                className={`rounded-lg px-3 py-1 text-xs font-bold transition ${
+                className={`rounded-lg px-2.5 sm:px-3 py-1 text-xs font-bold transition ${
                   mode === 'free' ? 'bg-[#d7ff64] text-[#111310]' : 'text-gray-400 hover:text-white'
                 }`}
               >
@@ -322,7 +497,7 @@ export const MinuteSpeedChallenge: React.FC = () => {
                 <button
                   key={lang}
                   onClick={() => setLanguage(lang)}
-                  className={`rounded-lg px-3 py-1 text-xs font-bold transition ${
+                  className={`rounded-lg px-2.5 sm:px-3 py-1 text-xs font-bold transition ${
                     language === lang ? 'bg-[#d7ff64] text-[#111310]' : 'text-gray-400 hover:text-white'
                   }`}
                 >

@@ -142,9 +142,9 @@ export const TypingTest: React.FC<TypingTestProps> = ({
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 py-[25px] overflow-hidden">
       {/* Main Typing Console */}
-      <section id="typing-console" className="scroll-mt-24 rounded-3xl border border-white/10 bg-[#161814] p-5 shadow-2xl transition sm:p-8">
+      <section id="typing-console" className="scroll-mt-20 rounded-3xl border border-white/10 bg-[#161814] p-4 shadow-2xl transition sm:p-8">
         {/* Controls Bar: Language + Timer + Randomize */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-5">
           {/* Language Selector */}

@@ -73,3 +73,95 @@ input:focus-visible {
 .cursor-caret {
   animation: pulse-cursor 1s infinite;
 }
+
+/* 3D Companion Video-like Character Animations */
+@keyframes companion-breathe {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) rotate(-0.8deg) scale(1.01);
+  }
+}
+
+@keyframes companion-face-bob {
+  0%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  25% {
+    transform: rotate(1deg) translateY(-2px);
+  }
+  75% {
+    transform: rotate(-1.2deg) translateY(1px);
+  }
+}
+
+@keyframes companion-hands-active {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  25% {
+    transform: translateY(-2px) scale(1.02);
+  }
+  50% {
+    transform: translateY(1.5px) scale(0.99);
+  }
+  75% {
+    transform: translateY(-1px) scale(1.01);
+  }
+}
+
+@keyframes float-keycap {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(3deg);
+  }
+}
+
+@keyframes speech-bubble-pulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 10px 25px -5px rgba(215, 255, 100, 0.2);
+  }
+  50% {
+    transform: scale(1.02);
+    box-shadow: 0 15px 35px -5px rgba(215, 255, 100, 0.35);
+  }
+}
+
+@keyframes neon-glow-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.75;
+    transform: scale(1.06);
+  }
+}
+
+.animate-companion-breathe {
+  animation: companion-breathe 4s ease-in-out infinite;
+}
+
+.animate-companion-face {
+  animation: companion-face-bob 3s ease-in-out infinite;
+}
+
+.animate-companion-hands {
+  animation: companion-hands-active 0.4s ease-in-out infinite;
+}
+
+.animate-float-key {
+  animation: float-keycap 2.5s ease-in-out infinite;
+}
+
+.animate-speech-pulse {
+  animation: speech-bubble-pulse 2s ease-in-out infinite;
+}
+
+.animate-neon-pulse {
+  animation: neon-glow-pulse 3s ease-in-out infinite;
+}

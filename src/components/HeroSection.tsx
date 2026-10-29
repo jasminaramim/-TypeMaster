@@ -112,7 +112,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   };
 
   return (
-    <section className="relative mx-auto w-full pt-4 pb-12 sm:pt-6 sm:pb-16">
+    <section className="relative mx-auto w-full py-[25px] overflow-hidden">
       {/* Background Neon Aura Effect */}
       <div
         className="pointer-events-none absolute left-1/2 -top-24 h-[500px] w-full max-w-5xl -translate-x-1/2 rounded-full opacity-30 blur-[120px]"

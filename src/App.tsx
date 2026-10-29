@@ -120,9 +120,9 @@ export default function App() {
       />
 
       {/* Main Container */}
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
+      <main className="mx-auto w-full max-w-6xl flex-1 px-3 sm:px-6 py-[25px] overflow-x-hidden">
         {tab === 'test' && (
-          <div className="space-y-16">
+          <div className="space-y-6">
             <HeroSection
               onStartTyping={scrollToMinuteSpeed}
               onScrollToGrammar={scrollToGrammar}

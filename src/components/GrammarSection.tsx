@@ -266,7 +266,7 @@ export const GrammarSection: React.FC = () => {
   ];
 
   return (
-    <section id="grammar-section" className="scroll-mt-24 space-y-8 pt-10">
+    <section id="grammar-section" className="scroll-mt-20 space-y-6 py-[25px] overflow-hidden">
       {/* Toast Notification */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-2xl border border-[#d7ff64]/50 bg-[#191b17] px-5 py-3 text-sm font-semibold text-[#d7ff64] shadow-[0_10px_30px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom-4">
