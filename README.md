@@ -65,7 +65,7 @@ Practice touch typing in **English** and **Bangla (বাংলা)** with real-
 |---|---|
 | **Frontend** | React 19, TypeScript, Vite 8, Tailwind CSS v4, Motion, Lucide React |
 | **Backend** | Node.js, Express 4, `@google/genai` (Gemini SDK) |
-| **Engines** | Google Gemini 3.8 Flash + Built-in Multilingual Linguistic Grammar Engine |
+| **Engines** | High-precision Keystroke Telemetry, WPM/Accuracy Computation Engine |
 | **Aesthetics** | Dark Mode (`#111310`), Neon Lime Accent (`#d7ff64`), Glassmorphism, Responsive Mobile Drawer |
 
 ---
@@ -87,16 +87,11 @@ cd -TypeMaster
 npm install --legacy-peer-deps
 ```
 
-### 3. Configure Environment Variables (Optional)
-Create a `.env` file in the project root:
-```env
-# Optional: Set your Gemini API key for cloud AI features
-GEMINI_API_KEY="your-gemini-api-key-here"
-
-# Server Port (defaults to 3000)
-PORT=3000
+### 3. Run the Development Server
+```bash
+npm run dev
 ```
-> *Note: If no Gemini API key is provided, TypeMaster automatically uses its built-in linguistic grammar engine seamlessly.*
+Open your browser and navigate to **[http://localhost:3000](http://localhost:3000)**.
 
 ### 4. Run the Development Server
 ```bash
@@ -136,18 +131,18 @@ typemaster/
 │   ├── components/
 │   │   ├── Header.tsx          # Full-width navigation header with brand logo
 │   │   ├── HeroSection.tsx     # Big hero section with video player and CTAs
-│   │   ├── TypingTest.tsx      # Main typing test console & telemetry
-│   │   ├── GrammarSection.tsx  # AI Grammar Checker & Text Rewriter
-│   │   ├── LearningCenter.tsx  # Finger placement drills & lesson center
-│   │   ├── TypingGames.tsx     # Interactive typing speed challenges
-│   │   ├── HistoryView.tsx     # Historical tests and stats
-│   │   ├── LeaderboardView.tsx # Leaderboard ranks and badges
-│   │   └── Footer.tsx          # App footer with brand logo and links
+│   │   ├── TypingTest.tsx          # Guided passage speed workout & telemetry
+│   │   ├── MinuteSpeedChallenge.tsx # 1-min & custom minute speed challenge with 3D companion
+│   │   ├── CelebrationPopup.tsx    # Celebratory video popup upon challenge finish
+│   │   ├── LearningCenter.tsx      # Finger placement drills & lesson center
+│   │   ├── TypingGames.tsx         # Arcade speed arena (Nitro Racer, Cosmic Blaster, etc.)
+│   │   ├── HistoryView.tsx         # Historical tests and stats
+│   │   ├── LeaderboardView.tsx     # Leaderboard ranks and badges
+│   │   └── Footer.tsx              # App footer with brand logo and links
 │   ├── data/
-│   │   └── passages.ts         # Curated English & Bangla practice passages
+│   │   └── passages.ts             # Curated English & Bangla practice passages
 │   ├── utils/
-│   │   ├── grammarEngine.ts    # Built-in fallback linguistic grammar & rewriter engine
-│   │   └── sound.ts            # Web Audio mechanical keyboard synthesizer
+│   │   └── sound.ts                # Web Audio mechanical keyboard synthesizer
 │   ├── App.tsx                 # Main application controller
 │   ├── index.css               # Core design tokens & Tailwind imports
 │   └── main.tsx                # React root mount
