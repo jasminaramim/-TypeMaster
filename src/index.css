@@ -165,3 +165,43 @@ input:focus-visible {
 .animate-neon-pulse {
   animation: neon-glow-pulse 3s ease-in-out infinite;
 }
+
+/* Floating Game Icons Animations */
+@keyframes float-game-slow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-12px) rotate(6deg);
+  }
+}
+
+@keyframes float-game-reverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(10px) rotate(-6deg);
+  }
+}
+
+@keyframes float-game-bounce {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.08);
+  }
+}
+
+.animate-float-game-1 {
+  animation: float-game-slow 4s ease-in-out infinite;
+}
+
+.animate-float-game-2 {
+  animation: float-game-reverse 3.5s ease-in-out infinite;
+}
+
+.animate-float-game-3 {
+  animation: float-game-bounce 3s ease-in-out infinite;
+}

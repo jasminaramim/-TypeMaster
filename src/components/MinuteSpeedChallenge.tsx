@@ -266,12 +266,6 @@ export const MinuteSpeedChallenge: React.FC = () => {
     } catch {}
   };
 
-  useEffect(() => {
-    if (isFinished) {
-      speakText(`Good job! You did great work speed! You completed ${correctWordsCount} words at ${currentWpm} words per minute!`);
-    }
-  }, [isFinished]);
-
   const copyResult = () => {
     const text = `🏆 I typed ${correctWordsCount} Words in ${selectedMinutes} Minute(s) on TypeMaster!\n⚡ Speed: ${currentWpm} WPM • Accuracy: ${accuracy}%\nTry it now at http://localhost:3000`;
     navigator.clipboard.writeText(text);

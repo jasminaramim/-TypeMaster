@@ -5,6 +5,7 @@ import { MinuteSpeedChallenge } from './components/MinuteSpeedChallenge';
 import { TypingTest } from './components/TypingTest';
 import { LearningCenter } from './components/LearningCenter';
 import { TypingGames } from './components/TypingGames';
+import { HomepageGameSection } from './components/HomepageGameSection';
 import { HistoryView } from './components/HistoryView';
 import { LeaderboardView } from './components/LeaderboardView';
 import { Footer } from './components/Footer';
@@ -133,6 +134,24 @@ export default function App() {
               bestWpm={bestWpm}
               averageWpm={averageWpm}
               totalTests={history.length}
+            />
+
+            {/* Separator Accent Divider */}
+            <div className="relative py-2">
+              <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                <div className="w-full border-t border-white/10" />
+              </div>
+              <div className="relative flex justify-center">
+                <span className="bg-[#111310] px-4 text-xs font-bold uppercase tracking-widest text-[#d7ff64]">
+                  ✦ Arcade Arena • Floating Interactive Games ✦
+                </span>
+              </div>
+            </div>
+
+            {/* Homepage Arcade Game Section with Floating Gaming Icons */}
+            <HomepageGameSection
+              onStartSprint={scrollToMinuteSpeed}
+              onStartAccuracyChallenge={scrollToMinuteSpeed}
             />
           </div>
         )}
