@@ -224,12 +224,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             />
 
             {/* Top Overlay Badges */}
-            <div className="pointer-events-none absolute top-3 left-3 right-3 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="flex items-center gap-2 rounded-xl border border-white/10 bg-[#111310]/80 px-3 py-1.5 backdrop-blur-md">
-                  <Zap className="h-3.5 w-3.5 text-[#d7ff64]" />
-                  <span className="text-xs font-semibold text-white">
-                    Real-Time Typing Experience
+            <div className="pointer-events-none absolute top-2 left-2 right-2 sm:top-3 sm:left-3 sm:right-3 flex items-center justify-between gap-1.5">
+              <div className="flex items-center">
+                <div className="flex items-center gap-1 sm:gap-2 rounded-lg sm:rounded-xl border border-white/10 bg-[#111310]/85 px-2 py-0.5 sm:px-3 sm:py-1.5 backdrop-blur-md whitespace-nowrap">
+                  <Zap className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-[#d7ff64]" />
+                  <span className="text-[10px] sm:text-xs font-semibold text-white">
+                    <span className="inline sm:hidden">Live Engine</span>
+                    <span className="hidden sm:inline">Real-Time Typing Experience</span>
                   </span>
                 </div>
               </div>
@@ -241,10 +242,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     e.stopPropagation();
                     handleToggleMute();
                   }}
-                  className="pointer-events-auto flex items-center gap-1.5 rounded-xl border border-white/15 bg-black/60 px-3 py-1.5 text-xs font-medium text-gray-200 backdrop-blur-md transition hover:border-[#d7ff64] hover:text-[#d7ff64]"
+                  className="pointer-events-auto flex items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl border border-white/15 bg-black/75 px-2 py-0.5 sm:px-3 sm:py-1.5 text-[10px] sm:text-xs font-semibold text-gray-200 backdrop-blur-md transition hover:border-[#d7ff64] hover:text-[#d7ff64] whitespace-nowrap shadow-sm"
                 >
-                  <VolumeX className="h-3.5 w-3.5 text-amber-400" />
-                  <span>Click to Unmute</span>
+                  <VolumeX className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-amber-400" />
+                  <span>
+                    <span className="inline sm:hidden">Unmute</span>
+                    <span className="hidden sm:inline">Click to Unmute</span>
+                  </span>
                 </button>
               )}
             </div>
@@ -255,78 +259,78 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                 onClick={handleTogglePlay}
                 className="absolute inset-0 flex items-center justify-center bg-black/40 cursor-pointer"
               >
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/20 bg-[#d7ff64] text-[#111310] shadow-[0_0_40px_rgba(215,255,100,0.6)] transition hover:scale-110">
-                  <Play className="h-8 w-8 translate-x-0.5 fill-[#111310]" />
+                <div className="flex h-14 w-14 sm:h-20 sm:w-20 items-center justify-center rounded-full border border-white/20 bg-[#d7ff64] text-[#111310] shadow-[0_0_40px_rgba(215,255,100,0.6)] transition hover:scale-110">
+                  <Play className="h-6 w-6 sm:h-8 sm:w-8 translate-x-0.5 fill-[#111310]" />
                 </div>
               </div>
             )}
 
             {/* Bottom Overlay Controls Bar */}
             <div
-              className={`absolute bottom-0 left-0 right-0 p-3 sm:p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300 ${
+              className={`absolute bottom-0 left-0 right-0 p-2 sm:p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent transition-opacity duration-300 ${
                 showControls ? 'opacity-100' : 'opacity-0 hover:opacity-100'
               }`}
             >
               {/* Progress Bar (Scrubbable) */}
               <div
                 onClick={handleProgressClick}
-                className="group/scrub relative mb-3 h-1.5 w-full cursor-pointer rounded-full bg-white/20 transition-all hover:h-2.5"
+                className="group/scrub relative mb-2 sm:mb-3 h-1 sm:h-1.5 w-full cursor-pointer rounded-full bg-white/20 transition-all hover:h-2"
               >
                 <div
-                  className="h-full rounded-full bg-[#d7ff64] shadow-[0_0_10px_#d7ff64]"
+                  className="h-full rounded-full bg-[#d7ff64] shadow-[0_0_8px_#d7ff64]"
                   style={{ width: `${progress}%` }}
                 />
               </div>
 
               {/* Controls Row */}
-              <div className="flex items-center justify-between gap-3 text-white">
-                <div className="flex items-center gap-2 sm:gap-3">
+              <div className="flex items-center justify-between gap-1.5 sm:gap-3 text-white">
+                <div className="flex items-center gap-1.5 sm:gap-3">
                   {/* Play / Pause Button */}
                   <button
                     onClick={handleTogglePlay}
-                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white backdrop-blur-md transition hover:bg-[#d7ff64] hover:text-[#111310]"
+                    className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl bg-white/10 text-white backdrop-blur-md transition hover:bg-[#d7ff64] hover:text-[#111310]"
                     title={isPlaying ? 'Pause' : 'Play'}
                   >
-                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4 fill-current ml-0.5" />}
+                    {isPlaying ? <Pause className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Play className="h-3.5 w-3.5 sm:h-4 sm:w-4 fill-current ml-0.5" />}
                   </button>
 
                   {/* Restart Button */}
                   <button
                     onClick={handleRestart}
-                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
+                    className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20"
                     title="Restart Video"
                   >
-                    <RotateCcw className="h-3.5 w-3.5" />
+                    <RotateCcw className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   </button>
 
                   {/* Sound Toggle */}
                   <button
                     onClick={handleToggleMute}
-                    className={`flex h-9 items-center gap-1.5 rounded-xl px-3 text-xs font-semibold backdrop-blur-md transition ${
+                    className={`flex h-7 sm:h-9 items-center gap-1 sm:gap-1.5 rounded-lg sm:rounded-xl px-2 sm:px-3 text-[10px] sm:text-xs font-semibold backdrop-blur-md transition ${
                       isMuted
                         ? 'bg-white/10 text-gray-300 hover:bg-white/20 hover:text-white'
                         : 'bg-[#d7ff64] text-[#111310] shadow-[0_0_15px_rgba(215,255,100,0.3)]'
                     }`}
                     title={isMuted ? 'Unmute' : 'Mute'}
                   >
-                    {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+                    {isMuted ? <VolumeX className="h-3 w-3 sm:h-4 sm:w-4" /> : <Volume2 className="h-3 w-3 sm:h-4 sm:w-4" />}
                     <span className="hidden sm:inline">{isMuted ? 'Muted' : 'Sound On'}</span>
                   </button>
 
                   {/* Time Stamp */}
-                  <span className="font-mono text-xs text-gray-300">
+                  <span className="font-mono text-[10px] sm:text-xs text-gray-300">
                     {currentTime} / {durationTime}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2">
                   {/* Fullscreen Button */}
                   <button
                     onClick={handleToggleFullscreen}
-                    className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 hover:text-[#d7ff64]"
+                    className="flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-lg sm:rounded-xl bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 hover:text-[#d7ff64]"
                     title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
                   >
-                    {isFullscreen ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+                    {isFullscreen ? <Minimize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> : <Maximize2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />}
                   </button>
                 </div>
               </div>

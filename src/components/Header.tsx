@@ -52,9 +52,8 @@ export const Header: React.FC<HeaderProps> = ({
               <img
                 src="/logo.png"
                 alt="TypeMaster"
-                className="h-9 sm:h-11 w-auto max-w-[180px] sm:max-w-[220px] object-contain transition group-hover:scale-105 drop-shadow-[0_0_16px_rgba(215,255,100,0.25)]"
+                className="h-12 sm:h-16 md:h-20 w-auto max-w-[240px] sm:max-w-[320px] md:max-w-[400px] object-contain transition group-hover:scale-105 drop-shadow-[0_0_24px_rgba(215,255,100,0.35)]"
                 onError={(e) => {
-                  // Fallback if image fails to load
                   e.currentTarget.style.display = 'none';
                 }}
               />

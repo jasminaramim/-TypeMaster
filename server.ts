@@ -104,7 +104,7 @@ ${text}
         },
       });
 
-      const response = await withTimeout(aiCall, 2500);
+      const response = await withTimeout(aiCall, 8000);
       const parsed = JSON.parse(response.text || '{}');
       if (parsed.score !== undefined && Array.isArray(parsed.issues)) {
         return res.json({
@@ -169,7 +169,7 @@ ${text}
         },
       });
 
-      const response = await withTimeout(aiCall, 2500);
+      const response = await withTimeout(aiCall, 8000);
       const parsed = JSON.parse(response.text || '{}');
       if (parsed.correctedText) {
         return res.json({
@@ -235,7 +235,7 @@ ${text}
         },
       });
 
-      const response = await withTimeout(aiCall, 2500);
+      const response = await withTimeout(aiCall, 8000);
       const parsed = JSON.parse(response.text || '{}');
       if (parsed.rewrittenText) {
         return res.json({

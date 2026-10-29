@@ -212,6 +212,13 @@ export const GrammarSection: React.FC = () => {
     }
   };
 
+  // 4b. Apply Output to Input
+  const handleApplyToInput = () => {
+    if (!outputText) return;
+    setInputText(outputText);
+    showToast('✓ Updated original text with corrected version!');
+  };
+
   // 5. Clear and Reset
   const handleClear = () => {
     setInputText('');
@@ -579,14 +586,26 @@ export const GrammarSection: React.FC = () => {
               Output Words: <strong className="text-white">{outputWordCount}</strong>
             </div>
 
-            <button
-              onClick={handleCopy}
-              disabled={!outputText}
-              className="flex items-center gap-1.5 rounded-xl bg-[#d7ff64] px-4 py-2 text-xs font-bold text-[#111310] shadow-[0_0_15px_rgba(215,255,100,0.2)] transition hover:bg-[#e6ff8f] disabled:opacity-40"
-            >
-              <Copy className="h-3.5 w-3.5" />
-              <span>Copy Corrected Text</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleApplyToInput}
+                disabled={!outputText || outputText === inputText}
+                className="flex items-center gap-1.5 rounded-xl border border-[#d7ff64]/40 bg-[#d7ff64]/10 px-3.5 py-2 text-xs font-bold text-[#d7ff64] transition hover:bg-[#d7ff64] hover:text-[#111310] disabled:opacity-40"
+                title="Replace original input text with this corrected version"
+              >
+                <CheckCheck className="h-3.5 w-3.5" />
+                <span>Apply to Input</span>
+              </button>
+
+              <button
+                onClick={handleCopy}
+                disabled={!outputText}
+                className="flex items-center gap-1.5 rounded-xl bg-[#d7ff64] px-4 py-2 text-xs font-bold text-[#111310] shadow-[0_0_15px_rgba(215,255,100,0.2)] transition hover:bg-[#e6ff8f] disabled:opacity-40"
+              >
+                <Copy className="h-3.5 w-3.5" />
+                <span>Copy Corrected Text</span>
+              </button>
+            </div>
           </div>
 
           {/* Key Improvements Highlights */}
