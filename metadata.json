@@ -1,0 +1,6 @@
+{
+  "name": "TypeMaster — Typing Practice & AI Grammar Rewriter",
+  "description": "Master Bangla and English typing speed with real-time feedback, interactive lessons, speed tests, and an AI-powered Grammar Checker & Text Rewriter.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

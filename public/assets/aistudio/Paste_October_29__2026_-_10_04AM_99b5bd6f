@@ -1,0 +1,941 @@
+# TypeMaster — Bangla ও English Typing Practice Website
+
+Jasmin, আমরা TypeMaster তৈরি করব একটি modern, interactive typing practice platform হিসেবে। Website-এর design হবে Dark + Lime Green, আর user-রা English ও বাংলা typing practice, speed test, keyboard learning, typing games এবং নিজের progress track করতে পারবে।
+
+আমরা প্রথমে এমন একটি working version বানাব, যেটা browser-এ চালানো যাবে। এরপর ধাপে ধাপে login, database, history এবং leaderboard যুক্ত করব।
+
+# TypeMaster
+
+Master every keystroke.
+
+Bangla
+
+English
+
+Typing Games
+
+[Asim Hanif - Portfolio](https://images.openai.com/static-rsc-4/qu3z2-EZb7Zs5T9obAz4CCnoV7URiIQ9aEgG3WC6ne2VNvVuqsTvKkWgD7NAuMYO6a_uCQjwGopMFI3LT_tkfmsQAkiirQDUoKAVbK9a06nsVUkB4vvsic_3WgvJDaqY-vJBzD49LZfkl4pudT4FgyI_0w7dSQURh5Y1X1hbptc?purpose=inline)
+
+[codedbyasim.github.io](https://codedbyasim.github.io/my-portfolio-website/?utm_source=chatgpt.com)
+
+## ১. Website-এ কী কী থাকবে?
+
+Typing Speed Test
+
+15, 30, 60 ও 120 সেকেন্ডের test; live WPM, accuracy, errors এবং restart option।
+
+Bangla + English Mode
+
+বাংলা ইউনিকোড text ও English text practice। বাংলা লেখার জন্য Unicode-compatible keyboard/input method ব্যবহার করা যাবে।
+
+Keyboard Learning
+
+Home row, finger placement, key-by-key exercises এবং beginner lessons।
+
+Typing Games
+
+Time challenge, word sprint এবং accuracy challenge।
+
+History & Leaderboard
+
+Previous test results, personal best, progress charts এবং global ranking।
+
+## ২. Technology stack
+
+| Technology            | ব্যবহার                                         |
+| --------------------- | ----------------------------------------------- |
+| Next.js (App Router)  | Website ও page routing                          |
+| JavaScript / React    | Interactive typing engine                       |
+| Tailwind CSS          | Responsive dark theme                           |
+| localStorage          | প্রথম version-এ local history                   |
+| Node.js API + MongoDB | পরবর্তী version-এ accounts ও persistent results |
+| Authentication        | পরবর্তী version-এ secure login                  |
+
+গুরুত্বপূর্ণ: প্রথম version-এ backend ছাড়াই typing test কাজ করবে। localStorage-এ রাখা history একই browser-এ থাকবে; এটি অন্য device-এ sync হবে না। Global leaderboard-এর জন্য পরে server-side database ও result validation দরকার হবে।
+
+## ৩. Project setup — একদম শুরু থেকে
+
+Next.js-এর official App Router setup এবং Tailwind CSS-এর current installation approach ব্যবহার করব।&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://nextjs.org\&sz=32)
+
+Next.js+1
+
+
+
+### Step 1: প্রয়োজনীয় software
+
+- Node.js: 20.9 বা তার পরের compatible version
+- VS Code: code লেখার জন্য
+- Browser: Chrome, Firefox বা Edge
+
+Node.js install করা থাকলে VS Code Terminal খুলে version check করো:
+
+```
+node -v
+npm -v
+```
+
+### Step 2: Next.js project তৈরি করো
+
+Terminal-এ এই command চালাও:
+
+```
+npx create-next-app@latest typemaster --js --tailwind --eslint --app --use-npm
+```
+
+তারপর:
+
+```
+cd typemaster
+npm run dev
+```
+
+Browser-এ খোলো: [http://localhost:3000](http://localhost:3000?utm_source=chatgpt.com)
+
+এখন project-এর ফাইলগুলো এইভাবে সাজাব:
+
+```
+typemaster/
+├── app/
+│   ├── layout.js
+│   ├── page.js
+│   └── globals.css
+├── public/
+├── package.json
+└── ...
+```
+
+## ৪. প্রথম version-এর working code
+
+এই version-এ থাকবে:
+
+- English ও বাংলা typing test
+- 15, 30, 60, 120 সেকেন্ডের timer
+- Live typing, WPM, accuracy ও error count
+- Test complete ও restart
+- Learning lessons
+- Typing challenge game
+- Local test history
+- Demo leaderboard
+
+প্রথমে `app/page.js` ফাইলটি খোলো। ভেতরের পুরোনো code মুছে নিচের সম্পূর্ণ code বসাও।
+
+```
+
+"use client";
+
+import { useEffect, useState } from "react";
+
+const PASSAGES = {
+  English:
+    "Practice every day to improve your typing speed and accuracy. Keep your fingers on the home row, stay relaxed, and focus on typing correctly before trying to type faster. Small improvements every day lead to great results.",
+  বাংলা:
+    "নিয়মিত অনুশীলন করলে টাইপিং স্পিড এবং নির্ভুলতা বাড়ানো সম্ভব। প্রথমে সঠিকভাবে টাইপ করার চেষ্টা করো। ধীরে ধীরে হাতের আঙুলের ব্যবহার শিখো এবং প্রতিদিন কিছু সময় অনুশীলন করো।",
+};
+
+const LESSONS = [
+  {
+    title: "Lesson 01 — Home Row",
+    subtitle: "Start with the home row keys.",
+    keys: "A S D F   J K L ;",
+  },
+  {
+    title: "Lesson 02 — Top Row",
+    subtitle: "Practice the top row of your keyboard.",
+    keys: "Q W E R T Y U I O P",
+  },
+  {
+    title: "Lesson 03 — Bottom Row",
+    subtitle: "Practice the bottom row.",
+    keys: "Z X C V B N M",
+  },
+];
+
+const DEMO_LEADERS = [
+  { name: "SpeedMaster", wpm: 112 },
+  { name: "FastFingers", wpm: 98 },
+  { name: "TypingPro", wpm: 87 },
+  { name: "KeyboardHero", wpm: 76 },
+  { name: "NewLearner", wpm: 65 },
+];
+
+const initialHistory = [];
+
+export default function Home() {
+  const [tab, setTab] = useState("test");
+  const [language, setLanguage] = useState("English");
+  const [duration, setDuration] = useState(30);
+  const [typed, setTyped] = useState("");
+  const [remaining, setRemaining] = useState(30);
+  const [isRunning, setIsRunning] = useState(false);
+  const [finished, setFinished] = useState(false);
+  const [history, setHistory] = useState(initialHistory);
+  const [loaded, setLoaded] = useState(false);
+  const [lessonIndex, setLessonIndex] = useState(0);
+  const [lessonTyped, setLessonTyped] = useState("");
+
+  const passage = PASSAGES[language];
+  const targetChars = Array.from(passage);
+  const typedChars = Array.from(typed);
+
+  const correct = typedChars.filter(
+    (char, index) => char === targetChars[index]
+  ).length;
+
+  const errors = typedChars.filter(
+    (char, index) => char !== targetChars[index]
+  ).length;
+
+  const accuracy = typedChars.length
+    ? Math.round((correct / typedChars.length) * 100)
+    : 100;
+
+  const elapsed = Math.max(1, duration - remaining);
+  const wpm = Math.round(correct / 5 / (elapsed / 60));
+
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("typemaster-history") || "[]"
+      );
+      if (Array.isArray(saved)) setHistory(saved);
+    } catch {
+      setHistory([]);
+    }
+    setLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isRunning) return;
+
+    const timer = setInterval(() => {
+      setRemaining((previous) => {
+        if (previous <= 1) {
+          clearInterval(timer);
+          setIsRunning(false);
+          setFinished(true);
+          return 0;
+        }
+        return previous - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [isRunning]);
+
+  useEffect(() => {
+    if (!finished || !loaded) return;
+
+    const result = {
+      id: Date.now(),
+      language,
+      wpm,
+      accuracy,
+      errors,
+      duration,
+      date: new Date().toLocaleString(),
+    };
+
+    setHistory((previous) => {
+      const updated = [result, ...previous].slice(0, 50);
+      try {
+        localStorage.setItem(
+          "typemaster-history",
+          JSON.stringify(updated)
+        );
+      } catch {}
+      return updated;
+    });
+    // Save once for each completed test.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [finished]);
+
+  function resetTest(nextDuration = duration) {
+    setTyped("");
+    setRemaining(nextDuration);
+    setDuration(nextDuration);
+    setIsRunning(false);
+    setFinished(false);
+  }
+
+  function handleTyping(event) {
+    if (finished) return;
+
+    const value = event.target.value;
+    setTyped(value);
+
+    if (value.length > 0 && !isRunning) {
+      setIsRunning(true);
+    }
+
+    if (Array.from(value).length >= targetChars.length) {
+      setIsRunning(false);
+      setFinished(true);
+    }
+  }
+
+  function changeLanguage(nextLanguage) {
+    setLanguage(nextLanguage);
+    resetTest();
+  }
+
+  const bestWpm = history.length
+    ? Math.max(...history.map((item) => item.wpm))
+    : 0;
+
+  const averageWpm = history.length
+    ? Math.round(
+        history.reduce((sum, item) => sum + item.wpm, 0) /
+          history.length
+      )
+    : 0;
+
+  const navItems = [
+    { id: "test", label: "Typing Test", icon: "⌨" },
+    { id: "learn", label: "Learn", icon: "✳" },
+    { id: "games", label: "Typing Games", icon: "♟" },
+    { id: "history", label: "My History", icon: "◷" },
+    { id: "leaderboard", label: "Leaderboard", icon: "♛" },
+  ];
+
+  return (
+    <main className="min-h-screen bg-[#111310] text-[#eeeeea]">
+      <header className="sticky top-0 z-10 border-b border-white/10 bg-[#111310]/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-4">
+          <button
+            onClick={() => setTab("test")}
+            className="flex items-center gap-3"
+          >
+            <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#d7ff64] text-xl font-black text-[#151710]">
+              T
+            </span>
+            <span className="text-xl font-bold tracking-tight">
+              Type<span className="text-[#d7ff64]">Master</span>
+            </span>
+          </button>
+
+          <div className="hidden items-center gap-1 md:flex">
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setTab(item.id)}
+                className={`rounded-lg px-3 py-2 text-sm transition ${
+                  tab === item.id
+                    ? "bg-[#d7ff64]/10 text-[#d7ff64]"
+                    : "text-[#a4a69d] hover:bg-white/5 hover:text-white"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          <span className="rounded-full border border-[#d7ff64]/30 px-3 py-1.5 text-xs text-[#d7ff64]">
+            FREE PRACTICE
+          </span>
+        </div>
+
+        <nav className="flex gap-2 overflow-x-auto px-5 pb-3 md:hidden">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setTab(item.id)}
+              className={`shrink-0 rounded-lg px-3 py-2 text-xs ${
+                tab === item.id
+                  ? "bg-[#d7ff64] text-black"
+                  : "bg-white/5 text-gray-300"
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+        </nav>
+      </header>
+
+      <div className="mx-auto max-w-6xl px-5 py-10 md:py-14">
+        {tab === "test" && (
+          <>
+            <section className="mb-10 text-center">
+              <div className="mb-4 inline-flex rounded-full border border-[#d7ff64]/20 bg-[#d7ff64]/5 px-4 py-2 text-sm text-[#d7ff64]">
+                ✦ Your daily typing workout
+              </div>
+              <h1 className="text-4xl font-black tracking-tight sm:text-6xl">
+                Type faster.
+                <br />
+                <span className="text-[#d7ff64]">
+                  Think smarter.
+                </span>
+              </h1>
+              <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#a4a69d] sm:text-base">
+                Practice Bangla and English typing, track your
+                speed, and improve one keystroke at a time.
+              </p>
+            </section>
+
+            <section className="rounded-2xl border border-white/10 bg-[#191b17] p-5 shadow-2xl sm:p-8">
+              <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+                <div className="flex gap-2">
+                  {["English", "বাংলা"].map((item) => (
+                    <button
+                      key={item}
+                      onClick={() => changeLanguage(item)}
+                      className={`rounded-lg px-4 py-2.5 text-sm font-semibold ${
+                        language === item
+                          ? "bg-[#d7ff64] text-[#151710]"
+                          : "bg-white/5 text-gray-300 hover:bg-white/10"
+                      }`}
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  {[15, 30, 60, 120].map((seconds) => (
+                    <button
+                      key={seconds}
+                      onClick={() => resetTest(seconds)}
+                      className={`rounded-lg border px-3 py-2 text-sm ${
+                        duration === seconds
+                          ? "border-[#d7ff64]/50 bg-[#d7ff64]/10 text-[#d7ff64]"
+                          : "border-white/10 text-gray-400 hover:border-white/30"
+                      }`}
+                    >
+                      {seconds}s
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-8 grid grid-cols-3 gap-3">
+                {[
+                  {
+                    label: "TIME LEFT",
+                    value: `${remaining}s`,
+                  },
+                  { label: "LIVE WPM", value: wpm },
+                  { label: "ACCURACY", value: `${accuracy}%` },
+                ].map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-xl border border-white/5 bg-[#111310] p-4 text-center"
+                  >
+                    <p className="text-[10px] font-bold tracking-[0.15em] text-gray-500 sm:text-xs">
+                      {stat.label}
+                    </p>
+                    <p className="mt-2 text-2xl font-bold text-[#d7ff64] sm:text-3xl">
+                      {stat.value}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mb-5 rounded-xl border border-white/5 bg-[#111310] p-5 sm:p-7">
+                <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-gray-500">
+                  Type the text below
+                </p>
+                <div className="min-h-32 font-mono text-lg leading-9 tracking-wide sm:text-xl">
+                  {targetChars.map((char, index) => {
+                    let color = "text-[#6d7165]";
+
+                    if (index < typedChars.length) {
+                      color =
+                        char === typedChars[index]
+                          ? "text-[#d7ff64]"
+                          : "rounded-sm bg-red-500/20 text-red-400";
+                    }
+
+                    if (index === typedChars.length && !finished) {
+                      return (
+                        <span
+                          key={index}
+                          className={`${color} border-l-2 border-[#d7ff64]`}
+                        >
+                          {char}
+                        </span>
+                      );
+                    }
+
+                    return (
+                      <span key={index} className={color}>
+                        {char}
+                      </span>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <label
+                htmlFor="typing-input"
+                className="mb-2 block text-sm text-gray-400"
+              >
+                Your typing area
+              </label>
+              <textarea
+                id="typing-input"
+                value={typed}
+                onChange={handleTyping}
+                disabled={finished || remaining === 0}
+                placeholder={
+                  finished
+                    ? "Test complete! Press Try Again."
+                    : "Start typing here..."
+                }
+                className="min-h-32 w-full resize-y rounded-xl border border-white/10 bg-[#111310] p-4 font-mono text-base leading-7 text-white outline-none transition placeholder:text-gray-600 focus:border-[#d7ff64]/60 disabled:opacity-60"
+                spellCheck={false}
+                autoCapitalize="off"
+                autoCorrect="off"
+              />
+
+              <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
+                <p className="text-sm text-gray-500">
+                  Errors:{" "}
+                  <span className="font-bold text-red-400">
+                    {errors}
+                  </span>{" "}
+                  · Characters: {typedChars.length}
+                </p>
+                <button
+                  onClick={() => resetTest()}
+                  className="rounded-xl bg-[#d7ff64] px-6 py-3 font-bold text-[#151710] transition hover:bg-[#e5ff9b]"
+                >
+                  ↻ Try Again
+                </button>
+              </div>
+
+              {finished && (
+                <div className="mt-6 rounded-xl border border-[#d7ff64]/20 bg-[#d7ff64]/5 p-5">
+                  <h2 className="text-xl font-bold text-[#d7ff64]">
+                    Test completed!
+                  </h2>
+                  <p className="mt-2 text-sm text-gray-300">
+                    Your result: {wpm} WPM, {accuracy}% accuracy
+                    and {errors} errors.
+                  </p>
+                </div>
+              )}
+            </section>
+
+            <section className="mt-6 grid gap-4 sm:grid-cols-3">
+              {[
+                {
+                  label: "PERSONAL BEST",
+                  value: `${bestWpm} WPM`,
+                },
+                {
+                  label: "AVERAGE SPEED",
+                  value: `${averageWpm} WPM`,
+                },
+                {
+                  label: "TESTS COMPLETED",
+                  value: history.length,
+                },
+              ].map((stat) => (
+                <div
+                  key={stat.label}
+                  className="rounded-xl border border-white/10 bg-[#191b17] p-5"
+                >
+                  <p className="text-xs tracking-widest text-gray-500">
+                    {stat.label}
+                  </p>
+                  <p className="mt-3 text-2xl font-bold">
+                    {stat.value}
+                  </p>
+                </div>
+              ))}
+            </section>
+          </>
+        )}
+
+        {tab === "learn" && (
+          <section>
+            <p className="mb-3 text-sm font-semibold text-[#d7ff64]">
+              LEARNING CENTER
+            </p>
+            <h1 className="text-4xl font-black">
+              Build your typing skills.
+            </h1>
+            <p className="mt-3 text-gray-400">
+              Learn keyboard positions one lesson at a time.
+            </p>
+
+            <div className="mt-8 grid gap-4 md:grid-cols-3">
+              {LESSONS.map((lesson, index) => (
+                <button
+                  key={lesson.title}
+                  onClick={() => {
+                    setLessonIndex(index);
+                    setLessonTyped("");
+                  }}
+                  className={`rounded-2xl border p-6 text-left ${
+                    lessonIndex === index
+                      ? "border-[#d7ff64]/50 bg-[#d7ff64]/5"
+                      : "border-white/10 bg-[#191b17]"
+                  }`}
+                >
+                  <span className="text-sm text-[#d7ff64]">
+                    LESSON 0{index + 1}
+                  </span>
+                  <h2 className="mt-3 text-xl font-bold">
+                    {lesson.title.split(" — ")[1]}
+                  </h2>
+                  <p className="mt-3 text-sm text-gray-400">
+                    {lesson.subtitle}
+                  </p>
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-6 rounded-2xl border border-white/10 bg-[#191b17] p-6 sm:p-10">
+              <h2 className="text-2xl font-bold">
+                {LESSONS[lessonIndex].title}
+              </h2>
+              <p className="mt-2 text-gray-400">
+                {LESSONS[lessonIndex].subtitle}
+              </p>
+              <p className="my-8 break-words text-2xl font-bold leading-relaxed tracking-widest text-[#d7ff64] sm:text-4xl">
+                {LESSONS[lessonIndex].keys}
+              </p>
+              <input
+                value={lessonTyped}
+                onChange={(event) =>
+                  setLessonTyped(event.target.value)
+                }
+                placeholder="Type the keys shown above..."
+                className="w-full rounded-xl border border-white/10 bg-[#111310] p-4 outline-none focus:border-[#d7ff64]"
+              />
+              <p className="mt-4 text-sm text-gray-400">
+                Characters entered: {lessonTyped.length}
+              </p>
+              <button
+                onClick={() => {
+                  if (
+                    lessonTyped.trim() ===
+                    LESSONS[lessonIndex].keys.trim()
+                  ) {
+                    setLessonTyped("");
+                    setLessonIndex(
+                      (lessonIndex + 1) % LESSONS.length
+                    );
+                  } else {
+                    setLessonTyped("");
+                  }
+                }}
+                className="mt-4 rounded-xl bg-[#d7ff64] px-5 py-3 font-bold text-black"
+              >
+                Check & Continue
+              </button>
+            </div>
+          </section>
+        )}
+
+        {tab === "games" && (
+          <section>
+            <p className="mb-3 text-sm font-semibold text-[#d7ff64]">
+              GAME ZONE
+            </p>
+            <h1 className="text-4xl font-black">
+              Make practice fun.
+            </h1>
+            <p className="mt-3 text-gray-400">
+              Challenge yourself and beat your personal best.
+            </p>
+            <div className="mt-8 grid gap-5 md:grid-cols-2">
+              <div className="rounded-2xl border border-white/10 bg-[#191b17] p-7">
+                <span className="text-3xl">⚡</span>
+                <h2 className="mt-4 text-2xl font-bold">
+                  15-Second Sprint
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-gray-400">
+                  Type as quickly and accurately as you can
+                  before time runs out.
+                </p>
+                <button
+                  onClick={() => {
+                    setTab("test");
+                    resetTest(15);
+                  }}
+                  className="mt-6 rounded-xl bg-[#d7ff64] px-5 py-3 font-bold text-black"
+                >
+                  Play Sprint →
+                </button>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-[#191b17] p-7">
+                <span className="text-3xl">🎯</span>
+                <h2 className="mt-4 text-2xl font-bold">
+                  Accuracy Challenge
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-gray-400">
+                  Aim for 98% accuracy or higher during a
+                  typing session.
+                </p>
+                <button
+                  onClick={() => {
+                    setTab("test");
+                    resetTest(60);
+                  }}
+                  className="mt-6 rounded-xl border border-[#d7ff64]/40 px-5 py-3 font-bold text-[#d7ff64]"
+                >
+                  Play Challenge →
+                </button>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {tab === "history" && (
+          <section>
+            <p className="mb-3 text-sm font-semibold text-[#d7ff64]">
+              YOUR PROGRESS
+            </p>
+            <h1 className="text-4xl font-black">Test History</h1>
+            <p className="mt-3 text-gray-400">
+              Your completed typing tests on this browser.
+            </p>
+
+            <div className="mt-8 overflow-x-auto rounded-2xl border border-white/10 bg-[#191b17]">
+              <table className="w-full min-w-[600px] text-left text-sm">
+                <thead className="border-b border-white/10 text-gray-400">
+                  <tr>
+                    <th className="p-4">Date</th>
+                    <th className="p-4">Language</th>
+                    <th className="p-4">WPM</th>
+                    <th className="p-4">Accuracy</th>
+                    <th className="p-4">Errors</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.map((item) => (
+                    <tr
+                      key={item.id}
+                      className="border-b border-white/5"
+                    >
+                      <td className="p-4 text-gray-400">
+                        {item.date}
+                      </td>
+                      <td className="p-4">{item.language}</td>
+                      <td className="p-4 font-bold text-[#d7ff64]">
+                        {item.wpm}
+                      </td>
+                      <td className="p-4">{item.accuracy}%</td>
+                      <td className="p-4 text-red-400">
+                        {item.errors}
+                      </td>
+                    </tr>
+                  ))}
+                  {history.length === 0 && (
+                    <tr>
+                      <td
+                        colSpan={5}
+                        className="p-10 text-center text-gray-500"
+                      >
+                        No results yet. Complete your first
+                        typing test to see your history here.
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {tab === "leaderboard" && (
+          <section>
+            <p className="mb-3 text-sm font-semibold text-[#d7ff64]">
+              COMMUNITY
+            </p>
+            <h1 className="text-4xl font-black">
+              Leaderboard
+            </h1>
+            <p className="mt-3 text-gray-400">
+              Example rankings for the initial demo.
+            </p>
+            <div className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-[#191b17]">
+              {DEMO_LEADERS.map((player, index) => (
+                <div
+                  key={player.name}
+                  className="flex items-center justify-between border-b border-white/5 p-5 last:border-0"
+                >
+                  <div className="flex items-center gap-4">
+                    <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 font-bold text-[#d7ff64]">
+                      {index + 1}
+                    </span>
+                    <span className="font-semibold">
+                      {player.name}
+                    </span>
+                  </div>
+                  <span className="font-bold text-[#d7ff64]">
+                    {player.wpm} WPM
+                  </span>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-sm text-gray-500">
+              These are sample values, not real user rankings.
+              A server and database are required for a global
+              leaderboard.
+            </p>
+          </section>
+        )}
+
+        <footer className="mt-16 border-t border-white/10 pt-7 text-center text-sm text-gray-500">
+          <p>
+            <span className="font-bold text-[#d7ff64]">
+              TypeMaster
+            </span>{" "}
+            — Practice daily. Improve endlessly.
+          </p>
+          <p className="mt-2">
+            Bangla & English Typing Practice
+          </p>
+        </footer>
+      </div>
+    </main>
+  );
+}
+
+```
+
+### Step 3: `app/layout.js`
+
+এই ফাইল website-এর metadata ও root layout নিয়ন্ত্রণ করবে।
+
+```
+
+import "./globals.css";
+
+export const metadata = {
+  title: "TypeMaster — Typing Speed Practice",
+  description:
+    "Improve your Bangla and English typing speed, accuracy, and keyboard skills with TypeMaster.",
+};
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+
+```
+
+### Step 4: `app/globals.css`
+
+```
+
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+  background: #111310;
+  color: #eeeeea;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Arial, "Noto Sans Bengali", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+textarea,
+input {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:focus-visible,
+textarea:focus-visible,
+input:focus-visible {
+  outline: 2px solid #d7ff64;
+  outline-offset: 3px;
+}
+
+::selection {
+  background: #d7ff64;
+  color: #111310;
+}
+
+textarea {
+  line-height: 1.8;
+}
+
+```
+
+এখানে Tailwind CSS-এর বর্তমান CSS import পদ্ধতি ব্যবহার করা হয়েছে।&#x20;
+
+[image](https://www.google.com/s2/favicons?domain=https://tailwindcss.com\&sz=32)
+
+Tailwind CSS+1
+
+
+
+### Step 5: Website চালাও
+
+Terminal-এ:
+
+```
+npm run dev
+```
+
+তারপর browser-এ [localhost:3000](http://localhost:3000?utm_source=chatgpt.com) খোলো।
+
+যদি server আগে থেকেই চলছে, ফাইল save করার পর page সাধারণত নিজে থেকেই update হবে। কোনো error হলে terminal-এর error message দেখে সমাধান করতে হবে।
+
+## ৫. কোন feature কাজ করবে আর কোনটা পরে করতে হবে?
+
+| Feature                | এই version-এ                      |
+| ---------------------- | --------------------------------- |
+| English typing test    | &#x20;কাজ করবে                    |
+| বাংলা typing test      | &#x20;Unicode input দিয়ে কাজ করবে |
+| Timer ও live WPM       |                                   |
+| Accuracy ও error count |                                   |
+| Keyboard lessons       | &#x20;Basic exercises             |
+| Typing games           | &#x20;Timer-based challenges      |
+| Test history           | &#x20;Browser storage             |
+| Global leaderboard     | পরে server ও database লাগবে       |
+| Login / registration   | পরে authentication লাগবে          |
+| Progress chart         | পরবর্তী ধাপে যোগ করব              |
+| Google AdSense         | Traffic ও approval পাওয়ার পরে     |
+
+দুটি বিষয় মনে রেখো:
+
+1. WPM-এর প্রচলিত হিসাব প্রতি ৫টি typed character-কে একটি word ধরে। বাংলা ভাষায় এটি আনুমানিক speed metric, প্রকৃত বাংলা শব্দসংখ্যা নয়।
+2. বর্তমান leaderboard-এর নাম ও score demo data। বাস্তব ranking পেতে database, user accounts এবং server-side score validation যোগ করতে হবে।
+
+## ৬. পরবর্তী development roadmap
+
+Phase 1 — Frontend MVP
+
+বর্তমান UI, typing engine, timer, lessons ও browser history।
+
+Phase 2 — Backend ও Authentication
+
+Node.js, Express, MongoDB, signup/login ও cloud-based history।
+
+Phase 3 — Advanced Features
+
+Real leaderboard, charts, achievements, daily challenges ও উন্নত learning lessons।
+
+Phase 4 — Launch & Monetization
+
+SEO, deployment, performance optimization এবং AdSense-এর জন্য প্রস্তুতি।
+
+আমার পরামর্শ, প্রথমে এই frontend version চালিয়ে test করো। এরপর বাংলা typing-এর WPM calculation, countdown এবং history ঠিকভাবে কাজ করছে কি না যাচাই করে backend শুরু করব।
+
+Official documentation: [Next.js App Router](https://nextjs.org/docs/app/getting-started?utm_source=chatgpt.com) · [Tailwind CSS with Next.js](https://tailwindcss.com/docs/installation/framework-guides/nextjs?utm_source=chatgpt.com)
