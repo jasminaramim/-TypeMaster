@@ -89,17 +89,6 @@ export const TYPING_LESSONS: Lesson[] = [
   },
 ];
 
-export const DEMO_LEADERS = [
-  { rank: 1, name: 'SpeedMaster', wpm: 118, accuracy: 99, language: 'English', badge: '⚡ Grandmaster' },
-  { rank: 2, name: 'বাংলাবীর', wpm: 104, accuracy: 98, language: 'বাংলা', badge: '🔥 Elite Typer' },
-  { rank: 3, name: 'FastFingers', wpm: 98, accuracy: 97, language: 'English', badge: '💎 Diamond' },
-  { rank: 4, name: 'শব্দসৈনিক', wpm: 91, accuracy: 96, language: 'বাংলা', badge: '🏆 Master' },
-  { rank: 5, name: 'TypingPro', wpm: 87, accuracy: 98, language: 'English', badge: '⭐ Pro' },
-  { rank: 6, name: 'KeyboardHero', wpm: 76, accuracy: 95, language: 'English', badge: '🚀 Advanced' },
-  { rank: 7, name: 'Jasmin_R', wpm: 72, accuracy: 96, language: 'English', badge: '🌟 Rising Star' },
-  { rank: 8, name: 'NewLearner', wpm: 65, accuracy: 94, language: 'বাংলা', badge: '🌱 Apprentice' },
-];
-
 export const SAMPLE_TEXTS = {
   emailWithErrors: `Dear Mr. Smith,
 

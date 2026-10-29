@@ -7,13 +7,12 @@ import { LearningCenter } from './components/LearningCenter';
 import { TypingGames } from './components/TypingGames';
 import { HomepageGameSection } from './components/HomepageGameSection';
 import { HistoryView } from './components/HistoryView';
-import { LeaderboardView } from './components/LeaderboardView';
 import { Footer } from './components/Footer';
 import { TestResult } from './types';
 import { soundManager } from './utils/sound';
 
 export default function App() {
-  const [tab, setTab] = useState<'test' | 'learn' | 'games' | 'history' | 'leaderboard'>('test');
+  const [tab, setTab] = useState<'test' | 'learn' | 'games' | 'history'>('test');
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [history, setHistory] = useState<TestResult[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -173,10 +172,6 @@ export default function App() {
 
         {tab === 'history' && (
           <HistoryView history={history} onClearHistory={handleClearHistory} />
-        )}
-
-        {tab === 'leaderboard' && (
-          <LeaderboardView userBestWpm={bestWpm} />
         )}
       </main>
 

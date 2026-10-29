@@ -60,9 +60,9 @@ Practice touch typing in **English** and **Bangla (বাংলা)** with real-
 - **💣 Time Bomb:** Diffuse ticking explosive devices before the fuse runs out.
 - **👻 Ghost Memory:** Memorize rapid flashing words and type them accurately from memory.
 
-### 📊 Performance Analytics & Leaderboard
+### 📊 Performance Analytics & History
 - **Detailed History:** Tracks the last 50 tests in local storage with timestamps, passage snippets, and statistics.
-- **Local Leaderboards:** Compare and rank your best scores against preset milestone benchmarks.
+- **Real-time Telemetry:** Instant calculation of Net WPM, Raw WPM, accuracy %, error tracking, and visual graphs.
 
 ---
 
@@ -144,7 +144,6 @@ typemaster/
 │   │   ├── LearningCenter.tsx      # Finger placement drills & lesson center
 │   │   ├── TypingGames.tsx         # Arcade speed arena (Nitro Racer, Cosmic Blaster, etc.)
 │   │   ├── HistoryView.tsx         # Historical tests and stats
-│   │   ├── LeaderboardView.tsx     # Leaderboard ranks and badges
 │   │   └── Footer.tsx              # App footer with brand logo and links
 │   ├── data/
 │   │   └── passages.ts             # Curated English & Bangla practice passages

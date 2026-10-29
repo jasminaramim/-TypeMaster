@@ -107,17 +107,6 @@ export const Footer: React.FC<FooterProps> = ({ setTab }) => {
                     Browser History
                   </button>
                 </li>
-                <li>
-                  <button
-                    onClick={() => {
-                      setTab('leaderboard');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
-                    }}
-                    className="hover:text-[#d7ff64] transition"
-                  >
-                    Leaderboard
-                  </button>
-                </li>
               </ul>
             </div>
           </div>

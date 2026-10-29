@@ -5,7 +5,6 @@ import {
   Sparkles,
   Keyboard,
   BookOpen,
-  Trophy,
   History,
   Gamepad2,
   Languages,
@@ -32,7 +31,6 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'learn', label: 'Lessons', icon: BookOpen },
     { id: 'games', label: 'Typing Games', icon: Gamepad2 },
     { id: 'history', label: 'My History', icon: History },
-    { id: 'leaderboard', label: 'Leaderboard', icon: Trophy },
   ];
 
   return (
