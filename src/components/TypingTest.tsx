@@ -3,13 +3,13 @@ import { RotateCcw, Shuffle, Trophy, Flame, Target, Award, ArrowDown, CheckCircl
 import { Language, TestResult } from '../types';
 import { ENGLISH_PASSAGES, BANGLA_PASSAGES } from '../data/passages';
 import { soundManager } from '../utils/sound';
+import { CelebrationPopup } from './CelebrationPopup';
 
 interface TypingTestProps {
   onTestComplete: (result: TestResult) => void;
   bestWpm: number;
   averageWpm: number;
   totalTests: number;
-  onScrollToGrammar: () => void;
 }
 
 export const TypingTest: React.FC<TypingTestProps> = ({
@@ -17,7 +17,6 @@ export const TypingTest: React.FC<TypingTestProps> = ({
   bestWpm,
   averageWpm,
   totalTests,
-  onScrollToGrammar,
 }) => {
   const [language, setLanguage] = useState<Language>('English');
   const [passageIndex, setPassageIndex] = useState(0);
@@ -26,6 +25,7 @@ export const TypingTest: React.FC<TypingTestProps> = ({
   const [remaining, setRemaining] = useState(30);
   const [isRunning, setIsRunning] = useState(false);
   const [finished, setFinished] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const passages = language === 'English' ? ENGLISH_PASSAGES : BANGLA_PASSAGES;
@@ -49,6 +49,7 @@ export const TypingTest: React.FC<TypingTestProps> = ({
           clearInterval(timer);
           setIsRunning(false);
           setFinished(true);
+          setShowCelebration(true);
           soundManager.playSuccess();
           return 0;
         }
@@ -84,6 +85,7 @@ export const TypingTest: React.FC<TypingTestProps> = ({
     setPassageIndex(nextPassageIdx);
     setIsRunning(false);
     setFinished(false);
+    setShowCelebration(false);
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -129,6 +131,7 @@ export const TypingTest: React.FC<TypingTestProps> = ({
     if (Array.from(value).length >= targetChars.length) {
       setIsRunning(false);
       setFinished(true);
+      setShowCelebration(true);
       soundManager.playSuccess();
     }
   };
@@ -354,16 +357,10 @@ export const TypingTest: React.FC<TypingTestProps> = ({
               <div className="flex flex-wrap items-center gap-2.5">
                 <button
                   onClick={() => resetTest()}
-                  className="rounded-xl bg-[#d7ff64] px-4 py-2 text-xs font-bold text-[#111310] hover:bg-[#e6ff8f]"
+                  className="flex items-center gap-2 rounded-xl bg-[#d7ff64] px-5 py-2.5 text-xs font-black text-[#111310] shadow-[0_0_15px_rgba(215,255,100,0.3)] transition hover:bg-[#e6ff8f] hover:scale-105"
                 >
-                  Practice Again
-                </button>
-                <button
-                  onClick={onScrollToGrammar}
-                  className="flex items-center gap-1.5 rounded-xl border border-[#d7ff64]/40 bg-[#d7ff64]/10 px-4 py-2 text-xs font-semibold text-[#d7ff64] hover:bg-[#d7ff64] hover:text-[#111310]"
-                >
-                  <span>Grammar Checker</span>
-                  <ArrowDown className="h-3.5 w-3.5" />
+                  <RotateCcw className="h-3.5 w-3.5" />
+                  <span>Practice Again</span>
                 </button>
               </div>
             </div>
@@ -412,6 +409,16 @@ export const TypingTest: React.FC<TypingTestProps> = ({
           <p className="mt-1 text-xs text-gray-500">Practice runs recorded</p>
         </div>
       </section>
+
+      {/* Celebration Video Popup */}
+      <CelebrationPopup
+        isOpen={showCelebration}
+        onClose={() => setShowCelebration(false)}
+        onRetry={() => resetTest()}
+        wpm={wpm}
+        words={Math.round(correct / 5)}
+        accuracy={accuracy}
+      />
     </div>
   );
 };

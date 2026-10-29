@@ -17,7 +17,6 @@ interface HeaderProps {
   setTab: (tab: string) => void;
   soundEnabled: boolean;
   toggleSound: () => void;
-  onScrollToGrammar: () => void;
   onScrollToMinuteSpeed?: () => void;
 }
 
@@ -26,7 +25,6 @@ export const Header: React.FC<HeaderProps> = ({
   setTab,
   soundEnabled,
   toggleSound,
-  onScrollToGrammar,
   onScrollToMinuteSpeed,
 }) => {
   const navItems = [
@@ -110,16 +108,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <span className="hidden sm:inline">1-Min</span> Challenge
               </button>
             )}
-
-            {/* Grammar & AI Rewriter Quick Jump Button */}
-            <button
-              onClick={onScrollToGrammar}
-              className="flex items-center gap-2 rounded-xl border border-[#d7ff64]/50 bg-[#d7ff64]/15 px-3.5 py-2 text-xs font-bold text-[#d7ff64] shadow-[0_0_20px_rgba(215,255,100,0.2)] transition hover:bg-[#d7ff64] hover:text-[#111310] sm:text-sm"
-              title="Jump to AI Grammar & Rewriter"
-            >
-              <Sparkles className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Grammar &</span> Rewriter
-            </button>
 
             {/* Sound Toggle */}
             <button

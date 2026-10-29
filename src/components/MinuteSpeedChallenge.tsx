@@ -17,6 +17,7 @@ import {
   VolumeX,
 } from 'lucide-react';
 import { soundManager } from '../utils/sound';
+import { CelebrationPopup } from './CelebrationPopup';
 
 const ENGLISH_WORDS = [
   'the', 'be', 'of', 'and', 'a', 'to', 'in', 'he', 'have', 'it', 'that', 'for',
@@ -65,6 +66,7 @@ export const MinuteSpeedChallenge: React.FC = () => {
   const [timeLeft, setTimeLeft] = useState(totalSeconds);
   const [isRunning, setIsRunning] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   // Score counters
   const [correctWordsCount, setCorrectWordsCount] = useState(0);
@@ -99,6 +101,7 @@ export const MinuteSpeedChallenge: React.FC = () => {
     setTimeLeft(mins * 60);
     setIsRunning(false);
     setIsFinished(false);
+    setShowCelebration(false);
     setCurrentWordIdx(0);
     setCurrentInput('');
     setFreeText('');
@@ -124,6 +127,7 @@ export const MinuteSpeedChallenge: React.FC = () => {
           clearInterval(timer);
           setIsRunning(false);
           setIsFinished(true);
+          setShowCelebration(true);
           soundManager.playSuccess();
           return 0;
         }
@@ -731,6 +735,16 @@ export const MinuteSpeedChallenge: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Celebration Video Popup */}
+      <CelebrationPopup
+        isOpen={showCelebration}
+        onClose={() => setShowCelebration(false)}
+        onRetry={() => resetTest(selectedMinutes)}
+        wpm={currentWpm}
+        words={correctWordsCount}
+        accuracy={accuracy}
+      />
     </section>
   );
 };

@@ -2,11 +2,10 @@ import React from 'react';
 import { Sparkles, Keyboard, Heart } from 'lucide-react';
 
 interface FooterProps {
-  onScrollToGrammar: () => void;
   setTab: (tab: string) => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ onScrollToGrammar, setTab }) => {
+export const Footer: React.FC<FooterProps> = ({ setTab }) => {
   return (
     <footer className="mt-24 border-t border-white/10 bg-[#0d0f0c] pt-12 pb-10 text-xs text-gray-500">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -21,7 +20,7 @@ export const Footer: React.FC<FooterProps> = ({ onScrollToGrammar, setTab }) => 
               />
             </div>
             <p className="text-gray-400 leading-relaxed">
-              An all-in-one typing & writing ecosystem. Practice Bangla and English typing, elevate your speed, and polish your prose with our AI Grammar Checker and Text Rewriter.
+              An all-in-one typing speed ecosystem. Practice Bangla and English touch typing, conquer speed challenges, and track live telemetry with 3D AI speed coaching.
             </p>
           </div>
 
@@ -70,18 +69,31 @@ export const Footer: React.FC<FooterProps> = ({ onScrollToGrammar, setTab }) => 
 
             <div>
               <h5 className="font-bold text-white uppercase tracking-wider mb-3 text-[11px]">
-                AI Tools & Records
+                Speed & Progress
               </h5>
               <ul className="space-y-2">
                 <li>
-                  <button onClick={onScrollToGrammar} className="text-[#d7ff64] hover:underline flex items-center gap-1">
-                    <Sparkles className="h-3 w-3" />
-                    <span>Grammar Checker</span>
+                  <button
+                    onClick={() => {
+                      setTab('test');
+                      const el = document.getElementById('minute-speed-section');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#d7ff64] transition"
+                  >
+                    1-Min Speed Challenge
                   </button>
                 </li>
                 <li>
-                  <button onClick={onScrollToGrammar} className="hover:text-[#d7ff64] transition">
-                    AI Text Rewriter
+                  <button
+                    onClick={() => {
+                      setTab('test');
+                      const el = document.getElementById('typing-console');
+                      if (el) el.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#d7ff64] transition"
+                  >
+                    Passage Speed Workout
                   </button>
                 </li>
                 <li>

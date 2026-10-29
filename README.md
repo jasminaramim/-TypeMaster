@@ -2,19 +2,18 @@
 
 <img src="public/logo.png" width="380" alt="TypeMaster Logo" />
 
-# TypeMaster — Typing Practice & AI Grammar Rewriter
+# TypeMaster — Typing Practice & Keyboard Speed Trainer
 
 [![React 19](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![Vite 8](https://img.shields.io/badge/Vite-8-purple.svg)](https://vitejs.dev/)
 [![TailwindCSS v4](https://img.shields.io/badge/TailwindCSS-v4-38bdf8.svg)](https://tailwindcss.com/)
-[![Express](https://img.shields.io/badge/Express-4.21-lightgrey.svg)](https://expressjs.com/)
-[![Gemini AI](https://img.shields.io/badge/Google_Gemini-3.8_Flash-orange.svg)](https://ai.google.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue.svg)](https://www.typescriptlang.org/)
+[![Live on Vercel](https://img.shields.io/badge/Vercel-Live_Production-black.svg)](https://typemaster-ecru.vercel.app)
 
-**A modern, all-in-one keyboard speed training platform and AI-powered multilingual writing assistant.**  
-Practice touch typing in **English** and **Bangla (বাংলা)** with real-time telemetry, interactive key-row lessons, engaging games, and an integrated AI Grammar Checker & Text Rewriter.
+**A modern, all-in-one keyboard speed training ecosystem with 3D AI companion coaching.**  
+Practice touch typing in **English** and **Bangla (বাংলা)** with real-time telemetry, 1-minute sprint challenges, celebratory video feedback, interactive key-row lessons, and adrenaline typing games.
 
-[Live Demo](http://localhost:3000) • [Features](#-key-features) • [Installation](#-getting-started) • [API & Architecture](#-system-architecture)
+[Live Demo](https://typemaster-ecru.vercel.app) • [Features](#-key-features) • [Installation](#-getting-started) • [Tech Stack](#️-technology-stack)
 
 ---
 
@@ -22,28 +21,29 @@ Practice touch typing in **English** and **Bangla (বাংলা)** with real-
 
 ## 🌟 Key Features
 
+### ⏱️ 1-Minute & Custom Minute Word Count Speed Test
+- **Minute-Wise Target Sprints:** Select 1 Minute, 2 Minutes, 3 Minutes, or 5 Minutes with live countdowns.
+- **Dual Typing Modes:**
+  - *Word Stream Mode:* Rapid word-by-word flow with instant correct/error color feedback.
+  - *Free Typing Mode:* Creative typing for essays and paragraphs with live word count.
+- **Fully Responsive Duration Row:** 100% responsive grid buttons (`1m`, `2m`, `3m`, `5m`) optimized for all mobile screen sizes.
+
+### 🎬 3D Animated Speed Coach (Kami) & Video-like Motion
+- **Lifelike Motion Companion:** 3D animated companion typing on a laptop with fluid breathing, head-bobbing, active hand typing vibration, and floating ASDF 3D keycaps.
+- **Dynamic Speech Bubble & Audio Voice:** Real-time cheering reacting to live typing speed (`"Good job! You did great work speed!"`) with interactive speech synthesis audio toggle.
+
+### 🎥 Celebratory Video Popup (`gratejobvideo.mp4`)
+- **Instant Video Celebration:** When any speed challenge completes, an animated modal pops up auto-playing `gratejobvideo.mp4`.
+- **One-Click Replay:** Features a glowing `"Let's Do It Again! 🚀"` action button to jump straight into the next typing workout.
+
 ### ⌨️ Dual-Language Typing Console
 - **Bangla (বাংলা) & English Support:** Practice both global English passages and native Bengali scripts with authentic typography.
-- **Real-Time Speed & Telemetry:** Instant live calculations of Words Per Minute (WPM), Accuracy percentage, character errors, and countdown timers.
-- **Custom Timer Durations:** Choose 15s, 30s, 60s, or 120s speed workouts.
-- **Mechanical Sound Effects:** Responsive acoustic click feedback for each keystroke with instant mute/unmute control.
-- **Performance Badges:** Earn dynamic ranks from *Steady Learner* to *⚡ Grandmaster Speed* (100+ WPM).
+- **Real-Time Telemetry:** Instant live calculations of WPM, Accuracy %, character errors, and countdown timers.
+- **Mechanical Sound Effects:** Acoustic key-click audio feedback with quick mute toggle.
 
 ### 🎥 Big Cinematic Hero Video
 - **Interactive Showcase Player:** Integrated `herovideo.mp4` with custom glassmorphism bezel and neon ambient backlight.
-- **Interactive Video Controls:** Click-to-play/pause, scrubbable progress bar, volume toggle, restart, and fullscreen modes.
-- **Quick Action CTAs:** One-click smooth scrolling directly to the typing test console or the AI grammar workshop.
-
-### 🤖 Integrated AI Grammar Checker & Text Rewriter
-- **Deep Multilingual Proofreading:** Detects spelling, grammar, punctuation, capitalization, and syntax errors in English and Bengali.
-- **One-Click Quick Fix:** Automatically corrects errors with detailed explanations of changes.
-- **Style & Tone Rewriter:** Transform text into multiple stylistic tones:
-  - 💼 *Professional*
-  - 📝 *Simple English*
-  - 🏛️ *Formal*
-  - 😊 *Friendly*
-  - 💡 *Improve Clarity*
-- **Dual-Engine Architecture:** Powered by Google's **Gemini 3.8 Flash** with an automatic offline fallback to the high-precision built-in linguistic rules engine when no API key is provided.
+- **Player Controls:** Click-to-play/pause, scrubbable progress bar, volume toggle, restart, and fullscreen modes.
 
 ### 📚 Learning Center & Skill Drills
 - **Finger Placement Guides:** Visual interactive keyboard drills targeting Home Row, Top Row, Bottom Row, and Number/Symbol Rows.

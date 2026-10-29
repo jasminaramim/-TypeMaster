@@ -19,13 +19,11 @@ import {
 
 interface HeroSectionProps {
   onStartTyping: () => void;
-  onScrollToGrammar: () => void;
   onScrollToMinuteSpeed?: () => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onStartTyping,
-  onScrollToGrammar,
   onScrollToMinuteSpeed,
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -145,8 +143,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* Subtitle */}
         <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-[#a4a69d] sm:text-lg">
           Practice touch typing in <strong className="text-white">Bangla (বাংলা)</strong> &{' '}
-          <strong className="text-white">English</strong> with live WPM analytics, interactive challenges,
-          and a built-in <strong className="text-[#d7ff64]">AI Grammar & Text Rewriter</strong>.
+          <strong className="text-white">English</strong> with live WPM analytics, custom minute challenges,
+          and interactive <strong className="text-[#d7ff64]">3D AI Speed Coaching</strong>.
         </p>
 
         {/* CTA Buttons */}
@@ -164,15 +162,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             className="group flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:border-[#d7ff64]/50 hover:bg-[#d7ff64]/10 hover:text-[#d7ff64]"
           >
             <Keyboard className="h-4 w-4 text-[#d7ff64]" />
-            <span>Passage Test</span>
-          </button>
-
-          <button
-            onClick={onScrollToGrammar}
-            className="group flex items-center gap-2 rounded-2xl border border-white/15 bg-white/5 px-6 py-3.5 text-sm font-bold text-white backdrop-blur-md transition hover:border-white/30 hover:bg-white/10"
-          >
-            <Sparkles className="h-4 w-4 text-[#d7ff64] transition group-hover:rotate-12" />
-            <span>AI Grammar Rewriter</span>
+            <span>Passage Speed Test</span>
           </button>
         </div>
       </div>
@@ -376,8 +366,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <Sparkles className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-xs font-bold text-white">AI Grammar Rewriter</p>
-              <p className="text-[11px] text-gray-400">Built-in linguistic & AI proofreading</p>
+              <p className="text-xs font-bold text-white">AI Speed Coach Kami</p>
+              <p className="text-[11px] text-gray-400">3D live motion coaching & voice cheering</p>
             </div>
           </div>
         </div>

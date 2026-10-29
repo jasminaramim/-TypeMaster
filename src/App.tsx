@@ -7,7 +7,6 @@ import { LearningCenter } from './components/LearningCenter';
 import { TypingGames } from './components/TypingGames';
 import { HistoryView } from './components/HistoryView';
 import { LeaderboardView } from './components/LeaderboardView';
-import { GrammarSection } from './components/GrammarSection';
 import { Footer } from './components/Footer';
 import { TestResult } from './types';
 import { soundManager } from './utils/sound';
@@ -57,19 +56,6 @@ export default function App() {
     soundManager.setEnabled(next);
   };
 
-  const scrollToGrammar = () => {
-    // If not on test tab, switch to test tab first
-    if (tab !== 'test') {
-      setTab('test');
-    }
-    setTimeout(() => {
-      const section = document.getElementById('grammar-section');
-      if (section) {
-        section.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
-  };
-
   const scrollToTypingConsole = () => {
     if (tab !== 'test') {
       setTab('test');
@@ -115,7 +101,6 @@ export default function App() {
         setTab={(t) => setTab(t as any)}
         soundEnabled={soundEnabled}
         toggleSound={toggleSound}
-        onScrollToGrammar={scrollToGrammar}
         onScrollToMinuteSpeed={scrollToMinuteSpeed}
       />
 
@@ -125,7 +110,6 @@ export default function App() {
           <div className="space-y-6">
             <HeroSection
               onStartTyping={scrollToMinuteSpeed}
-              onScrollToGrammar={scrollToGrammar}
               onScrollToMinuteSpeed={scrollToMinuteSpeed}
             />
 
@@ -149,23 +133,7 @@ export default function App() {
               bestWpm={bestWpm}
               averageWpm={averageWpm}
               totalTests={history.length}
-              onScrollToGrammar={scrollToGrammar}
             />
-
-            {/* Separator Accent Divider */}
-            <div className="relative py-4">
-              <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                <div className="w-full border-t border-white/10" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-[#111310] px-4 text-xs font-bold uppercase tracking-widest text-[#d7ff64]">
-                  ✦ Integrated AI Writing Tools ✦
-                </span>
-              </div>
-            </div>
-
-            {/* Grammar Checker & AI Text Rewriter Section */}
-            <GrammarSection />
           </div>
         )}
 
@@ -194,7 +162,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <Footer onScrollToGrammar={scrollToGrammar} setTab={(t) => setTab(t as any)} />
+      <Footer setTab={(t) => setTab(t as any)} />
     </div>
   );
 }
