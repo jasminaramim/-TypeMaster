@@ -221,14 +221,29 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenPolicyModal }) => 
           </div>
         </div>
 
-        {/* Copyright */}
+        {/* Copyright & Developer Attribution */}
         <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 text-center sm:flex-row text-[11px]">
-          <p>
+          <p className="text-gray-400">
             © {new Date().getFullYear()} <span className="font-semibold text-white">TypeMaster</span>. Practice daily. Improve endlessly.
           </p>
-          <p className="flex items-center gap-1.5 text-gray-500">
-            <span>Bangla & English Touch Typing Platform • Strict AdSense Safe Compliance</span>
-          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3">
+            <span className="text-gray-500 hidden sm:inline">Bangla & English Touch Typing Platform</span>
+            <span className="text-gray-700 hidden sm:inline">•</span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#d7ff64]/20 bg-[#d7ff64]/5 px-3 py-1 text-gray-300 shadow-[0_0_12px_rgba(215,255,100,0.1)]">
+              <span className="text-gray-400">Developed by</span>
+              <a
+                href="https://jasmin-v01.vercel.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-extrabold text-[#d7ff64] hover:text-[#e6ff8f] hover:underline transition inline-flex items-center gap-1"
+                title="Jasmin Portfolio"
+              >
+                <span>Jasmin</span>
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            </span>
+          </div>
         </div>
       </div>
     </footer>
