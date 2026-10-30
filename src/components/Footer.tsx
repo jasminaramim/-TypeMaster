@@ -204,16 +204,6 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenPolicyModal }) => 
                 </button>
               </>
             )}
-
-            <a
-              href="https://policies.google.com/technologies/partner-sites"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-gray-200 transition inline-flex items-center gap-1 text-gray-500"
-            >
-              <span>How Google uses information</span>
-              <ExternalLink className="h-3 w-3" />
-            </a>
           </div>
         </div>
 
