@@ -44,7 +44,7 @@ export const CelebrationPopup: React.FC<CelebrationPopupProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md animate-in fade-in duration-300 google-anno-skip" data-google-ad-unit="none">
       <div className="relative w-full max-w-sm sm:max-w-md overflow-hidden rounded-3xl border border-[#d7ff64]/50 bg-gradient-to-b from-[#1b1e17] via-[#141612] to-[#0e100d] p-5 sm:p-6 text-center shadow-[0_20px_70px_rgba(215,255,100,0.25)] zoom-in-95 duration-200">
         
         {/* Close Button */}

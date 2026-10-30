@@ -9,6 +9,7 @@ import {
   Gamepad2,
   Languages,
   Timer,
+  FileText,
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -29,6 +30,7 @@ export const Header: React.FC<HeaderProps> = ({
   const navItems = [
     { id: 'test', label: 'Typing Test', icon: Keyboard },
     { id: 'learn', label: 'Lessons', icon: BookOpen },
+    { id: 'guides', label: 'Typing Guides', icon: FileText },
     { id: 'games', label: 'Typing Games', icon: Gamepad2 },
     { id: 'history', label: 'My History', icon: History },
   ];

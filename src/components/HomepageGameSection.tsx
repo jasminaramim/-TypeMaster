@@ -11,7 +11,7 @@ export const HomepageGameSection: React.FC<HomepageGameSectionProps> = ({
   onStartAccuracyChallenge,
 }) => {
   return (
-    <section id="homepage-games-section" className="relative scroll-mt-20 py-[25px] overflow-hidden">
+    <section id="homepage-games-section" className="relative scroll-mt-20 py-[25px] overflow-hidden google-anno-skip" data-google-ad-unit="none">
       {/* Background Neon Aura */}
       <div
         className="pointer-events-none absolute left-1/2 top-1/2 h-[450px] w-full max-w-5xl -translate-x-1/2 -translate-y-1/2 rounded-full opacity-25 blur-[120px]"

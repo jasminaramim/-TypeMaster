@@ -145,9 +145,9 @@ export const TypingTest: React.FC<TypingTestProps> = ({
   };
 
   return (
-    <div className="space-y-6 py-[25px] overflow-hidden">
+    <div className="space-y-6 py-[25px] overflow-hidden google-anno-skip" data-google-ad-unit="none">
       {/* Main Typing Console */}
-      <section id="typing-console" className="scroll-mt-20 rounded-3xl border border-white/10 bg-[#161814] p-4 shadow-2xl transition sm:p-8">
+      <section id="typing-console" className="scroll-mt-20 rounded-3xl border border-white/10 bg-[#161814] p-4 shadow-2xl transition sm:p-8 google-anno-skip" data-google-ad-unit="none">
         {/* Controls Bar: Language + Timer + Randomize */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b border-white/5 pb-5">
           {/* Language Selector */}

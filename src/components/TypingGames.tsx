@@ -915,7 +915,7 @@ export const TypingGames: React.FC<TypingGamesProps> = ({
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8">
+    <div className="space-y-6 sm:space-y-8 google-anno-skip" data-google-ad-unit="none">
       {/* Header Framed Closely by Floating Gaming Icons */}
       <div className="relative mx-auto w-full max-w-3xl px-2 sm:px-4">
         {/* Left Floating Gaming Icons (Tightly hugging the title text on md+ screens) */}

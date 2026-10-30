@@ -274,7 +274,7 @@ export const MinuteSpeedChallenge: React.FC = () => {
   };
 
   return (
-    <section id="minute-speed-section" className="scroll-mt-20 space-y-6 py-[25px] overflow-hidden">
+    <section id="minute-speed-section" className="scroll-mt-20 space-y-6 py-[25px] overflow-hidden google-anno-skip" data-google-ad-unit="none">
       {/* Toast Alert */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-2xl border border-[#d7ff64]/50 bg-[#191b17] px-5 py-3 text-sm font-semibold text-[#d7ff64] shadow-[0_10px_30px_rgba(0,0,0,0.8)] animate-in fade-in slide-in-from-bottom-4">

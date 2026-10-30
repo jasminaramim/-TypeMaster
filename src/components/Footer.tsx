@@ -1,11 +1,13 @@
 import React from 'react';
-import { Sparkles, Keyboard, Heart } from 'lucide-react';
+import { Sparkles, Keyboard, Heart, ShieldCheck, FileText, Info, Mail, ExternalLink } from 'lucide-react';
+import { PolicyModalType } from './PolicyModals';
 
 interface FooterProps {
   setTab: (tab: string) => void;
+  onOpenPolicyModal?: (modal: 'privacy' | 'terms' | 'about' | 'contact') => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ setTab }) => {
+export const Footer: React.FC<FooterProps> = ({ setTab, onOpenPolicyModal }) => {
   return (
     <footer className="mt-24 border-t border-white/10 bg-[#0d0f0c] pt-12 pb-10 text-xs text-gray-500">
       <div className="mx-auto max-w-7xl px-4 sm:px-6">
@@ -25,7 +27,7 @@ export const Footer: React.FC<FooterProps> = ({ setTab }) => {
           </div>
 
           {/* Quick Links */}
-          <div className="grid grid-cols-2 gap-8 sm:grid-cols-2">
+          <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
             <div>
               <h5 className="font-bold text-white uppercase tracking-wider mb-3 text-[11px]">
                 Typing Practice
@@ -109,15 +111,123 @@ export const Footer: React.FC<FooterProps> = ({ setTab }) => {
                 </li>
               </ul>
             </div>
+
+            <div>
+              <h5 className="font-bold text-[#d7ff64] uppercase tracking-wider mb-3 text-[11px]">
+                Typing Guides & Academy
+              </h5>
+              <ul className="space-y-2">
+                <li>
+                  <button
+                    onClick={() => {
+                      setTab('guides');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#d7ff64] transition text-left"
+                  >
+                    What Is Typing Speed?
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setTab('guides');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#d7ff64] transition text-left"
+                  >
+                    How to Improve Speed
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setTab('guides');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#d7ff64] transition text-left"
+                  >
+                    Bangla & English Guides
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onClick={() => {
+                      setTab('guides');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="hover:text-[#d7ff64] transition text-left"
+                  >
+                    Finger Placement & 10 Tips
+                  </button>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 text-center sm:flex-row">
+        {/* Publisher Legal & AdSense Compliance Bar */}
+        <div className="mt-10 border-t border-white/5 pt-6 flex flex-wrap items-center justify-between gap-4 text-[11px]">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-gray-400">
+            {onOpenPolicyModal && (
+              <>
+                <button
+                  onClick={() => onOpenPolicyModal('privacy')}
+                  className="hover:text-[#d7ff64] transition underline underline-offset-2 flex items-center gap-1"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5 text-[#d7ff64]" />
+                  <span>Privacy Policy</span>
+                </button>
+
+                <button
+                  onClick={() => onOpenPolicyModal('terms')}
+                  className="hover:text-cyan-300 transition underline underline-offset-2 flex items-center gap-1"
+                >
+                  <FileText className="h-3.5 w-3.5 text-cyan-400" />
+                  <span>Terms of Service</span>
+                </button>
+
+                <button
+                  onClick={() => onOpenPolicyModal('about')}
+                  className="hover:text-purple-300 transition underline underline-offset-2 flex items-center gap-1"
+                >
+                  <Info className="h-3.5 w-3.5 text-purple-400" />
+                  <span>About Us</span>
+                </button>
+
+                <button
+                  onClick={() => onOpenPolicyModal('contact')}
+                  className="hover:text-amber-300 transition underline underline-offset-2 flex items-center gap-1"
+                >
+                  <Mail className="h-3.5 w-3.5 text-amber-400" />
+                  <span>Contact</span>
+                </button>
+              </>
+            )}
+
+            <a
+              href="https://policies.google.com/technologies/partner-sites"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-gray-200 transition inline-flex items-center gap-1 text-gray-500"
+            >
+              <span>How Google uses information</span>
+              <ExternalLink className="h-3 w-3" />
+            </a>
+          </div>
+
+          <div className="text-gray-500">
+            AdSense Publisher ID: <code className="text-gray-400 font-mono">pub-6064612688052081</code>
+          </div>
+        </div>
+
+        {/* Copyright */}
+        <div className="mt-6 flex flex-col items-center justify-between gap-4 border-t border-white/5 pt-6 text-center sm:flex-row text-[11px]">
           <p>
             © {new Date().getFullYear()} <span className="font-semibold text-white">TypeMaster</span>. Practice daily. Improve endlessly.
           </p>
           <p className="flex items-center gap-1.5 text-gray-500">
-            <span>Bangla & English Typing Platform</span>
+            <span>Bangla & English Touch Typing Platform • Strict AdSense Safe Compliance</span>
           </p>
         </div>
       </div>

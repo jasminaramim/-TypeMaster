@@ -16,7 +16,7 @@ export const HistoryView: React.FC<HistoryViewProps> = ({ history, onClearHistor
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 google-anno-skip" data-google-ad-unit="none">
       {/* Header */}
       <section className="text-center">
         <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#d7ff64]/30 bg-[#d7ff64]/10 px-4 py-1.5 text-xs font-bold tracking-wide text-[#d7ff64]">

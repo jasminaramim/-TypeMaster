@@ -7,12 +7,16 @@ import { LearningCenter } from './components/LearningCenter';
 import { TypingGames } from './components/TypingGames';
 import { HomepageGameSection } from './components/HomepageGameSection';
 import { HistoryView } from './components/HistoryView';
+import { TypingGuidesSection } from './components/TypingGuidesSection';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { PolicyModals, PolicyModalType } from './components/PolicyModals';
 import { Footer } from './components/Footer';
 import { TestResult } from './types';
 import { soundManager } from './utils/sound';
 
 export default function App() {
-  const [tab, setTab] = useState<'test' | 'learn' | 'games' | 'history'>('test');
+  const [tab, setTab] = useState<'test' | 'learn' | 'games' | 'history' | 'guides'>('test');
+  const [policyModal, setPolicyModal] = useState<PolicyModalType>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [history, setHistory] = useState<TestResult[]>([]);
   const [loaded, setLoaded] = useState(false);
@@ -94,89 +98,115 @@ export default function App() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-[#111310] text-[#eeeeea] flex flex-col selection:bg-[#d7ff64] selection:text-[#111310]">
-      {/* Top Header */}
-      <Header
-        currentTab={tab}
-        setTab={(t) => setTab(t as any)}
-        soundEnabled={soundEnabled}
-        toggleSound={toggleSound}
-        onScrollToMinuteSpeed={scrollToMinuteSpeed}
-      />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-[#111310] text-[#eeeeea] flex flex-col selection:bg-[#d7ff64] selection:text-[#111310]">
+        {/* Top Header */}
+        <Header
+          currentTab={tab}
+          setTab={(t) => setTab(t as any)}
+          soundEnabled={soundEnabled}
+          toggleSound={toggleSound}
+          onScrollToMinuteSpeed={scrollToMinuteSpeed}
+        />
 
-      {/* Main Container */}
-      <main className="mx-auto w-full max-w-6xl flex-1 px-3 sm:px-6 py-[25px] overflow-x-hidden">
-        {tab === 'test' && (
-          <div className="space-y-6">
-            <HeroSection
-              onStartTyping={scrollToMinuteSpeed}
-              onScrollToMinuteSpeed={scrollToMinuteSpeed}
-            />
+        {/* Main Container */}
+        <main className="mx-auto w-full max-w-6xl flex-1 px-3 sm:px-6 py-[25px] overflow-x-hidden">
+          {tab === 'test' && (
+            <div className="space-y-6">
+              <HeroSection
+                onStartTyping={scrollToMinuteSpeed}
+                onScrollToMinuteSpeed={scrollToMinuteSpeed}
+              />
 
-            {/* 1-Minute & Custom Minute Word Count Speed Test Section */}
-            <MinuteSpeedChallenge />
+              {/* 1-Minute & Custom Minute Word Count Speed Test Section */}
+              <MinuteSpeedChallenge />
 
-            {/* Separator Accent Divider */}
-            <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                <div className="w-full border-t border-white/10" />
+              {/* Separator Accent Divider */}
+              <div className="relative py-2">
+                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                  <div className="w-full border-t border-white/10" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-[#111310] px-4 text-xs font-bold uppercase tracking-widest text-[#d7ff64]">
+                    ✦ Guided Passage Speed Workout ✦
+                  </span>
+                </div>
               </div>
-              <div className="relative flex justify-center">
-                <span className="bg-[#111310] px-4 text-xs font-bold uppercase tracking-widest text-[#d7ff64]">
-                  ✦ Guided Passage Speed Workout ✦
-                </span>
+
+              <TypingTest
+                onTestComplete={handleTestComplete}
+                bestWpm={bestWpm}
+                averageWpm={averageWpm}
+                totalTests={history.length}
+              />
+
+              {/* Separator Accent Divider */}
+              <div className="relative py-2">
+                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                  <div className="w-full border-t border-white/10" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-[#111310] px-4 text-xs font-bold uppercase tracking-widest text-[#d7ff64]">
+                    ✦ Arcade Arena • Floating Interactive Games ✦
+                  </span>
+                </div>
               </div>
+
+              {/* Homepage Arcade Game Section with Floating Gaming Icons */}
+              <HomepageGameSection
+                onStartSprint={scrollToMinuteSpeed}
+                onStartAccuracyChallenge={scrollToMinuteSpeed}
+              />
+
+              {/* Separator Accent Divider */}
+              <div className="relative py-4">
+                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                  <div className="w-full border-t border-[#d7ff64]/20" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-[#111310] px-4 text-xs font-extrabold uppercase tracking-widest text-[#d7ff64] shadow-sm">
+                    ✦ Comprehensive Typing Guides & Learning Academy ✦
+                  </span>
+                </div>
+              </div>
+
+              {/* Original Content & Educational Guides Section on Homepage */}
+              <TypingGuidesSection initialTopic="what-is-speed" />
             </div>
+          )}
 
-            <TypingTest
-              onTestComplete={handleTestComplete}
-              bestWpm={bestWpm}
-              averageWpm={averageWpm}
-              totalTests={history.length}
-            />
+          {tab === 'learn' && <LearningCenter />}
 
-            {/* Separator Accent Divider */}
-            <div className="relative py-2">
-              <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                <div className="w-full border-t border-white/10" />
-              </div>
-              <div className="relative flex justify-center">
-                <span className="bg-[#111310] px-4 text-xs font-bold uppercase tracking-widest text-[#d7ff64]">
-                  ✦ Arcade Arena • Floating Interactive Games ✦
-                </span>
-              </div>
+          {tab === 'guides' && (
+            <div className="space-y-6">
+              <TypingGuidesSection initialTopic="what-is-speed" />
             </div>
+          )}
 
-            {/* Homepage Arcade Game Section with Floating Gaming Icons */}
-            <HomepageGameSection
-              onStartSprint={scrollToMinuteSpeed}
-              onStartAccuracyChallenge={scrollToMinuteSpeed}
+          {tab === 'games' && (
+            <TypingGames
+              onStartSprint={() => {
+                setTab('test');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              onStartAccuracyChallenge={() => {
+                setTab('test');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
             />
-          </div>
-        )}
+          )}
 
-        {tab === 'learn' && <LearningCenter />}
+          {tab === 'history' && (
+            <HistoryView history={history} onClearHistory={handleClearHistory} />
+          )}
+        </main>
 
-        {tab === 'games' && (
-          <TypingGames
-            onStartSprint={() => {
-              setTab('test');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-            onStartAccuracyChallenge={() => {
-              setTab('test');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
-          />
-        )}
+        {/* Footer */}
+        <Footer setTab={(t) => setTab(t as any)} onOpenPolicyModal={setPolicyModal} />
 
-        {tab === 'history' && (
-          <HistoryView history={history} onClearHistory={handleClearHistory} />
-        )}
-      </main>
-
-      {/* Footer */}
-      <Footer setTab={(t) => setTab(t as any)} />
-    </div>
+        {/* AdSense-Compliant Policy Modals */}
+        <PolicyModals activeModal={policyModal} onClose={() => setPolicyModal(null)} />
+      </div>
+    </ErrorBoundary>
   );
 }
