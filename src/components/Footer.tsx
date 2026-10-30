@@ -215,10 +215,6 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenPolicyModal }) => 
               <ExternalLink className="h-3 w-3" />
             </a>
           </div>
-
-          <div className="text-gray-500">
-            AdSense Publisher ID: <code className="text-gray-400 font-mono">pub-6064612688052081</code>
-          </div>
         </div>
 
         {/* Copyright & Developer Attribution */}
