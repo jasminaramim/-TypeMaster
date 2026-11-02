@@ -223,8 +223,8 @@ export const PrivacyPolicyPage: React.FC<LegalPageProps> = ({ onNavigate }) => {
           </p>
           <p className="text-gray-400">
             Official Email:{' '}
-            <a href="mailto:jasminaramim@gmail.com" className="text-white font-mono hover:text-[#d7ff64] underline">
-              jasminaramim@gmail.com
+            <a href="mailto:jasminaramim2005@gmail.com" className="text-white font-mono hover:text-[#d7ff64] underline">
+              jasminaramim2005@gmail.com
             </a>
           </p>
           <p className="text-gray-400">Website: https://typemaster-ecru.vercel.app</p>
@@ -294,8 +294,8 @@ export const TermsOfServicePage: React.FC<LegalPageProps> = ({ onNavigate }) => 
           <h2 className="text-base sm:text-lg font-bold text-white">6. Inquiries</h2>
           <p className="text-gray-400">
             Questions regarding our Terms of Service should be directed to{' '}
-            <a href="mailto:jasminaramim@gmail.com" className="text-[#d7ff64] underline font-mono">
-              jasminaramim@gmail.com
+            <a href="mailto:jasminaramim2005@gmail.com" className="text-[#d7ff64] underline font-mono">
+              jasminaramim2005@gmail.com
             </a>.
           </p>
         </section>
@@ -368,11 +368,11 @@ export const AboutPage: React.FC<LegalPageProps> = ({ onNavigate }) => {
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
               <a
-                href="mailto:jasminaramim@gmail.com"
+                href="mailto:jasminaramim2005@gmail.com"
                 className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3.5 py-1.5 text-xs font-medium text-gray-300 transition hover:bg-white/10 hover:text-white"
               >
                 <Mail className="h-3.5 w-3.5 text-amber-400" />
-                <span>jasminaramim@gmail.com</span>
+                <span>jasminaramim2005@gmail.com</span>
               </a>
             </div>
           </div>
@@ -475,10 +475,10 @@ export const ContactPage: React.FC<LegalPageProps> = ({ onNavigate }) => {
                 <div>
                   <span className="text-gray-400 block">Direct Email:</span>
                   <a
-                    href="mailto:jasminaramim@gmail.com"
+                    href="mailto:jasminaramim2005@gmail.com"
                     className="font-mono text-white font-semibold hover:text-[#d7ff64] transition"
                   >
-                    jasminaramim@gmail.com
+                    jasminaramim2005@gmail.com
                   </a>
                 </div>
               </div>
@@ -533,8 +533,8 @@ export const ContactPage: React.FC<LegalPageProps> = ({ onNavigate }) => {
                 <h3 className="text-xl font-black text-white">বার্তাটি সফলভাবে পাঠানো হয়েছে!</h3>
                 <p className="text-xs sm:text-sm text-gray-300 max-w-sm mx-auto">
                   Thank you, <strong className="text-white">{name}</strong>. Your message has been received. You can also reach out directly to{' '}
-                  <a href="mailto:jasminaramim@gmail.com" className="text-[#d7ff64] underline">
-                    jasminaramim@gmail.com
+                  <a href="mailto:jasminaramim2005@gmail.com" className="text-[#d7ff64] underline">
+                    jasminaramim2005@gmail.com
                   </a>.
                 </p>
                 <button

@@ -213,10 +213,10 @@ export const PolicyModals: React.FC<PolicyModalsProps> = ({ activeModal, onClose
                   <div>
                     <span className="text-xs text-gray-400 block">Official Support & Publisher Email:</span>
                     <a
-                      href="mailto:support@typemaster.app"
+                      href="mailto:jasminaramim2005@gmail.com"
                       className="text-sm sm:text-base font-bold text-white hover:text-[#d7ff64] transition"
                     >
-                      support@typemaster.app
+                      jasminaramim2005@gmail.com
                     </a>
                   </div>
                 </div>
