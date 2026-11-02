@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { MinuteSpeedChallenge } from './components/MinuteSpeedChallenge';
+import { InteractiveRGBKeyboard } from './components/InteractiveRGBKeyboard';
 import { TypingTest } from './components/TypingTest';
 import { GrammarSection } from './components/GrammarSection';
 import { LearningCenter } from './components/LearningCenter';
@@ -262,6 +263,9 @@ export default function App() {
 
               {/* 1-Minute & Custom Minute Word Count Speed Test Section */}
               <MinuteSpeedChallenge />
+
+              {/* Interactive RGB Neon Lighting Keyboard & Mechanical Audio Suite */}
+              <InteractiveRGBKeyboard onStartSpeedWorkout={scrollToMinuteSpeed} />
 
               {/* Separator Accent Divider */}
               <div className="relative py-2">
