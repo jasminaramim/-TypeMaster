@@ -14,15 +14,19 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
   const adRef = useRef<HTMLModElement>(null);
   const initialized = useRef(false);
 
+  // If no valid real slotId is provided, do not render a dummy ad box to prevent policy violations
+  if (!slotId || slotId === '1234567890') {
+    return null;
+  }
+
   useEffect(() => {
-    // Only push if adsbygoogle is loaded and not already executed
     try {
       if (typeof window !== 'undefined' && !initialized.current) {
         // @ts-ignore
         (window.adsbygoogle = window.adsbygoogle || []).push({});
         initialized.current = true;
       }
-    } catch (e) {
+    } catch {
       // Ignore adsbygoogle push errors in dev or adblock environments
     }
   }, []);
@@ -41,7 +45,7 @@ export const AdSenseBanner: React.FC<AdSenseBannerProps> = ({
           className="adsbygoogle"
           style={{ display: 'block', minHeight: '90px', width: '100%' }}
           data-ad-client="ca-pub-6064612688052081"
-          data-ad-slot={slotId || '1234567890'}
+          data-ad-slot={slotId}
           data-ad-format={format}
           data-full-width-responsive="true"
         />

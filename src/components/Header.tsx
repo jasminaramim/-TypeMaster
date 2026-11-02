@@ -18,6 +18,7 @@ interface HeaderProps {
   soundEnabled: boolean;
   toggleSound: () => void;
   onScrollToMinuteSpeed?: () => void;
+  onNavigate?: (path: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -26,14 +27,26 @@ export const Header: React.FC<HeaderProps> = ({
   soundEnabled,
   toggleSound,
   onScrollToMinuteSpeed,
+  onNavigate,
 }) => {
   const navItems = [
-    { id: 'test', label: 'Typing Test', icon: Keyboard },
-    { id: 'learn', label: 'Lessons', icon: BookOpen },
-    { id: 'guides', label: 'Typing Guides', icon: FileText },
-    { id: 'games', label: 'Typing Games', icon: Gamepad2 },
-    { id: 'history', label: 'My History', icon: History },
+    { id: 'test', label: 'Typing Test', path: '/', icon: Keyboard },
+    { id: 'grammar', label: 'AI Grammar', path: '/grammar', icon: Sparkles },
+    { id: 'learn', label: 'Lessons', path: '/lessons', icon: BookOpen },
+    { id: 'guides', label: 'Typing Guides', path: '/guides', icon: FileText },
+    { id: 'games', label: 'Typing Games', path: '/games', icon: Gamepad2 },
+    { id: 'history', label: 'My History', path: '/history', icon: History },
   ];
+
+  const handleNavClick = (e: React.MouseEvent, item: (typeof navItems)[0]) => {
+    e.preventDefault();
+    if (onNavigate) {
+      onNavigate(item.path);
+    } else {
+      setTab(item.id);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#111310]/95 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.5)]">
@@ -41,10 +54,16 @@ export const Header: React.FC<HeaderProps> = ({
       <div className="w-full px-4 sm:px-6 lg:px-10 py-3">
         <div className="flex items-center justify-between gap-4">
           {/* Brand Logo */}
-          <button
-            onClick={() => {
-              setTab('test');
-              window.scrollTo({ top: 0, behavior: 'smooth' });
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              if (onNavigate) {
+                onNavigate('/');
+              } else {
+                setTab('test');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }
             }}
             className="group flex items-center gap-3 transition focus:outline-none"
             title="TypeMaster Home"
@@ -62,21 +81,19 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="hidden rounded-full border border-[#d7ff64]/30 bg-[#d7ff64]/10 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-widest text-[#d7ff64] xl:inline-block">
               v2.0 AI
             </span>
-          </button>
+          </a>
 
           {/* Desktop Navigation */}
-          <nav className="hidden items-center gap-1.5 md:flex">
+          <nav className="hidden items-center gap-1.5 md:flex" aria-label="Main Navigation">
             {navItems.map((item) => {
               const Icon = item.icon;
               const active = currentTab === item.id;
               return (
-                <button
+                <a
                   key={item.id}
-                  onClick={() => {
-                    setTab(item.id);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                  }}
-                  className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-sm font-semibold transition ${
+                  href={item.path}
+                  onClick={(e) => handleNavClick(e, item)}
+                  className={`flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition ${
                     active
                       ? 'border border-[#d7ff64]/40 bg-[#d7ff64]/15 text-[#d7ff64] shadow-[0_0_15px_rgba(215,255,100,0.15)]'
                       : 'border border-transparent text-[#9c9e94] hover:bg-white/5 hover:text-white'
@@ -84,7 +101,7 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   <Icon className={`h-4 w-4 ${active ? 'text-[#d7ff64]' : 'text-gray-400'}`} />
                   <span>{item.label}</span>
-                </button>
+                </a>
               );
             })}
           </nav>
@@ -126,17 +143,15 @@ export const Header: React.FC<HeaderProps> = ({
       </div>
 
       {/* Mobile Nav Scroller */}
-      <nav className="flex gap-1.5 overflow-x-auto px-4 pb-2.5 pt-1 border-t border-white/5 md:hidden">
+      <nav className="flex gap-1.5 overflow-x-auto px-4 pb-2.5 pt-1 border-t border-white/5 md:hidden" aria-label="Mobile Navigation">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = currentTab === item.id;
           return (
-            <button
+            <a
               key={item.id}
-              onClick={() => {
-                setTab(item.id);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-              }}
+              href={item.path}
+              onClick={(e) => handleNavClick(e, item)}
               className={`flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition ${
                 active
                   ? 'bg-[#d7ff64] font-bold text-[#111310]'
@@ -145,7 +160,7 @@ export const Header: React.FC<HeaderProps> = ({
             >
               <Icon className="h-3.5 w-3.5" />
               <span>{item.label}</span>
-            </button>
+            </a>
           );
         })}
       </nav>
