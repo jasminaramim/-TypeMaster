@@ -9,13 +9,17 @@ import {
   RotateCcw,
   Sliders,
   CheckCircle2,
-  Radio,
+  ChevronRight,
+  Trophy,
+  Target,
+  ArrowRight,
+  BookOpen,
 } from 'lucide-react';
 import { soundManager, SwitchSoundProfile } from '../utils/sound';
 
 interface KeyConfig {
   label: string;
-  code: string; // KeyboardEvent.code or lower key for matching
+  code: string;
   finger: string;
   wide?: boolean;
   bump?: boolean;
@@ -23,7 +27,10 @@ interface KeyConfig {
   extraWide?: boolean;
 }
 
-const FINGER_MAP: Record<string, { bg: string; activeBg: string; text: string; glow: string; name: string; hand: string }> = {
+const FINGER_MAP: Record<
+  string,
+  { bg: string; activeBg: string; text: string; glow: string; name: string; hand: string }
+> = {
   'left-pinky': {
     bg: 'bg-rose-500/20 border-rose-500/60 text-rose-300',
     activeBg: 'bg-rose-500 text-white border-rose-300 shadow-[0_0_25px_rgba(244,63,94,0.9)] scale-105',
@@ -170,6 +177,52 @@ const KEYBOARD_LAYOUT: KeyConfig[][] = [
   ],
 ];
 
+interface PracticePrompt {
+  id: string;
+  category: 'Pangram' | 'Home Row' | 'Speed Quote' | 'Bengali Avro';
+  title: string;
+  text: string;
+}
+
+const PRACTICE_PROMPTS: PracticePrompt[] = [
+  {
+    id: 'pangram-1',
+    category: 'Pangram',
+    title: 'The Quick Brown Fox (সবগুলো ইংরেজি অক্ষর)',
+    text: 'the quick brown fox jumps over the lazy dog',
+  },
+  {
+    id: 'home-row-1',
+    category: 'Home Row',
+    title: 'Home Row Drill (মূল আঙুল পজিশন ASDF JKL;)',
+    text: 'asdf jkl; asdf jkl; all fall asks salad flask',
+  },
+  {
+    id: 'speed-1',
+    category: 'Speed Quote',
+    title: 'Muscle Memory Master (দক্ষতার মূল সূত্র)',
+    text: 'practice makes a master typist with steady rhythm and focus',
+  },
+  {
+    id: 'pangram-2',
+    category: 'Pangram',
+    title: 'Five Dozen Liquor Jugs (চ্যালেঞ্জ প্যানগ্রাম)',
+    text: 'pack my box with five dozen liquor jugs quickly',
+  },
+  {
+    id: 'bengali-1',
+    category: 'Bengali Avro',
+    title: 'বাংলা ফনেটিক (জাতীয় সঙ্গীত লাইন)',
+    text: 'amar shonar bangla ami tomay bhalobashi',
+  },
+  {
+    id: 'bengali-2',
+    category: 'Bengali Avro',
+    title: 'টাইপিং স্পিড গাইডলাইন',
+    text: 'shothik angul babohar kore druto type korun',
+  },
+];
+
 interface InteractiveRGBKeyboardProps {
   onStartSpeedWorkout?: () => void;
 }
@@ -177,31 +230,64 @@ interface InteractiveRGBKeyboardProps {
 export const InteractiveRGBKeyboard: React.FC<InteractiveRGBKeyboardProps> = ({
   onStartSpeedWorkout,
 }) => {
+  // Practice Prompts State
+  const [promptIndex, setPromptIndex] = useState(0);
+  const currentPrompt = PRACTICE_PROMPTS[promptIndex];
+  const targetText = currentPrompt.text;
+
+  // Typing tracking state
+  const [typedInput, setTypedInput] = useState('');
+  const [startTime, setStartTime] = useState<number | null>(null);
+  const [errorCount, setErrorCount] = useState(0);
+  const [isCompleted, setIsCompleted] = useState(false);
+
+  // Active Key Effects
   const [activeCodes, setActiveCodes] = useState<Set<string>>(new Set());
   const [lastKeyPressed, setLastKeyPressed] = useState<{ label: string; finger: string } | null>({
     label: 'F',
     finger: 'left-index',
   });
-  const [typedText, setTypedText] = useState('');
+
+  // Sound & Switch settings
   const [soundProfile, setSoundProfile] = useState<SwitchSoundProfile>('thock');
   const [soundMuted, setSoundMuted] = useState(false);
-  const [lightingMode, setLightingMode] = useState<'reactive' | 'rainbow'>('reactive');
-  const [keystrokeCount, setKeystrokeCount] = useState(0);
+  const [practiceMode, setPracticeMode] = useState<'guided' | 'free'>('guided');
+  const [freeText, setFreeText] = useState('');
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Trigger key press animation and sound
-  const handleTriggerKey = (code: string, label: string, finger: string) => {
-    setActiveCodes((prev) => new Set(prev).add(code));
+  // Determine the NEXT character that needs to be typed
+  const nextTargetChar =
+    typedInput.length < targetText.length ? targetText[typedInput.length] : null;
 
+  // Find which key config on keyboard corresponds to a char
+  const findKeyForChar = (char: string | null): KeyConfig | null => {
+    if (!char) return null;
+    for (const row of KEYBOARD_LAYOUT) {
+      for (const k of row) {
+        if (k.spacebar && char === ' ') return k;
+        if (k.label.toLowerCase() === char.toLowerCase()) return k;
+      }
+    }
+    return null;
+  };
+
+  const nextTargetKeyConfig = findKeyForChar(nextTargetChar);
+  const nextTargetFinger = nextTargetKeyConfig ? FINGER_MAP[nextTargetKeyConfig.finger] : null;
+
+  // Trigger sound and key flash animation
+  const handleTriggerKey = (code: string, label: string, finger: string, isError = false) => {
+    setActiveCodes((prev) => new Set(prev).add(code));
     setLastKeyPressed({ label, finger });
-    setKeystrokeCount((c) => c + 1);
 
     if (!soundMuted) {
-      soundManager.playKeyClick(soundProfile);
+      if (isError) {
+        soundManager.playError();
+      } else {
+        soundManager.playKeyClick(soundProfile);
+      }
     }
 
-    // Auto remove lighting after 180ms
     setTimeout(() => {
       setActiveCodes((prev) => {
         const next = new Set(prev);
@@ -211,162 +297,409 @@ export const InteractiveRGBKeyboard: React.FC<InteractiveRGBKeyboardProps> = ({
     }, 180);
   };
 
-  // Listen to physical keyboard events globally when focused on container or input
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      const code = e.code;
-      // Find matching key in layout
-      for (const row of KEYBOARD_LAYOUT) {
-        const found = row.find(
-          (k) =>
-            k.code === code ||
-            k.label.toLowerCase() === e.key.toLowerCase() ||
-            (k.spacebar && e.key === ' ')
-        );
-        if (found) {
-          handleTriggerKey(found.code, found.label, found.finger);
-          break;
+  // Reset current sentence practice
+  const handleResetPrompt = () => {
+    setTypedInput('');
+    setStartTime(null);
+    setErrorCount(0);
+    setIsCompleted(false);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  // Change to another sentence prompt
+  const handleSelectPrompt = (index: number) => {
+    setPromptIndex(index);
+    setTypedInput('');
+    setStartTime(null);
+    setErrorCount(0);
+    setIsCompleted(false);
+    setTimeout(() => inputRef.current?.focus(), 50);
+  };
+
+  // Handle typing input
+  const handleInputKeystroke = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (practiceMode === 'free') {
+      const val = e.target.value;
+      setFreeText(val);
+      if (val.length > 0) {
+        const char = val[val.length - 1];
+        const kConfig = findKeyForChar(char);
+        if (kConfig) {
+          handleTriggerKey(kConfig.code, kConfig.label, kConfig.finger);
         }
       }
-    };
+      return;
+    }
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [soundProfile, soundMuted]);
+    if (isCompleted) return;
 
-  const activeFingerInfo = lastKeyPressed ? FINGER_MAP[lastKeyPressed.finger] : null;
+    const val = e.target.value;
+    if (val.length < typedInput.length) {
+      // User pressed Backspace
+      setTypedInput(val);
+      return;
+    }
+
+    if (!startTime) {
+      setStartTime(Date.now());
+    }
+
+    const typedChar = val[val.length - 1];
+    const expectedChar = targetText[typedInput.length];
+
+    const kConfig = findKeyForChar(typedChar);
+
+    if (typedChar === expectedChar) {
+      // Correct character typed
+      if (kConfig) {
+        handleTriggerKey(kConfig.code, kConfig.label, kConfig.finger, false);
+      }
+      const updated = typedInput + typedChar;
+      setTypedInput(updated);
+
+      if (updated.length === targetText.length) {
+        setIsCompleted(true);
+        if (!soundMuted) soundManager.playSuccess();
+      }
+    } else {
+      // Wrong character typed
+      setErrorCount((prev) => prev + 1);
+      if (kConfig) {
+        handleTriggerKey(kConfig.code, kConfig.label, kConfig.finger, true);
+      } else {
+        if (!soundMuted) soundManager.playError();
+      }
+    }
+  };
+
+  // Calculate live metrics
+  const elapsedMinutes = startTime ? Math.max(0.01, (Date.now() - startTime) / 60000) : 0;
+  const currentWpm =
+    startTime && typedInput.length > 0
+      ? Math.round(typedInput.length / 5 / elapsedMinutes)
+      : 0;
+
+  const currentAccuracy =
+    typedInput.length + errorCount > 0
+      ? Math.max(0, Math.round((typedInput.length / (typedInput.length + errorCount)) * 100))
+      : 100;
+
+  const progressPercent = Math.min(
+    100,
+    Math.round((typedInput.length / targetText.length) * 100)
+  );
 
   return (
     <section
       id="interactive-rgb-keyboard"
-      className="relative rounded-3xl border border-white/10 bg-gradient-to-b from-[#161814] via-[#121410] to-[#0e100c] p-4 sm:p-7 shadow-[0_10px_50px_rgba(0,0,0,0.6)] overflow-hidden"
+      onClick={() => inputRef.current?.focus()}
+      className="relative rounded-3xl border border-white/10 bg-gradient-to-b from-[#161814] via-[#121410] to-[#0e100c] p-4 sm:p-7 shadow-[0_10px_50px_rgba(0,0,0,0.6)] overflow-hidden transition cursor-text"
     >
-      {/* Ambient RGB Glow in Background */}
+      {/* Dynamic Background Backlight Glow */}
       <div
         className="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 h-64 w-[90%] rounded-full opacity-20 blur-[90px] transition-all duration-700"
         style={{
-          background:
-            lightingMode === 'rainbow'
-              ? 'radial-gradient(circle, rgba(215,255,100,0.8) 0%, rgba(6,182,212,0.8) 50%, rgba(217,70,239,0.8) 100%)'
-              : activeFingerInfo
-              ? `radial-gradient(circle, ${activeFingerInfo.glow} 0%, transparent 70%)`
-              : 'radial-gradient(circle, #d7ff64 0%, transparent 70%)',
+          background: nextTargetFinger
+            ? `radial-gradient(circle, ${nextTargetFinger.glow} 0%, transparent 70%)`
+            : 'radial-gradient(circle, #d7ff64 0%, transparent 70%)',
         }}
         aria-hidden="true"
       />
 
-      {/* Header & Controls Bar */}
+      {/* Top Header & Settings Controls */}
       <div className="relative mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-4">
         <div>
           <div className="mb-1 inline-flex items-center gap-2 rounded-full border border-[#d7ff64]/30 bg-[#d7ff64]/10 px-3 py-1 text-xs font-bold text-[#d7ff64]">
             <Sparkles className="h-3.5 w-3.5 animate-pulse" />
-            <span>NEON MECHANICAL TYPING SUITE</span>
+            <span>INTERACTIVE FOLLOW-ALONG KEYBOARD</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight flex items-center gap-2">
-            <span>ইন্টারঅ্যাক্টিভ কীবোর্ড চার্ট ও লাইভ আরজিবি লাইটিং</span>
+            <span>নিচের টেক্সট দেখে দেখে কীবোর্ডে টাইপ করুন</span>
           </h2>
           <p className="text-xs text-gray-400 mt-1">
-            যেকোনো কী স্পর্শ করুন অথবা টাইপ করুন — সাথে সাথে কীবোর্ডে রঙিন আলো ও মেকানিক্যাল সাউন্ড উপভোগ করুন!
+            প্রতিটি অক্ষর টাইপ করার সাথে সাথে কীবোর্ডে লাইভ আলো জ্বলবে এবং মেকানিক্যাল সুইচ সাউন্ড হবে ⚡
           </p>
         </div>
 
-        {/* Switch & Audio FX Controls */}
+        {/* Switch Profile & Audio Controls */}
         <div className="flex flex-wrap items-center gap-2">
-          {/* Switch Sound Profiles */}
+          {/* Mode Switcher */}
           <div className="flex items-center rounded-xl border border-white/10 bg-[#111310] p-1 text-xs">
-            <span className="px-2 text-gray-500 font-bold hidden sm:inline text-[10px] uppercase">
-              Switch:
-            </span>
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
+                setPracticeMode('guided');
+                handleResetPrompt();
+              }}
+              className={`rounded-lg px-3 py-1 font-bold transition flex items-center gap-1.5 ${
+                practiceMode === 'guided'
+                  ? 'bg-[#d7ff64] text-[#111310] shadow-[0_0_10px_rgba(215,255,100,0.3)]'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <Target className="h-3.5 w-3.5" />
+              <span>অনুশীলন বাক্য</span>
+            </button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setPracticeMode('free');
+                setTimeout(() => inputRef.current?.focus(), 50);
+              }}
+              className={`rounded-lg px-3 py-1 font-bold transition flex items-center gap-1.5 ${
+                practiceMode === 'free'
+                  ? 'bg-[#d7ff64] text-[#111310] shadow-[0_0_10px_rgba(215,255,100,0.3)]'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              <Flame className="h-3.5 w-3.5" />
+              <span>ফ্রি টাইপিং</span>
+            </button>
+          </div>
+
+          {/* Mechanical Sound Switch Profile */}
+          <div className="flex items-center rounded-xl border border-white/10 bg-[#111310] p-1 text-xs">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
                 setSoundProfile('thock');
                 soundManager.playKeyClick('thock');
               }}
               className={`rounded-lg px-2.5 py-1 font-bold transition ${
                 soundProfile === 'thock'
-                  ? 'bg-[#d7ff64] text-[#111310] shadow-[0_0_10px_rgba(215,255,100,0.3)]'
+                  ? 'bg-amber-400 text-black shadow-[0_0_10px_rgba(245,158,11,0.3)]'
                   : 'text-gray-400 hover:text-white'
               }`}
-              title="Creamy Thock mechanical switch"
+              title="Creamy Thock sound"
             >
               Thock
             </button>
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSoundProfile('blue');
                 soundManager.playKeyClick('blue');
               }}
               className={`rounded-lg px-2.5 py-1 font-bold transition ${
                 soundProfile === 'blue'
-                  ? 'bg-cyan-400 text-[#111310] shadow-[0_0_10px_rgba(6,182,212,0.3)]'
+                  ? 'bg-cyan-400 text-black shadow-[0_0_10px_rgba(6,182,212,0.3)]'
                   : 'text-gray-400 hover:text-white'
               }`}
-              title="Clicky Blue mechanical switch"
+              title="Clicky Blue switch sound"
             >
               Clicky
             </button>
-            <button
-              onClick={() => {
-                setSoundProfile('linear');
-                soundManager.playKeyClick('linear');
-              }}
-              className={`rounded-lg px-2.5 py-1 font-bold transition ${
-                soundProfile === 'linear'
-                  ? 'bg-rose-400 text-[#111310] shadow-[0_0_10px_rgba(244,63,94,0.3)]'
-                  : 'text-gray-400 hover:text-white'
-              }`}
-              title="Linear Red smooth switch"
-            >
-              Linear
-            </button>
           </div>
 
-          {/* Sound Mute Toggle */}
+          {/* Sound Mute */}
           <button
-            onClick={() => setSoundMuted(!soundMuted)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setSoundMuted(!soundMuted);
+            }}
             className={`flex h-8 w-8 items-center justify-center rounded-xl border transition ${
               soundMuted
                 ? 'border-white/10 bg-white/5 text-gray-500'
                 : 'border-[#d7ff64]/40 bg-[#d7ff64]/10 text-[#d7ff64]'
             }`}
-            title={soundMuted ? 'Unmute key click sounds' : 'Mute key click sounds'}
+            title={soundMuted ? 'Unmute key sounds' : 'Mute key sounds'}
           >
             {soundMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
           </button>
         </div>
       </div>
 
-      {/* Live Active Keystroke Status Banner */}
-      <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-white/5 bg-[#111310] px-4 py-2.5 text-xs">
-        <div className="flex items-center gap-3">
-          <span className="text-gray-400 text-[11px] font-bold uppercase tracking-wider">
-            সক্রিয় কী ও আঙুল:
-          </span>
-          {lastKeyPressed && activeFingerInfo ? (
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#d7ff64] text-[#111310] font-black text-sm shadow-[0_0_10px_rgba(215,255,100,0.5)] font-mono animate-in zoom-in duration-100">
-                {lastKeyPressed.label}
+      {/* ========================================================================= */}
+      {/* 🎯 TARGET TEXT PROMPT DISPLAY CARD (যেটা দেখে দেখে ইউজার টাইপ করবে)       */}
+      {/* ========================================================================= */}
+      {practiceMode === 'guided' && (
+        <div className="relative mb-5 rounded-2xl border border-white/10 bg-[#111310] p-5 shadow-2xl">
+          {/* Top Bar of Prompt: Category Selector & Live Stats */}
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-3.5 mb-4">
+            {/* Prompt Selector Pills */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-gray-500 mr-1">
+                বাক্য নির্বাচন:
               </span>
-              <span className={`font-bold ${activeFingerInfo.text}`}>
-                {activeFingerInfo.name}
-              </span>
-              <span className="hidden sm:inline-block rounded-full bg-white/5 px-2 py-0.5 text-[10px] text-gray-400">
-                {activeFingerInfo.hand}
+              {PRACTICE_PROMPTS.map((p, idx) => (
+                <button
+                  key={p.id}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleSelectPrompt(idx);
+                  }}
+                  className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                    promptIndex === idx
+                      ? 'bg-[#d7ff64] text-[#111310] font-bold shadow-[0_0_12px_rgba(215,255,100,0.3)]'
+                      : 'border border-white/5 bg-white/5 text-gray-400 hover:text-white hover:bg-white/10'
+                  }`}
+                >
+                  #{idx + 1} {p.category}
+                </button>
+              ))}
+            </div>
+
+            {/* Live Telemetry Chips */}
+            <div className="flex items-center gap-3 text-xs font-mono">
+              <div className="flex items-center gap-1 text-gray-300">
+                <span className="text-gray-500 text-[10px] uppercase">গতি:</span>
+                <strong className="text-[#d7ff64] font-bold text-sm">{currentWpm} WPM</strong>
+              </div>
+              <span className="text-gray-700">•</span>
+              <div className="flex items-center gap-1 text-gray-300">
+                <span className="text-gray-500 text-[10px] uppercase">নির্ভুলতা:</span>
+                <strong className="text-cyan-400 font-bold text-sm">{currentAccuracy}%</strong>
+              </div>
+              <span className="text-gray-700">•</span>
+              <div className="flex items-center gap-1 text-gray-300">
+                <span className="text-gray-500 text-[10px] uppercase">অগ্রগতি:</span>
+                <strong className="text-white font-bold">{progressPercent}%</strong>
+              </div>
+            </div>
+          </div>
+
+          {/* Prompt Title */}
+          <div className="flex items-center justify-between text-xs text-gray-400 mb-2">
+            <span className="font-semibold text-gray-300">
+              {currentPrompt.title}
+            </span>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                handleResetPrompt();
+              }}
+              className="flex items-center gap-1 text-gray-400 hover:text-[#d7ff64] transition"
+              title="Reset current sentence"
+            >
+              <RotateCcw className="h-3 w-3" />
+              <span>রিসেট (Reset)</span>
+            </button>
+          </div>
+
+          {/* THE CHARACTER-BY-CHARACTER TARGET STREAM */}
+          <div className="relative rounded-xl border border-white/5 bg-[#141612] p-4 text-base sm:text-xl font-mono leading-relaxed select-none tracking-wide min-h-[70px] flex items-center flex-wrap">
+            {targetText.split('').map((char, index) => {
+              const isTyped = index < typedInput.length;
+              const isCurrent = index === typedInput.length;
+              const isCorrect = isTyped && typedInput[index] === char;
+
+              if (isTyped) {
+                return (
+                  <span
+                    key={index}
+                    className={
+                      isCorrect
+                        ? 'text-[#d7ff64] font-extrabold underline decoration-[#d7ff64]/50'
+                        : 'text-rose-400 bg-rose-500/20 underline decoration-rose-400 font-bold'
+                    }
+                  >
+                    {char === ' ' ? '␣' : char}
+                  </span>
+                );
+              }
+
+              if (isCurrent) {
+                return (
+                  <span
+                    key={index}
+                    className="relative mx-0.5 rounded px-1.5 py-0.5 bg-[#d7ff64] text-[#111310] font-black shadow-[0_0_18px_rgba(215,255,100,0.9)] animate-pulse"
+                  >
+                    {char === ' ' ? '␣' : char}
+                  </span>
+                );
+              }
+
+              return (
+                <span key={index} className="text-gray-500">
+                  {char}
+                </span>
+              );
+            })}
+          </div>
+
+          {/* Sentence Completion Banner */}
+          {isCompleted && (
+            <div className="mt-4 rounded-xl border border-[#d7ff64]/30 bg-[#d7ff64]/10 p-3.5 flex flex-col sm:flex-row items-center justify-between gap-3 animate-in fade-in duration-200">
+              <div className="flex items-center gap-2.5">
+                <Trophy className="h-5 w-5 text-[#d7ff64]" />
+                <span className="text-xs sm:text-sm font-bold text-white">
+                  🎉 অসাধারণ! বাক্যটি সম্পূর্ণ হয়েছে! গতি:{' '}
+                  <strong className="text-[#d7ff64]">{currentWpm} WPM</strong> • নির্ভুলতা:{' '}
+                  <strong className="text-cyan-400">{currentAccuracy}%</strong>
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleResetPrompt();
+                  }}
+                  className="rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs font-semibold text-gray-200 hover:bg-white/10"
+                >
+                  আবার করুন ↺
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    const nextIdx = (promptIndex + 1) % PRACTICE_PROMPTS.length;
+                    handleSelectPrompt(nextIdx);
+                  }}
+                  className="rounded-lg bg-[#d7ff64] px-3.5 py-1.5 text-xs font-bold text-[#111310] hover:bg-[#e6ff8f] flex items-center gap-1 shadow-[0_0_10px_rgba(215,255,100,0.3)]"
+                >
+                  <span>পরবর্তী বাক্য</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Next Key Guidance Bar */}
+          {!isCompleted && nextTargetKeyConfig && nextTargetFinger && (
+            <div className="mt-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-gray-400 font-medium">পরবর্তী কী চাপুন:</span>
+                <span className="rounded-md border border-[#d7ff64] bg-[#d7ff64]/20 px-2.5 py-0.5 font-mono font-black text-[#d7ff64] text-sm shadow-[0_0_10px_rgba(215,255,100,0.3)]">
+                  {nextTargetKeyConfig.spacebar ? 'Spacebar (স্পেস)' : nextTargetKeyConfig.label}
+                </span>
+                <span className="text-gray-500">•</span>
+                <span className="text-gray-400">প্রস্তাবিত আঙুল:</span>
+                <span className={`font-bold ${nextTargetFinger.text}`}>
+                  {nextTargetFinger.name}
+                </span>
+              </div>
+              <span className="text-[11px] text-gray-500 italic">
+                (কীবোর্ডে সবুজ আভা লক্ষ্য করুন)
               </span>
             </div>
-          ) : (
-            <span className="text-gray-500 italic">যেকোনো কী চাপুন...</span>
           )}
         </div>
+      )}
 
-        <div className="flex items-center gap-4 text-gray-400 text-xs">
-          <span>
-            স্ট্রোক কাউন্টার: <strong className="font-mono text-[#d7ff64]">{keystrokeCount}</strong>
-          </span>
+      {/* Free Typing Playground mode if selected */}
+      {practiceMode === 'free' && (
+        <div className="mb-5 rounded-2xl border border-white/10 bg-[#111310] p-4 space-y-2">
+          <label className="text-xs font-bold text-gray-300 flex items-center gap-2">
+            <Flame className="h-4 w-4 text-[#d7ff64]" />
+            <span>ফ্রি টাইপিং মোড (এখানে যেকোনো কিছু লিখুন):</span>
+          </label>
+          <input
+            type="text"
+            value={freeText}
+            onChange={(e) => {
+              setFreeText(e.target.value);
+              const char = e.target.value.slice(-1);
+              const k = findKeyForChar(char);
+              if (k) handleTriggerKey(k.code, k.label, k.finger);
+            }}
+            placeholder="Type anything here freely to watch the keys ignite..."
+            className="w-full rounded-xl border border-white/10 bg-[#161814] px-4 py-3 text-sm text-[#d7ff64] font-mono focus:border-[#d7ff64] focus:outline-none"
+          />
         </div>
-      </div>
+      )}
 
-      {/* Interactive RGB Keyboard Layout (Matching User's Screenshot Exactly) */}
+      {/* ========================================================================= */}
+      {/* ⌨️ INTERACTIVE RGB KEYBOARD WITH TARGET BEACON LIGHTING                    */}
+      {/* ========================================================================= */}
       <div className="rounded-2xl border border-white/10 bg-[#0d0f0c] p-3 sm:p-6 overflow-x-auto select-none shadow-inner">
         <div className="min-w-[700px] space-y-2 font-mono text-xs">
           {KEYBOARD_LAYOUT.map((row, rIdx) => (
@@ -374,13 +707,35 @@ export const InteractiveRGBKeyboard: React.FC<InteractiveRGBKeyboardProps> = ({
               {row.map((k, kIdx) => {
                 const fingerConfig = FINGER_MAP[k.finger];
                 const isPressed = activeCodes.has(k.code);
-                const isSelected = lastKeyPressed?.label === k.label;
+                const isNextTarget =
+                  practiceMode === 'guided' &&
+                  !isCompleted &&
+                  nextTargetKeyConfig?.code === k.code;
 
                 return (
                   <button
                     key={kIdx}
                     type="button"
-                    onMouseDown={() => handleTriggerKey(k.code, k.label, k.finger)}
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      // Trigger click simulation
+                      handleTriggerKey(k.code, k.label, k.finger);
+                      if (practiceMode === 'guided' && !isCompleted) {
+                        const expected = targetText[typedInput.length];
+                        const clickedChar = k.spacebar ? ' ' : k.label.toLowerCase();
+                        if (clickedChar === expected.toLowerCase()) {
+                          const updated = typedInput + expected;
+                          setTypedInput(updated);
+                          if (updated.length === targetText.length) {
+                            setIsCompleted(true);
+                            if (!soundMuted) soundManager.playSuccess();
+                          }
+                        } else {
+                          setErrorCount((c) => c + 1);
+                        }
+                      }
+                      inputRef.current?.focus();
+                    }}
                     className={`relative flex items-center justify-center rounded-lg border font-bold transition-all duration-75 cursor-pointer outline-none ${
                       k.spacebar
                         ? 'w-full py-3 max-w-lg text-xs tracking-wide'
@@ -392,12 +747,20 @@ export const InteractiveRGBKeyboard: React.FC<InteractiveRGBKeyboardProps> = ({
                     } ${
                       isPressed
                         ? fingerConfig.activeBg
-                        : isSelected
-                        ? `${fingerConfig.bg} ring-2 ring-[#d7ff64]/70 brightness-125`
+                        : isNextTarget
+                        ? `${fingerConfig.bg} ring-2 ring-[#d7ff64] shadow-[0_0_20px_rgba(215,255,100,0.8)] scale-110 z-20 brightness-150 animate-pulse`
                         : `${fingerConfig.bg} hover:brightness-125 hover:scale-105 active:scale-95`
                     }`}
                   >
                     <span>{k.label}</span>
+
+                    {/* Next Key Badge indicator */}
+                    {isNextTarget && (
+                      <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#d7ff64] opacity-75" />
+                        <span className="relative inline-flex rounded-full h-3 w-3 bg-[#d7ff64]" />
+                      </span>
+                    )}
 
                     {/* F and J Tactile Bump Guides */}
                     {k.bump && (
@@ -411,116 +774,36 @@ export const InteractiveRGBKeyboard: React.FC<InteractiveRGBKeyboardProps> = ({
         </div>
       </div>
 
-      {/* Real-time Interactive Typing Console (Type and Watch the Keyboard Glow!) */}
-      <div className="mt-5 rounded-2xl border border-white/10 bg-[#111310] p-4 sm:p-5 space-y-3">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <label className="text-xs font-bold text-gray-300 flex items-center gap-2">
-            <Flame className="h-4 w-4 text-[#d7ff64]" />
-            <span>লাইভ টাইপিং প্লে-গ্রাউন্ড (এখানে যেকোনো কিছু লিখুন):</span>
-          </label>
-          <span className="text-[11px] text-gray-500">
-            টাইপ করার সাথে সাথে কীবোর্ডের বাটনগুলো স্বয়ংক্রিয়ভাবে জ্বলে উঠবে ⚡
-          </span>
-        </div>
-
-        <div className="relative">
-          <input
-            ref={inputRef}
-            type="text"
-            value={typedText}
-            onChange={(e) => {
-              const val = e.target.value;
-              setTypedText(val);
-              if (val.length > 0) {
-                const char = val[val.length - 1];
-                // Trigger sound and lighting for typed char
-                for (const row of KEYBOARD_LAYOUT) {
-                  const match = row.find(
-                    (k) =>
-                      k.label.toLowerCase() === char.toLowerCase() ||
-                      (k.spacebar && char === ' ')
-                  );
-                  if (match) {
-                    handleTriggerKey(match.code, match.label, match.finger);
-                    break;
-                  }
-                }
-              }
-            }}
-            placeholder="Type here to test keyboard lighting and mechanical sound effects..."
-            className="w-full rounded-xl border border-white/10 bg-[#161814] px-4 py-3 text-sm text-[#d7ff64] placeholder-gray-600 font-mono focus:border-[#d7ff64] focus:outline-none focus:ring-1 focus:ring-[#d7ff64]/50 shadow-inner"
-          />
-
-          {typedText && (
-            <button
-              onClick={() => {
-                setTypedText('');
-                inputRef.current?.focus();
-              }}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-lg bg-white/10 px-2 py-1 text-[10px] text-gray-400 hover:text-white"
-            >
-              Clear
-            </button>
-          )}
-        </div>
-
-        {/* Suggestion Quick Chips */}
-        <div className="flex flex-wrap items-center gap-2 text-xs">
-          <span className="text-gray-500 text-[11px]">ট্রাই করুন:</span>
-          {[
-            'The quick brown fox jumps over the lazy dog',
-            'ASDF JKL; 12345',
-            'টাইপমাস্টার বাংলাদেশ',
-          ].map((snippet, idx) => (
-            <button
-              key={idx}
-              onClick={() => {
-                setTypedText(snippet);
-                inputRef.current?.focus();
-                // Animate sequence
-                let i = 0;
-                const interval = setInterval(() => {
-                  if (i >= snippet.length) {
-                    clearInterval(interval);
-                    return;
-                  }
-                  const ch = snippet[i];
-                  for (const row of KEYBOARD_LAYOUT) {
-                    const match = row.find(
-                      (k) =>
-                        k.label.toLowerCase() === ch.toLowerCase() ||
-                        (k.spacebar && ch === ' ')
-                    );
-                    if (match) {
-                      handleTriggerKey(match.code, match.label, match.finger);
-                      break;
-                    }
-                  }
-                  i++;
-                }, 75);
-              }}
-              className="rounded-lg border border-white/5 bg-white/5 px-2.5 py-1 text-[11px] text-gray-300 hover:border-[#d7ff64]/40 hover:text-[#d7ff64] transition"
-            >
-              &ldquo;{snippet}&rdquo;
-            </button>
-          ))}
-        </div>
-      </div>
+      {/* Hidden Focus Input for seamless physical typing anywhere in section */}
+      <input
+        ref={inputRef}
+        type="text"
+        value={practiceMode === 'guided' ? typedInput : freeText}
+        onChange={handleInputKeystroke}
+        className="opacity-0 absolute -z-10 h-0 w-0 pointer-events-none"
+        aria-hidden="true"
+        autoFocus
+      />
 
       {/* Bottom CTA to Speed Challenge */}
       {onStartSpeedWorkout && (
         <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-white/5 pt-4">
           <div className="flex items-center gap-2 text-xs text-gray-400">
             <CheckCircle2 className="h-4 w-4 text-[#d7ff64]" />
-            <span>১০ আঙুলের সঠিক পজিশন মুখস্থ রাখুন এবং টাইপিং স্পিড টেস্টে নিজেকে চ্যালেঞ্জ করুন।</span>
+            <span>
+              কীবোর্ডে না তাকিয়ে স্ক্রিনে বাক্য দেখে টাইপ করার অভ্যাস করুন। নিয়মিত অনুশীলনে গতি বাড়বে!
+            </span>
           </div>
 
           <button
-            onClick={onStartSpeedWorkout}
-            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#d7ff64] to-[#bbf43d] px-4 py-2 text-xs font-bold text-[#111310] shadow-[0_0_15px_rgba(215,255,100,0.3)] transition hover:scale-105 active:scale-95"
+            onClick={(e) => {
+              e.stopPropagation();
+              onStartSpeedWorkout();
+            }}
+            className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#d7ff64] to-[#bbf43d] px-4 py-2 text-xs font-bold text-[#111310] shadow-[0_0_15px_rgba(215,255,100,0.3)] transition hover:scale-105 active:scale-95 flex-shrink-0"
           >
             <Zap className="h-3.5 w-3.5" />
-            <span>স্পিড টেস্ট শুরু করুন 🚀</span>
+            <span>১-মিনিট স্পিড টেস্ট শুরু করুন 🚀</span>
           </button>
         </div>
       )}
