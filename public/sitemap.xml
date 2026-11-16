@@ -6,6 +6,41 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://typemaster-ecru.vercel.app/articles</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.95</priority>
+  </url>
+  <url>
+    <loc>https://typemaster-ecru.vercel.app/articles/increase-typing-speed</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://typemaster-ecru.vercel.app/articles/bijoy-vs-avro-guide</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://typemaster-ecru.vercel.app/articles/typing-ergonomics-posture</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://typemaster-ecru.vercel.app/articles/wpm-calculation-standards</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://typemaster-ecru.vercel.app/articles/mechanical-keyboards-guide</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://typemaster-ecru.vercel.app/articles/data-entry-exam-prep</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://typemaster-ecru.vercel.app/grammar</loc>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
@@ -13,12 +48,12 @@
   <url>
     <loc>https://typemaster-ecru.vercel.app/guides</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://typemaster-ecru.vercel.app/lessons</loc>
     <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.85</priority>
   </url>
   <url>
     <loc>https://typemaster-ecru.vercel.app/games</loc>
@@ -46,4 +81,3 @@
     <priority>0.6</priority>
   </url>
 </urlset>
-

@@ -31,6 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
 }) => {
   const navItems = [
     { id: 'test', label: 'Typing Test', path: '/', icon: Keyboard },
+    { id: 'articles', label: 'Articles & Academy', path: '/articles', icon: BookOpen },
     { id: 'grammar', label: 'AI Grammar', path: '/grammar', icon: Sparkles },
     { id: 'learn', label: 'Lessons', path: '/lessons', icon: BookOpen },
     { id: 'guides', label: 'Typing Guides', path: '/guides', icon: FileText },

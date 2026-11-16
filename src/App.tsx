@@ -18,6 +18,7 @@ import {
   AboutPage,
   ContactPage,
 } from './components/LegalPages';
+import { ArticlesSection } from './components/ArticlesSection';
 import { NotFoundPage } from './components/NotFoundPage';
 import { CookieConsent } from './components/CookieConsent';
 import { Footer } from './components/Footer';
@@ -27,6 +28,7 @@ import { soundManager } from './utils/sound';
 export type RouteTab =
   | 'test'
   | 'grammar'
+  | 'articles'
   | 'learn'
   | 'guides'
   | 'games'
@@ -45,6 +47,12 @@ function getRouteFromPath(pathname: string): { tab: RouteTab; canonicalPath: str
   }
   if (clean === '/grammar' || clean === '/ai-grammar' || clean === '/rewrite') {
     return { tab: 'grammar', canonicalPath: '/grammar' };
+  }
+  if (clean === '/articles' || clean === '/blog') {
+    return { tab: 'articles', canonicalPath: '/articles' };
+  }
+  if (clean.startsWith('/articles/')) {
+    return { tab: 'articles', canonicalPath: clean };
   }
   if (clean === '/lessons' || clean === '/learn') {
     return { tab: 'learn', canonicalPath: '/lessons' };
@@ -82,6 +90,13 @@ export default function App() {
     return 'test';
   });
 
+  const [articleSlug, setArticleSlug] = useState<string | undefined>(() => {
+    if (typeof window !== 'undefined' && window.location.pathname.startsWith('/articles/')) {
+      return window.location.pathname.replace('/articles/', '');
+    }
+    return undefined;
+  });
+
   const [policyModal, setPolicyModal] = useState<PolicyModalType>(null);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [history, setHistory] = useState<TestResult[]>([]);
@@ -90,6 +105,11 @@ export default function App() {
   // Navigate function that supports HTML5 pushState
   const navigateTo = useCallback((targetPath: string) => {
     const { tab: newTab, canonicalPath } = getRouteFromPath(targetPath);
+    if (canonicalPath.startsWith('/articles/')) {
+      setArticleSlug(canonicalPath.replace('/articles/', ''));
+    } else if (canonicalPath === '/articles') {
+      setArticleSlug(undefined);
+    }
     if (typeof window !== 'undefined') {
       if (window.location.pathname !== canonicalPath) {
         window.history.pushState({}, '', canonicalPath);
@@ -102,7 +122,12 @@ export default function App() {
   // Listen to browser Back / Forward buttons
   useEffect(() => {
     const handlePopState = () => {
-      const { tab: popTab } = getRouteFromPath(window.location.pathname);
+      const { tab: popTab, canonicalPath } = getRouteFromPath(window.location.pathname);
+      if (canonicalPath.startsWith('/articles/')) {
+        setArticleSlug(canonicalPath.replace('/articles/', ''));
+      } else {
+        setArticleSlug(undefined);
+      }
       setTab(popTab);
     };
 
@@ -115,6 +140,9 @@ export default function App() {
     if (typeof document === 'undefined') return;
 
     switch (tab) {
+      case 'articles':
+        document.title = 'Typing Academy & Educational Articles — TypeMaster';
+        break;
       case 'grammar':
         document.title = 'AI Grammar Checker & Text Rewriter — TypeMaster';
         break;
@@ -237,6 +265,7 @@ export default function App() {
           setTab={(t) => {
             const pathMap: Record<string, string> = {
               test: '/',
+              articles: '/articles',
               grammar: '/grammar',
               learn: '/lessons',
               guides: '/guides',
@@ -324,7 +353,15 @@ export default function App() {
           {/* 2. AI Grammar Checker & Text Rewriter Route */}
           {tab === 'grammar' && <GrammarSection />}
 
-          {/* 3. Key Row Lessons Route */}
+          {/* 3. Educational Articles & Academy Route (AdSense Quality Content) */}
+          {tab === 'articles' && (
+            <ArticlesSection
+              initialSlug={articleSlug}
+              onNavigate={(path) => navigateTo(path)}
+            />
+          )}
+
+          {/* 4. Key Row Lessons Route */}
           {tab === 'learn' && <LearningCenter />}
 
           {/* 4. Comprehensive Typing Guides Route */}
@@ -380,6 +417,7 @@ export default function App() {
           setTab={(t) => {
             const pathMap: Record<string, string> = {
               test: '/',
+              articles: '/articles',
               grammar: '/grammar',
               learn: '/lessons',
               guides: '/guides',

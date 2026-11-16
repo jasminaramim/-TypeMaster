@@ -149,38 +149,47 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onNavigate, onOpenPolicy
               <ul className="space-y-2">
                 <li>
                   <a
-                    href="/guides"
-                    onClick={(e) => handleLinkClick(e, '/guides', 'guides')}
-                    className="hover:text-[#d7ff64] transition block"
+                    href="/articles"
+                    onClick={(e) => handleLinkClick(e, '/articles', 'articles')}
+                    className="hover:text-[#d7ff64] transition block font-bold text-gray-300"
                   >
-                    What Is Typing Speed?
+                    📚 All Academy Articles
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/guides"
-                    onClick={(e) => handleLinkClick(e, '/guides', 'guides')}
+                    href="/articles/increase-typing-speed"
+                    onClick={(e) => handleLinkClick(e, '/articles/increase-typing-speed', 'articles')}
                     className="hover:text-[#d7ff64] transition block"
                   >
-                    How to Improve Speed
+                    How to Reach 100+ WPM
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/guides"
-                    onClick={(e) => handleLinkClick(e, '/guides', 'guides')}
+                    href="/articles/bijoy-vs-avro-guide"
+                    onClick={(e) => handleLinkClick(e, '/articles/bijoy-vs-avro-guide', 'articles')}
                     className="hover:text-[#d7ff64] transition block"
                   >
-                    Bangla & English Guides
+                    Bijoy vs Avro Bangla Guide
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/guides"
-                    onClick={(e) => handleLinkClick(e, '/guides', 'guides')}
+                    href="/articles/typing-ergonomics-posture"
+                    onClick={(e) => handleLinkClick(e, '/articles/typing-ergonomics-posture', 'articles')}
                     className="hover:text-[#d7ff64] transition block"
                   >
-                    Finger Placement & 10 Tips
+                    Typing Ergonomics & Posture
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="/articles/data-entry-exam-prep"
+                    onClick={(e) => handleLinkClick(e, '/articles/data-entry-exam-prep', 'articles')}
+                    className="hover:text-[#d7ff64] transition block"
+                  >
+                    Government Exam Typing Prep
                   </a>
                 </li>
               </ul>
